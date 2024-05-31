@@ -1,0 +1,7 @@
+#Thu May 30 19:49:28 IST 2024
+base.1=/Users/deepaksharma/Documents/GitHub/UserApp/android/app/build/intermediates/dex/release/mergeDexRelease/classes2.dex
+path.1=classes2.dex
+base.0=/Users/deepaksharma/Documents/GitHub/UserApp/android/app/build/intermediates/dex/release/mergeDexRelease/classes.dex
+renamed.1=classes2.dex
+renamed.0=classes.dex
+path.0=classes.dex

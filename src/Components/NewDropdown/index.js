@@ -1,0 +1,236 @@
+import React, {useEffect, useState} from 'react';
+import {
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+  Platform,
+  FlatList,
+  Modal,
+} from 'react-native';
+// import { Layout } from 'Utils';
+// import Modal from 'react-native-modal';
+// import {CustomText} from 'Components';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  useDerivedValue,
+  runOnJS,
+  interpolate,
+  withTiming,
+  Extrapolate,
+} from 'react-native-reanimated';
+// import useDimensions from "Hooks/useDimensions";
+import useDimensions from 'Hooks/useDimensions';
+import ElevatedCard from 'Components/ElevatedCard';
+import CustomText from 'Components/CustomText';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+export default function NewDropDown({
+  data,
+  children,
+  position,
+  action,
+  containerStyle,
+  customRenderItem,
+  collapsible,
+  onViewChange,
+}) {
+  const {width: DeviceWidth, height: DeviceHeight} = useDimensions();
+  const status_bar_height = StatusBar.currentHeight;
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [layout, setLayout] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = React.useRef();
+  const ListRef = React.useRef();
+  const [maxHeight, setMaxHeight] = useState(200);
+  const [mainData, setMainData] = useState(data);
+  const [dataToRender, setDataToRender] = useState([]);
+  const [right_position_to_move, setRightPositionToMove] = useState(0);
+  const DROPDOWN_WIDTH = 200;
+  useEffect(() => {
+    onViewChange?.(isVisible);
+  }, [isVisible]);
+  const onPress = () => {
+    ref.current?.measure((x, y, width, height, pageX, pageY) => {
+      let topValue;
+      let bottomValue;
+
+      //position to show modal left, right, top, bottom
+      if (collapsible) {
+      }
+      if (pageY + maxHeight >= DeviceHeight) {
+        bottomValue = DeviceHeight - pageY - height;
+      } else {
+        // topValue = pageY + status_bar_height + height;
+        topValue = pageY + status_bar_height + height;
+      }
+      if (collapsible && topValue) {
+        topValue -= height;
+      }
+      if (bottomValue) {
+        let bottom = Platform.select({
+          ios: bottomValue - 25,
+          android: bottomValue,
+        });
+        setLayout({bottom: bottom});
+      } else {
+        let top = Platform.select({
+          ios: topValue + 25,
+          android: topValue + 5,
+        });
+        setLayout({top: top});
+      }
+      setIsLoaded(true);
+      setRightPositionToMove(DeviceWidth - (pageX + width));
+      setIsVisible(true);
+
+      rightValue.value = DeviceWidth - (pageX + width);
+      scaleValue.value = 1;
+      leftValue.value = pageX;
+    });
+  };
+  let scaleValue = useSharedValue(0.8);
+  let leftValue = useSharedValue(-50);
+  let rightValue = useSharedValue(0);
+  let anim = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: withSpring(scaleValue.value)}],
+      left: withSpring(leftValue.value),
+      opacity: withTiming(
+        interpolate(scaleValue.value, [0, 0.5, 0.9, 1], [0, 0, 0, 1]),
+      ),
+    };
+  });
+  let rightAnim = useAnimatedStyle(() => {
+    return {
+      // right : rightValue.value
+      transform: [
+        {
+          scale: withTiming(
+            interpolate(scaleValue.value, [0.8, 0.9, 1], [0.4, 0.7, 1]),
+          ),
+        },
+      ],
+      opacity: withSpring(
+        interpolate(scaleValue.value, [0.8, 0.9, 1], [0, 0.9, 1]),
+      ),
+      right: withTiming(
+        interpolate(
+          scaleValue.value,
+          [0.8, 1],
+          [right_position_to_move, right_position_to_move],
+        ),
+      ),
+    };
+  });
+  let collapsibleAnim = useAnimatedStyle(() => {
+    return {};
+  });
+  const onClose = () => {
+    setTimeout(() => {
+      setIsVisible(false);
+    }, 300);
+  };
+  useDerivedValue(() => {
+    if (scaleValue.value == 0.8) {
+      runOnJS(onClose)(scaleValue.value);
+    }
+  }, [scaleValue.value]);
+  const renderItem = ({item, index}) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => {
+          scaleValue.value = 0.8;
+          leftValue.value = -50;
+          rightValue.value = right_position_to_move;
+          setTimeout(() => {
+            item.action ? item.action() : action?.(item);
+          }, 200);
+        }}
+        key={index}>
+        {customRenderItem ? (
+          customRenderItem?.(item, index)
+        ) : (
+          <CustomText
+            regular
+            style={{
+              padding: 10,
+              // textAlign : 'left'
+            }}
+            value={item.label}
+          />
+        )}
+      </TouchableOpacity>
+    );
+  };
+  return (
+    <TouchableOpacity
+      ref={ref}
+      onPress={onPress}
+      activeOpacity={1}
+      style={[{alignSelf: 'center'}, containerStyle]}>
+      {children}
+
+      <Modal
+        visible={isLoaded && isVisible}
+        style={{
+          marginHorizontal: 0,
+          marginVertical: 0,
+          backgroundColor: 'red',
+        }}
+        statusBarTranslucent={true}
+        transparent={true}>
+        {isLoaded && isVisible ? (
+          <TouchableOpacity
+            onPress={() => {
+              scaleValue.value = 0.8;
+              leftValue.value = -50;
+              rightValue.value = right_position_to_move;
+              // setIsVisible(false)
+            }}
+            activeOpacity={1}
+            style={{backgroundColor: 'rgba(100,100,100,0)', flex: 1}}>
+            <Animated.View
+              style={[
+                {
+                  backgroundColor: 'white',
+                  position: 'absolute',
+                  maxHeight: maxHeight,
+                  // height : maxHeight,
+                  minWidth: 100,
+                },
+                layout,
+                collapsible
+                  ? {right: right_position_to_move}
+                  : position == 'left' || position == undefined
+                  ? anim
+                  : rightAnim,
+              ]}>
+              <ElevatedCard
+                style={{
+                  backgroundColor: 'white',
+                  elevation: 5,
+                  borderRadius: 5,
+                }}>
+                {collapsible && layout?.top ? children : null}
+                <FlatList
+                  ref={ListRef}
+                  data={data}
+                  renderItem={renderItem}
+                  keyExtractor={(item, index) => index.toString()}
+                />
+              </ElevatedCard>
+            </Animated.View>
+          </TouchableOpacity>
+        ) : null}
+      </Modal>
+    </TouchableOpacity>
+  );
+}
+// DropDown.propTypes = {
+//     data : propTypes.arrayOf(propTypes.instanceOf(DropDownDataModel))
+// }
+// export default DropDown;

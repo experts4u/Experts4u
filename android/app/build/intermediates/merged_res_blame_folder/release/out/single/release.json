@@ -1,0 +1,518 @@
+[
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-xxxhdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-xxxhdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_viewdetails.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_viewdetails.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_address.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_address.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_e4uspecial.gif.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_e4uspecial.gif"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_arrowdown.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_arrowdown.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_wallets.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_wallets.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_transperent.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_transperent.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_nocoupens.gif.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_nocoupens.gif"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_logogif.gif.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_logogif.gif"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_herbs.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_herbs.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_salonwomen.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_salonwomen.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-hdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-hdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_minus.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_minus.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_locationgif2.gif.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_locationgif2.gif"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_fivestar.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_fivestar.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_massagemen.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_massagemen.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_redrectangle.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_redrectangle.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnativedropdownpicker_src_themes_dark_icons_arrowdown.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnativedropdownpicker_src_themes_dark_icons_arrowdown.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_beautytreatment.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_beautytreatment.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_edemo.webp.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_edemo.webp"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_arrowright.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_arrowright.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnativedropdownpicker_src_themes_light_icons_tick.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnativedropdownpicker_src_themes_light_icons_tick.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_kama.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_kama.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_empty.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_empty.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_listbgimgactive.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_listbgimgactive.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-xhdpi_node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-xhdpi/node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_lotus.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_lotus.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_google.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_google.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_clockgrey.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_clockgrey.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnativedropdownpicker_src_themes_dark_icons_tick.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnativedropdownpicker_src_themes_dark_icons_tick.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_lastimg.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_lastimg.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_banner4.jpg.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_banner4.jpg"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_starsyellow.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_starsyellow.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_upiselectgrey.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_upiselectgrey.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_packaged.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_packaged.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_crossgrey.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_crossgrey.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_walleticon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_walleticon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_cloud.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_cloud.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_accounticon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_accounticon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_money.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_money.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_placeholderimage.jpeg.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_placeholderimage.jpeg"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_haircutimg.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_haircutimg.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_mybenifitsicon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_mybenifitsicon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_welcomewhite.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_welcomewhite.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_star.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_star.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_satisfaction.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_satisfaction.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_aboutus.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_aboutus.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_refer.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_refer.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable_rn_edit_text_material.xml.flat",
+        "source": "com.experts4uu.app-main-46:/drawable/rn_edit_text_material.xml"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_nodata.jpeg.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_nodata.jpeg"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_paymentsucces.gif.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_paymentsucces.gif"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-xhdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-xhdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_safety.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_safety.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_package.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_package.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_banner2.jpg.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_banner2.jpg"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_discount.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_discount.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_coupen.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_coupen.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_cardsecondimg.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_cardsecondimg.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_lens.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_lens.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_mukesh.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_mukesh.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_safetygrey.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_safetygrey.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_transparentf.gif.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_transparentf.gif"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnativedropdownpicker_src_themes_dark_icons_close.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnativedropdownpicker_src_themes_dark_icons_close.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_saraswati.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_saraswati.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_homegrey.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_homegrey.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_razorpay.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_razorpay.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_banner1.jpg.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_banner1.jpg"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnativedropdownpicker_src_themes_light_icons_arrowup.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnativedropdownpicker_src_themes_light_icons_arrowup.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_creditcard.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_creditcard.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_rating.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_rating.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_plus.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_plus.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_hygene.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_hygene.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_googlelogocolor.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_googlelogocolor.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_meninblack.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_meninblack.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_freekit.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_freekit.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_payafterservice.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_payafterservice.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_ontime.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_ontime.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_rectangle.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_rectangle.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_upiselect.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_upiselect.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-xxhdpi_node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-xxhdpi/node_modules_reactnativegoogleplacesautocomplete_images_powered_by_google_on_white.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_search.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_search.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnavigation_elements_src_assets_backiconmask.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnavigation_elements_src_assets_backiconmask.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_profilepic.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_profilepic.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_arrowblack.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_arrowblack.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_mapimage.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_mapimage.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_replybtn.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_replybtn.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_upired.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_upired.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_gpay.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_gpay.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_listbgimginactive.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_listbgimginactive.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_freeservice.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_freeservice.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_locationgif1.gif.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_locationgif1.gif"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-xxhdpi_node_modules_reactnavigation_elements_src_assets_backicon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-xxhdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_coins.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_coins.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_upi.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_upi.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_banner3.jpg.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_banner3.jpg"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_arrowrightmini.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_arrowrightmini.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_timeicon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_timeicon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_walletred.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_walletred.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_coupn.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_coupn.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_walletgrey.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_walletgrey.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_spawomen.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_spawomen.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_privacypolicy.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_privacypolicy.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_threedotgrey.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_threedotgrey.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_couponapply.gif.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_couponapply.gif"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_ibtn.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_ibtn.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_mybookingsicon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_mybookingsicon.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnativedropdownpicker_src_themes_dark_icons_arrowup.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnativedropdownpicker_src_themes_dark_icons_arrowup.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_paypal.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_paypal.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.experts4uu.app-main-46:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnativedropdownpicker_src_themes_light_icons_arrowdown.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnativedropdownpicker_src_themes_light_icons_arrowdown.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_node_modules_reactnativedropdownpicker_src_themes_light_icons_close.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/node_modules_reactnativedropdownpicker_src_themes_light_icons_close.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_reddot.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_reddot.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_monodose.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_monodose.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_haircutsecond.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_haircutsecond.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_pencilgrey.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_pencilgrey.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_paymentmethd.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_paymentmethd.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_singlekit.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_singlekit.png"
+    },
+    {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_paymentsuccess.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_paymentsuccess.png"
+    }
+]
