@@ -1,45 +1,55 @@
-import CustomText from 'Components/CustomText';
-import {FlatList, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import CustomText from "Components/CustomText";
+import {
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import CustomCard from 'Components/CustomCard';
-import CustomRow from 'Components/CustomRow';
-import CustomImage from 'Components/CustomImage';
-import Assets from 'Assets';
-import CustomHeading from 'Components/CustomHeading';
-import Theme from 'Configs/Theme';
-import Fonts from 'Configs/Fonts';
-import React, {useEffect, useRef, useState} from 'react';
-import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
-import Routes from 'RootNavigation/Routes';
-import CustomIcon from 'Components/CustomIcon';
-import Endpoints from 'Configs/API/Endpoints';
-import useFetch from 'Hooks/useFetch';
-import CustomButton from 'Components/CustomButton';
-import moment from 'moment';
-import AnimatedModal from 'Components/AnimatedModal';
-import ToastMessage from 'Utils/ToastMessage';
-import {showMessage} from 'react-native-flash-message';
-import Loader from 'Components/CustomLoader';
-import {UserInfo_} from 'ReduxState/ReducerHelpers';
-import {useSelector} from 'react-redux';
-import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
+import CustomCard from "Components/CustomCard";
+import CustomRow from "Components/CustomRow";
+import CustomImage from "Components/CustomImage";
+import Assets from "Assets";
+import CustomHeading from "Components/CustomHeading";
+import Theme from "Configs/Theme";
+import Fonts from "Configs/Fonts";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import Routes from "RootNavigation/Routes";
+import CustomIcon from "Components/CustomIcon";
+import Endpoints from "Configs/API/Endpoints";
+import useFetch from "Hooks/useFetch";
+import CustomButton from "Components/CustomButton";
+import moment from "moment";
+import AnimatedModal from "Components/AnimatedModal";
+import ToastMessage from "Utils/ToastMessage";
+import { showMessage } from "react-native-flash-message";
+import Loader from "Components/CustomLoader";
+import { UserInfo_ } from "ReduxState/ReducerHelpers";
+import { useSelector } from "react-redux";
+import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 
 export default () => {
   const scrollViewRef = useRef();
   const [ChargesData, setChargesData] = useState();
-  const userDetails = useSelector(v => v?.user?.userInfo?.user);
+  const userDetails = useSelector((v) => v?.user?.userInfo?.user);
   const [first, setfirst] = useState(0);
   const slotRef = useRef();
   const CancelConfirmRef = useRef();
-  const {params} = useRoute();
+  const { params } = useRoute();
   const Navigation = useNavigation();
   const focused = useIsFocused();
-  const [AppointmentsData, setAppointmentsData] = useState('');
+  const [AppointmentsData, setAppointmentsData] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedAddress, setselectedAddress] = useState([]);
-  const [selectedSlotData, setselectedSlotData] = useState('');
-  const [selectSlot, setSelectSlot] = useState('');
-  const [selectedReason, setselectedReason] = useState('');
+  const [selectedSlotData, setselectedSlotData] = useState("");
+  const [selectSlot, setSelectSlot] = useState("");
+  const [selectedReason, setselectedReason] = useState("");
   const [cancelActive, setcancelActive] = useState(false);
   const [afterResheduleCard, setAfterResheduleCard] = useState(0);
 
@@ -48,7 +58,7 @@ export default () => {
     Token: false,
   });
 
-  const handleDatePress = date => {
+  const handleDatePress = (date) => {
     setSelectedDate(date.slotDate);
     setSelectSlot(null);
   };
@@ -59,7 +69,7 @@ export default () => {
 
       setAppointmentsData(appointments?.data);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
 
@@ -72,14 +82,14 @@ export default () => {
   let item = params?.item;
   let BookingID = item?._id;
 
-  const {isLoading, response, fetchData, error} = useFetch({
+  const { isLoading, response, fetchData, error } = useFetch({
     endpoint: Endpoints.reshedule + BookingID,
 
     body: {
       slotDate: selectedDate,
       slotTime: selectedSlotData?.slotTime,
-      action: 'reschedule',
-      types: 'user',
+      action: "reschedule",
+      types: "user",
     },
   });
 
@@ -100,8 +110,8 @@ export default () => {
     body: {
       reasons: selectedReason,
       jobStatus: 9,
-      action: 'canceled',
-      types: 'user',
+      action: "canceled",
+      types: "user",
     },
   });
 
@@ -109,17 +119,17 @@ export default () => {
     if (cancelResponse) {
       handleConfirmHideModal();
       scrollToTop();
-      ToastMessage.Success('Booking Cancelled successfully');
+      ToastMessage.Success("Booking Cancelled successfully");
     }
   }, [cancelResponse]);
 
-  const DateContent = React.memo(({dates, day, onDatePress, index}) => {
+  const DateContent = React.memo(({ dates, day, onDatePress, index }) => {
     return (
       <FlatList
         data={dates}
         horizontal
-        keyExtractor={item => item.slotDate}
-        renderItem={({item}) => (
+        keyExtractor={(item) => item.slotDate}
+        renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
               onDatePress(item);
@@ -129,24 +139,25 @@ export default () => {
               borderWidth: 1,
               padding: 5,
               paddingHorizontal: 17,
-              alignItems: 'center',
+              alignItems: "center",
               borderRadius: 10,
               borderColor:
-                selectedDate === item.slotDate ? Theme.PrimaryColor : '#E3E3E3',
+                selectedDate === item.slotDate ? Theme.PrimaryColor : "#E3E3E3",
             }}
-            key={index}>
+            key={index}
+          >
             <CustomText
               color={
-                selectedDate === item.slotDate ? Theme.PrimaryColor : 'black'
+                selectedDate === item.slotDate ? Theme.PrimaryColor : "black"
               }
               regular
-              value={moment(item.slotDate).format('dddd').slice(0, 3)}
+              value={moment(item.slotDate).format("dddd").slice(0, 3)}
             />
             <CustomText
               size={20}
               bold
               margin_v={10}
-              value={moment(item.slotDate).format('D')}
+              value={moment(item.slotDate).format("D")}
             />
           </TouchableOpacity>
         )}
@@ -155,7 +166,8 @@ export default () => {
   });
 
   const slotsToShow = selectedDate
-    ? AppointmentsData?.find(item => item.slotDate === selectedDate)?.slot || []
+    ? AppointmentsData?.find((item) => item.slotDate === selectedDate)?.slot ||
+      []
     : [];
 
   useEffect(() => {
@@ -164,13 +176,14 @@ export default () => {
     }
   }, [AppointmentsData]);
 
-  const SlotComponent = ({slots}) => {
+  const SlotComponent = ({ slots }) => {
     return (
       <View
         style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-        }}>
+          flexDirection: "row",
+          flexWrap: "wrap",
+        }}
+      >
         {slots.map((item, index) => {
           return (
             <TouchableOpacity
@@ -187,22 +200,24 @@ export default () => {
                 borderRadius: 5,
                 marginLeft: 10,
                 borderColor:
-                  selectSlot == index ? Theme.PrimaryColor : '#E3E3E3',
+                  selectSlot == index ? Theme.PrimaryColor : "#E3E3E3",
               }}
-              key={index}>
+              key={index}
+            >
               {item.surgCharges > 0 ? (
                 <View
                   style={{
-                    position: 'absolute',
+                    position: "absolute",
                     borderWidth: 1,
 
                     left: 27,
                     bottom: 28,
                     paddingHorizontal: 7,
-                    backgroundColor: 'white',
+                    backgroundColor: "white",
                     borderColor: Theme.PrimaryColor,
                     borderRadius: 4,
-                  }}>
+                  }}
+                >
                   <CustomText
                     regular
                     size={10}
@@ -211,7 +226,7 @@ export default () => {
                   />
                 </View>
               ) : null}
-              <CustomText color={'#757575'} value={item.slotTime} />
+              <CustomText color={"#757575"} value={item.slotTime} />
             </TouchableOpacity>
           );
         })}
@@ -233,29 +248,29 @@ export default () => {
   };
 
   let ReasonsCancel = [
-    'Service no longer required',
-    'Professional not assigned',
-    'Placed the request by mistake',
-    'Bokking address is incorrect',
-    'Hired someone else ',
+    "Service no longer required",
+    "Professional not assigned",
+    "Placed the request by mistake",
+    "Bokking address is incorrect",
+    "Hired someone else ",
   ];
 
   let services = item?.cart;
-  console.log('itembooking?.jobAssignSProviderId', ChargesData);
+  console.log("itembooking?.jobAssignSProviderId", ChargesData);
 
   const scrollToTop = () => {
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({y: 0, animated: true});
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
     }
   };
 
-  const MakeCall = number => {
+  const MakeCall = (number) => {
     RNImmediatePhoneCall.immediatePhoneCall(number);
   };
 
-  const extractCommonPcatIds = dataArray => {
+  const extractCommonPcatIds = (dataArray) => {
     const commonPcatIds = new Set();
-    dataArray.forEach(item => {
+    dataArray.forEach((item) => {
       if (item?.PCatId && item?.PCatId !== undefined) {
         commonPcatIds.add(item?.PCatId);
       }
@@ -277,7 +292,7 @@ export default () => {
       let Charges = await GetOtherCharges.fetchPromise();
       setChargesData(Charges?.Data);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
 
@@ -287,36 +302,39 @@ export default () => {
     }
   }, [item]);
 
-  console.log('itemforCoupen', item);
+  console.log("itemforCoupen", item);
 
   return (
     <View
       style={{
         flex: 1,
-      }}>
+      }}
+    >
       <CustomRow
         v_center
         ratios={[0, 0, 1]}
         style={{
           paddingVertical: 10,
           paddingHorizontal: 10,
-          backgroundColor: 'white',
-        }}>
+          backgroundColor: "white",
+        }}
+      >
         <TouchableOpacity
           onPress={() => {
             Navigation.goBack();
-          }}>
+          }}
+        >
           <CustomIcon
-            type={'AN'}
+            type={"AN"}
             size={25}
             color={Theme.PrimaryColor}
-            name={'arrowleft'}
+            name={"arrowleft"}
           />
         </TouchableOpacity>
 
         <CustomText
           style={{
-            textAlign: 'left',
+            textAlign: "left",
           }}
           size={15}
           medium
@@ -325,8 +343,9 @@ export default () => {
         <TouchableOpacity
           onPress={() => {
             Navigation.navigate(Routes.ContactUsScreen);
-          }}>
-          <CustomText size={15} medium align={'right'} value={'Help'} />
+          }}
+        >
+          <CustomText size={15} medium align={"right"} value={"Help"} />
         </TouchableOpacity>
       </CustomRow>
       <ScrollView
@@ -334,17 +353,19 @@ export default () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 60,
-        }}>
+        }}
+      >
         {item.jobStatus >= 1 && item.jobStatus <= 6 ? (
           <CustomCard>
-            <CustomHeading heading={'Order Id: ' + item?.jobId} />
+            <CustomHeading heading={"Order Id: " + item?.jobId} />
 
             <CustomRow
               style={{
                 marginTop: 10,
                 marginHorizontal: 10,
               }}
-              ratios={[0, 1]}>
+              ratios={[0, 1]}
+            >
               <CustomRow v_center>
                 <CustomImage
                   src={{
@@ -352,18 +373,19 @@ export default () => {
                       Endpoints.baseUrl +
                       item?.jobAssignSProviderId?.ProfilePhoto,
                   }}
-                  resizeMode={'center'}
+                  resizeMode={"center"}
                   size={50}
                   round
                 />
                 <View
                   style={{
                     marginLeft: 10,
-                  }}>
+                  }}
+                >
                   <CustomText
                     color={Theme.PrimaryColor}
                     medium
-                    value={'Assigned Expert'}
+                    value={"Assigned Expert"}
                   />
                   <CustomText
                     value={item?.jobAssignSProviderId?.Name}
@@ -374,20 +396,21 @@ export default () => {
               </CustomRow>
               <TouchableOpacity
                 onPress={() => {
-                  MakeCall('9711751777');
+                  MakeCall("9711751777");
                 }}
                 style={{
-                  alignItems: 'flex-end',
-                  justifyContent: 'flex-end',
+                  alignItems: "flex-end",
+                  justifyContent: "flex-end",
                   marginTop: 10,
-                  backgroundColor: '#EEEEEE',
-                  alignSelf: 'flex-end',
+                  backgroundColor: "#EEEEEE",
+                  alignSelf: "flex-end",
                   padding: 8,
                   borderRadius: 40,
-                }}>
+                }}
+              >
                 <CustomIcon
-                  name={'call'}
-                  type={'ION'}
+                  name={"call"}
+                  type={"ION"}
                   color={Theme.PrimaryColor}
                   size={20}
                 />
@@ -398,13 +421,13 @@ export default () => {
 
         {[0, 7, 9, 10, 11, 12].includes(item.jobStatus) && (
           <CustomCard>
-            <CustomHeading heading={'Order Id: ' + item?.jobId} />
+            <CustomHeading heading={"Order Id: " + item?.jobId} />
             {item.jobStatus >= 9 && item.jobStatus <= 12 ? (
               <CustomText
                 bold
-                color={'red'}
+                color={"red"}
                 size={15}
-                value={'Booking Cancelled'}
+                value={"Booking Cancelled"}
                 margin_h={5}
               />
             ) : null}
@@ -414,28 +437,28 @@ export default () => {
                 bold
                 color={Theme.PrimaryColor}
                 size={15}
-                value={'Booking Accepted'}
+                value={"Booking Accepted"}
                 margin_h={5}
               />
             )}
             {item.jobStatus == 7 && (
               <CustomText
                 bold
-                color={'green'}
+                color={"green"}
                 size={15}
-                value={'Booking Closed'}
+                value={"Booking Closed"}
                 margin_h={5}
               />
             )}
-            <View style={{marginHorizontal: 5}}>
+            <View style={{ marginHorizontal: 5 }}>
               <CustomRow ratios={[0, 1, 0]}>
                 {item.jobStatus == 0 ? (
                   <View>
-                    <CustomText medium value={'Expert is not assigned yet'} />
+                    <CustomText medium value={"Expert is not assigned yet"} />
                     <CustomText
                       regular
                       value={
-                        'An expert will be assigned before 60 min of schedule time'
+                        "An expert will be assigned before 60 min of schedule time"
                       }
                     />
                   </View>
@@ -443,11 +466,11 @@ export default () => {
 
                 {item.jobStatus >= 9 && item.jobStatus <= 12 ? (
                   <View>
-                    <CustomText medium value={'Booking has been Cancelled'} />
+                    <CustomText medium value={"Booking has been Cancelled"} />
                     <CustomText
                       regular
                       value={
-                        'For more details please  \ncontact on - +91 9711751777'
+                        "For more details please  \ncontact on - +91 9711751777"
                       }
                     />
                   </View>
@@ -455,10 +478,10 @@ export default () => {
 
                 {item.jobStatus == 7 ? (
                   <View>
-                    <CustomText medium value={'Booking has been Closed'} />
+                    <CustomText medium value={"Booking has been Closed"} />
                     <CustomText
                       regular
-                      value={'Thanks For Choosing Us Please book again'}
+                      value={"Thanks For Choosing Us Please book again"}
                     />
                   </View>
                 ) : null}
@@ -467,7 +490,7 @@ export default () => {
                   src={Assets.search}
                   size={30}
                   round
-                  resizeMode={'contain'}
+                  resizeMode={"contain"}
                 />
               </CustomRow>
             </View>
@@ -554,25 +577,27 @@ export default () => {
         </CustomCard> */}
 
         <CustomCard>
-          <CustomHeading heading={'Booking Details'} />
+          <CustomHeading heading={"Booking Details"} />
           <View
             style={{
               marginBottom: 10,
-            }}>
+            }}
+          >
             {services.map((item, inde) => {
-              console.log('item of package', item);
+              console.log("item of package", item);
               return (
                 <CustomRow
                   ratios={[1, 0]}
                   style={{
                     marginHorizontal: 10,
                     marginTop: 6,
-                  }}>
+                  }}
+                >
                   <View>
                     <CustomText
                       size={12}
                       bold
-                      value={item?.packageTitle + ' X ' + item?.Quantity}
+                      value={item?.packageTitle + " X " + item?.Quantity}
                     />
                     {item?.packageName?.length > 0 &&
                       item?.packageName?.map((item, index) => {
@@ -582,14 +607,14 @@ export default () => {
                               marginTop: 10,
                             }}
                             size={12}
-                            value={'*' + item}
+                            value={"*" + item}
                             regular
                           />
                         );
                       })}
                   </View>
 
-                  <CustomText value={'₹' + item?.Amount} regular />
+                  <CustomText value={"₹" + item?.Amount} regular />
                 </CustomRow>
               );
             })}
@@ -599,20 +624,21 @@ export default () => {
             style={{
               marginHorizontal: 10,
             }}
-            ratios={[1, 0]}>
-            <CustomText value={'Subtotal'} color={Theme.Black} bold />
+            ratios={[1, 0]}
+          >
+            <CustomText value={"Subtotal"} color={Theme.Black} bold />
             <CustomText
               style={{
-                textDecorationLine: 'line-through',
+                textDecorationLine: "line-through",
                 marginRight: 10,
               }}
-              value={'₹' + item?.RPrice}
+              value={"₹" + item?.RPrice}
               color={Theme.Black}
               regular
             />
             <CustomText
               bold
-              value={'₹' + item?.SPrice}
+              value={"₹" + item?.SPrice}
               color={Theme.Black}
               regular
             />
@@ -623,17 +649,18 @@ export default () => {
             style={{
               marginTop: 10,
               marginHorizontal: 10,
-            }}>
+            }}
+          >
             <CustomImage src={Assets.mybenifitsicon} size={20} />
             <CustomText
               medium
               margin_h={10}
               size={13}
-              color={'#757575'}
-              value={'Tip For Service Provider'}
+              color={"#757575"}
+              value={"Tip For Service Provider"}
             />
 
-            <CustomText color={'#757575'} regular value={'₹' + item?.tip} />
+            <CustomText color={"#757575"} regular value={"₹" + item?.tip} />
           </CustomRow>
           {parseInt(item?.concession) > 0 && (
             <CustomRow
@@ -641,20 +668,21 @@ export default () => {
               style={{
                 marginTop: 10,
                 marginHorizontal: 10,
-              }}>
+              }}
+            >
               <CustomImage src={Assets.mybenifitsicon} size={20} />
               <CustomText
                 medium
                 margin_h={10}
                 size={13}
-                color={'#757575'}
-                value={'Concession '}
+                color={"#757575"}
+                value={"Concession "}
               />
 
               <CustomText
-                color={'red'}
+                color={"red"}
                 regular
-                value={'- ₹' + item?.concession}
+                value={"- ₹" + item?.concession}
               />
             </CustomRow>
           )}
@@ -667,9 +695,10 @@ export default () => {
                     style={{
                       marginTop: 10,
                       marginHorizontal: 10,
-                    }}>
+                    }}
+                  >
                     <CustomImage
-                      src={{uri: Endpoints.baseUrl + item.ChargesIcon}}
+                      src={{ uri: Endpoints.baseUrl + item.ChargesIcon }}
                       size={15}
                     />
                     <CustomText
@@ -677,12 +706,12 @@ export default () => {
                       medium
                       margin_h={10}
                       value={item?.ChargesName}
-                      color={'#757575'}
+                      color={"#757575"}
                     />
 
                     <CustomText
                       regular
-                      value={'₹' + parseInt(item?.ChargesValue)}
+                      value={"₹" + parseInt(item?.ChargesValue)}
                     />
                   </CustomRow>
                 );
@@ -694,20 +723,21 @@ export default () => {
               style={{
                 marginTop: 10,
                 marginHorizontal: 10,
-              }}>
+              }}
+            >
               <CustomImage src={Assets.mybenifitsicon} size={17} />
               <CustomText
-                color={'#757575'}
+                color={"#757575"}
                 size={13}
                 medium
                 margin_h={10}
-                value={'SURG Charges'}
+                value={"SURG Charges"}
               />
 
               <CustomText
-                color={'#757575'}
+                color={"#757575"}
                 regular
-                value={'₹' + item?.surgeCharges}
+                value={"₹" + item?.surgeCharges}
               />
             </CustomRow>
           )}
@@ -717,32 +747,34 @@ export default () => {
               style={{
                 marginTop: 10,
                 marginHorizontal: 10,
-              }}>
+              }}
+            >
               <CustomImage src={Assets.mybenifitsicon} size={17} />
               <View
                 style={{
-                  flexDirection: 'row',
-                }}>
+                  flexDirection: "row",
+                }}
+              >
                 <CustomText
-                  color={'#757575'}
+                  color={"#757575"}
                   size={12}
                   medium
                   margin_h={10}
-                  value={'Coupon Discount :'}
+                  value={"Coupon Discount :"}
                 />
                 <CustomText
-                  color={'red'}
+                  color={"red"}
                   size={13}
                   medium
-                  value={'(' + item?.couponCode + ')'}
+                  value={"(" + item?.couponCode + ")"}
                 />
               </View>
 
               <CustomText
                 // color={'#757575'}
-                color={'red'}
+                color={"red"}
                 regular
-                value={' - ' + '₹' + item?.couponDiscount}
+                value={" - " + "₹" + item?.couponDiscount}
               />
             </CustomRow>
           )}
@@ -750,8 +782,8 @@ export default () => {
           <View
             style={{
               borderTopWidth: 1,
-              borderStyle: 'dashed',
-              borderColor: 'grey',
+              borderStyle: "dashed",
+              borderColor: "grey",
               marginTop: 10,
               marginHorizontal: 10,
             }}
@@ -761,35 +793,37 @@ export default () => {
             style={{
               marginHorizontal: 10,
               marginTop: 10,
-            }}>
-            <CustomText size={13} color={Theme.Black} bold value={'Total'} />
+            }}
+          >
+            <CustomText size={13} color={Theme.Black} bold value={"Total"} />
             <CustomText
               color={Theme.Black}
               bold
-              value={'₹' + item?.payableCharges}
+              value={"₹" + item?.payableCharges}
             />
           </CustomRow>
         </CustomCard>
 
         <CustomCard>
-          <CustomHeading heading={'Address'} />
+          <CustomHeading heading={"Address"} />
           <CustomRow
             style={{
               marginLeft: 10,
             }}
-            v_center>
+            v_center
+          >
             <CustomIcon
-              name={'location-pin'}
+              name={"location-pin"}
               color={Theme.PrimaryColor}
               size={14}
-              type={'ENT'}
+              type={"ENT"}
             />
             <CustomText
               margin_h={10}
               regular
               value={
                 item?.clientAddress?.houseOrFlatNo +
-                ',' +
+                "," +
                 item?.clientAddress?.buildingName +
                 item?.clientAddress?.FullAddress
               }
@@ -798,15 +832,16 @@ export default () => {
           </CustomRow>
         </CustomCard>
         <CustomCard>
-          <CustomHeading heading={'Timing'} />
+          <CustomHeading heading={"Timing"} />
           <CustomRow
             style={{
               marginLeft: 10,
             }}
-            v_center>
+            v_center
+          >
             <CustomIcon
-              name={'clockcircleo'}
-              type={'AN'}
+              name={"clockcircleo"}
+              type={"AN"}
               color={Theme.PrimaryColor}
               size={14}
             />
@@ -815,43 +850,45 @@ export default () => {
               regular
               value={
                 item?.slotDate.slice(0, 10) +
-                ' (' +
+                " (" +
                 item?.slotTime +
-                ')' +
-                ' - ' +
+                ")" +
+                " - " +
                 item?.TServiceTiming +
-                ' Mins'
+                " Mins"
               }
             />
           </CustomRow>
         </CustomCard>
         <CustomCard>
-          <CustomHeading heading={'Note'} />
+          <CustomHeading heading={"Note"} />
           <View
             style={{
               marginHorizontal: 10,
-            }}>
+            }}
+          >
             <CustomText
               margin_v={5}
               value={
-                '\u2B24 ' + 'Slot time (30 min) is arrival time of experts.'
+                "\u2B24 " + "Slot time (30 min) is arrival time of experts."
               }
             />
             <CustomText
               margin_v={5}
               value={
-                '\u2B24 ' +
-                'As part of our safety protocol ,our experts will be working until 7pm. any services remaining will be scheduled for the next day'
+                "\u2B24 " +
+                "As part of our safety protocol ,our experts will be working until 7pm. any services remaining will be scheduled for the next day"
               }
             />
           </View>
         </CustomCard>
         <CustomCard>
-          <CustomHeading heading={'Suggestion'} />
+          <CustomHeading heading={"Suggestion"} />
           <View
             style={{
               marginHorizontal: 10,
-            }}>
+            }}
+          >
             <CustomText margin_v={5} value={item?.Note} />
           </View>
         </CustomCard>
@@ -863,19 +900,21 @@ export default () => {
         <View>
           <CustomCard
             style={{
-              position: 'absolute',
+              position: "absolute",
               bottom: -11,
-              width: '100%',
+              width: "100%",
               paddingBottom: 30,
-              backgroundColor: 'white',
-            }}>
+              backgroundColor: "white",
+            }}
+          >
             <CustomRow
               ratios={[1, 1]}
               spacing={20}
               v_center
               style={{
                 marginHorizontal: 10,
-              }}>
+              }}
+            >
               <TouchableOpacity
                 onPress={() => {
                   handleSlotsShowModal();
@@ -885,12 +924,13 @@ export default () => {
                 }}
                 style={{
                   backgroundColor: Theme.PrimaryColor,
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  alignItems: "center",
+                  justifyContent: "center",
                   paddingVertical: 10,
                   borderRadius: 15,
-                }}>
-                <CustomText color={'white'} bold value={'Reschedule'} />
+                }}
+              >
+                <CustomText color={"white"} bold value={"Reschedule"} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -899,12 +939,13 @@ export default () => {
                 }}
                 style={{
                   backgroundColor: Theme.PrimaryColor,
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  alignItems: "center",
+                  justifyContent: "center",
                   paddingVertical: 10,
                   borderRadius: 15,
-                }}>
-                <CustomText bold color={'white'} value={'Cancel Job'} />
+                }}
+              >
+                <CustomText bold color={"white"} value={"Cancel Job"} />
               </TouchableOpacity>
             </CustomRow>
           </CustomCard>
@@ -915,40 +956,45 @@ export default () => {
         <View
           style={{
             flex: 1,
-            backgroundColor: 'white',
+            backgroundColor: "white",
             borderTopRightRadius: 20,
             borderTopLeftRadius: 20,
-          }}>
+          }}
+        >
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
-              backgroundColor: 'white',
+              backgroundColor: "white",
               borderTopRightRadius: 20,
               borderTopLeftRadius: 20,
-              paddingBottom: '40%',
-            }}>
+              paddingBottom: "40%",
+            }}
+          >
             <View>
               <View
                 style={{
                   marginTop: 20,
                   marginHorizontal: 10,
-                }}>
+                }}
+              >
                 <CustomRow
                   style={{
                     borderBottomWidth: 1,
                     paddingBottom: 8,
-                    borderStyle: 'dashed',
-                    borderColor: '#E3E3E3',
+                    borderStyle: "dashed",
+                    borderColor: "#E3E3E3",
                   }}
-                  ratios={[1, 0.3]}>
+                  ratios={[1, 0.3]}
+                >
                   <TouchableOpacity
                     onPress={() => {
                       // handleSlotsHideModal();
-                    }}>
+                    }}
+                  >
                     <CustomRow v_center>
                       <CustomIcon
-                        name={'home'}
-                        type={'AN'}
+                        name={"home"}
+                        type={"AN"}
                         size={20}
                         color={Theme.PrimaryColor}
                       />
@@ -958,7 +1004,7 @@ export default () => {
                         margin_h={10}
                         value={
                           item?.clientAddress?.houseOrFlatNo +
-                          ',' +
+                          "," +
                           item?.clientAddress?.buildingName +
                           item?.clientAddress?.FullAddress
                         }
@@ -968,8 +1014,8 @@ export default () => {
                       <TouchableOpacity>
                         <CustomIcon
                           size={10}
-                          name={'right'}
-                          type={'AN'}
+                          name={"right"}
+                          type={"AN"}
                           color={Theme.PrimaryColor}
                         />
                       </TouchableOpacity>
@@ -982,12 +1028,13 @@ export default () => {
                       setcancelActive(false);
                     }}
                     style={{
-                      alignSelf: 'flex-end',
-                    }}>
+                      alignSelf: "flex-end",
+                    }}
+                  >
                     <CustomIcon
-                      name={'cross'}
+                      name={"cross"}
                       size={25}
-                      type={'ENT'}
+                      type={"ENT"}
                       color={Theme.PrimaryColor}
                     />
                   </TouchableOpacity>
@@ -996,20 +1043,21 @@ export default () => {
                   style={{
                     marginTop: 10,
                     marginHorizontal: 10,
-                  }}>
+                  }}
+                >
                   <CustomText
                     medium
                     color={Theme.Black}
-                    value={'Select service date and time'}
+                    value={"Select service date and time"}
                   />
                   <CustomText
                     regular
                     color={Theme.Black}
                     size={13}
                     value={
-                      'Your service will take approx. ' +
+                      "Your service will take approx. " +
                       item?.TServiceTiming +
-                      ' mins'
+                      " mins"
                     }
                   />
                 </View>
@@ -1017,29 +1065,32 @@ export default () => {
               <View
                 style={{
                   marginTop: 20,
-                }}>
+                }}
+              >
                 <CustomCard>
                   <CustomRow
                     v_center
                     style={{
                       marginBottom: 10,
                       marginHorizontal: 10,
-                    }}>
-                    <CustomIcon name={'calendar'} type={'AN'} size={14} />
+                    }}
+                  >
+                    <CustomIcon name={"calendar"} type={"AN"} size={14} />
                     <CustomText
                       size={14}
                       medium
-                      value={' Select service date'}
+                      value={" Select service date"}
                     />
                   </CustomRow>
                   <CustomRow
                     style={{
                       borderBottomWidth: 1,
                       paddingBottom: 10,
-                      borderStyle: 'dashed',
-                      borderColor: 'grey',
+                      borderStyle: "dashed",
+                      borderColor: "grey",
                       marginHorizontal: 10,
-                    }}>
+                    }}
+                  >
                     <DateContent
                       dates={AppointmentsData}
                       onDatePress={handleDatePress}
@@ -1051,40 +1102,43 @@ export default () => {
                     style={{
                       marginTop: 20,
                       marginHorizontal: 10,
-                    }}>
-                    <CustomIcon size={18} name={'clockcircleo'} type={'AN'} />
+                    }}
+                  >
+                    <CustomIcon size={18} name={"clockcircleo"} type={"AN"} />
                     <CustomText
                       medium
                       size={14}
-                      value={' Select service time slot'}
+                      value={" Select service time slot"}
                     />
                   </CustomRow>
 
                   <View
                     style={{
                       marginTop: 10,
-                    }}>
+                    }}
+                  >
                     <SlotComponent slots={slotsToShow} />
                   </View>
                 </CustomCard>
                 <CustomCard>
-                  <CustomHeading heading={'Note:-'} />
+                  <CustomHeading heading={"Note:-"} />
                   <View
                     style={{
                       marginHorizontal: 10,
-                    }}>
+                    }}
+                  >
                     <CustomText
                       margin_v={5}
                       value={
-                        '\u2B24 ' +
-                        'Slot time (30 min) is arrival time of experts.'
+                        "\u2B24 " +
+                        "Slot time (30 min) is arrival time of experts."
                       }
                     />
                     <CustomText
                       margin_v={5}
                       value={
-                        '\u2B24 ' +
-                        'As part of our safety protocol, our experts will be working until 7 pm. Any services remaining will be scheduled for the next day.'
+                        "\u2B24 " +
+                        "As part of our safety protocol, our experts will be working until 7 pm. Any services remaining will be scheduled for the next day."
                       }
                     />
                   </View>
@@ -1098,27 +1152,28 @@ export default () => {
               ratios={[1, 1]}
               style={{
                 paddingLeft: 10,
-              }}>
+              }}
+            >
               <CustomButton
                 onPress={() => {
                   if (selectedSlotData) {
                     fetchData();
                   } else {
                     showMessage({
-                      message: 'Please  Select Your Slot',
-                      icon: 'danger',
-                      type: 'danger',
-                      position: 'top',
+                      message: "Please  Select Your Slot",
+                      icon: "danger",
+                      type: "danger",
+                      position: "top",
                     });
                   }
                 }}
                 style={{
                   backgroundColor: selectedSlotData
                     ? Theme.PrimaryColor
-                    : 'grey',
+                    : "grey",
                 }}
                 title={
-                  isLoading ? <Loader color={'white'} size={13} /> : 'Reshedule'
+                  isLoading ? <Loader color={"white"} size={13} /> : "Reshedule"
                 }
               />
 
@@ -1130,30 +1185,30 @@ export default () => {
                 style={{
                   backgroundColor: Theme.PrimaryColor,
                 }}
-                title={'Cancel Booking'}
-                width={'90%'}
+                title={"Cancel Booking"}
+                width={"90%"}
               />
             </CustomRow>
           ) : (
             <CustomButton
-              width={'90%'}
+              width={"90%"}
               onPress={() => {
                 if (selectedSlotData) {
                   fetchData();
                 } else {
                   showMessage({
-                    message: 'Please  Select Your Slot',
-                    icon: 'danger',
-                    type: 'danger',
-                    position: 'top',
+                    message: "Please  Select Your Slot",
+                    icon: "danger",
+                    type: "danger",
+                    position: "top",
                   });
                 }
               }}
               style={{
-                backgroundColor: selectedSlotData ? Theme.PrimaryColor : 'grey',
+                backgroundColor: selectedSlotData ? Theme.PrimaryColor : "grey",
               }}
               title={
-                isLoading ? <Loader color={'white'} size={13} /> : 'Reshedule'
+                isLoading ? <Loader color={"white"} size={13} /> : "Reshedule"
               }
             />
           )}
@@ -1164,43 +1219,47 @@ export default () => {
         <View
           style={{
             flex: 1,
-            backgroundColor: 'white',
-            marginTop: '40%',
+            backgroundColor: "white",
+            marginTop: "40%",
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
-          }}>
+          }}
+        >
           <CustomHeading
             style={{
               marginTop: 10,
               marginLeft: 10,
             }}
-            heading={'Cancellation Reason'}
+            heading={"Cancellation Reason"}
           />
           <View
             style={{
               marginTop: 10,
               marginHorizontal: 10,
-            }}>
+            }}
+          >
             {ReasonsCancel.map((item, index) => {
               return (
                 <TouchableOpacity
                   onPress={() => {
                     setselectedReason(item);
-                  }}>
+                  }}
+                >
                   <CustomRow
                     v_center
                     style={{
                       marginBottom: 20,
-                    }}>
+                    }}
+                  >
                     <CustomIcon
                       name={
                         selectedReason == item
-                          ? 'circle-slice-8'
-                          : 'circle-outline'
+                          ? "circle-slice-8"
+                          : "circle-outline"
                       }
-                      type={'MC'}
+                      type={"MC"}
                       size={18}
-                      color={'black'}
+                      color={"black"}
                     />
                     <CustomText margin_h={10} regular size={15} value={item} />
                   </CustomRow>
@@ -1218,10 +1277,10 @@ export default () => {
               }
             }}
             style={{
-              backgroundColor: selectedReason ? Theme.PrimaryColor : 'grey',
+              backgroundColor: selectedReason ? Theme.PrimaryColor : "grey",
             }}
-            title={'Cancel Booking'}
-            width={'90%'}
+            title={"Cancel Booking"}
+            width={"90%"}
           />
         </View>
       </AnimatedModal>
