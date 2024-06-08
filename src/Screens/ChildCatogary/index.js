@@ -1,23 +1,28 @@
-import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
-import Assets from 'Assets';
-import Container from 'Components/Container';
-import CustomCarasoul from 'Components/CustomCarasoul';
-import CustomCard from 'Components/CustomCard';
-import CustomHeader from 'Components/CustomHeader';
-import CustomHeading from 'Components/CustomHeading';
-import CustomIcon from 'Components/CustomIcon';
-import CustomImage from 'Components/CustomImage';
-import CustomInput from 'Components/CustomInput';
-import CustomRow from 'Components/CustomRow';
-import CustomText from 'Components/CustomText';
-import ElevatedCard from 'Components/ElevatedCard';
-import Endpoints from 'Configs/API/Endpoints';
-import Fonts from 'Configs/Fonts';
-import Theme from 'Configs/Theme';
-import useFetch from 'Hooks/useFetch';
-import Routes from 'RootNavigation/Routes';
-import React, {useEffect, useRef, useState} from 'react';
 import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import Assets from "Assets";
+import Container from "Components/Container";
+import CustomCarasoul from "Components/CustomCarasoul";
+import CustomCard from "Components/CustomCard";
+import CustomHeader from "Components/CustomHeader";
+import CustomHeading from "Components/CustomHeading";
+import CustomIcon from "Components/CustomIcon";
+import CustomImage from "Components/CustomImage";
+import CustomInput from "Components/CustomInput";
+import CustomRow from "Components/CustomRow";
+import CustomText from "Components/CustomText";
+import ElevatedCard from "Components/ElevatedCard";
+import Endpoints from "Configs/API/Endpoints";
+import Fonts from "Configs/Fonts";
+import Theme from "Configs/Theme";
+import useFetch from "Hooks/useFetch";
+import Routes from "RootNavigation/Routes";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
   Animated,
   Dimensions,
   FlatList,
@@ -27,18 +32,18 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
-import FastImage from 'react-native-fast-image';
-import LinearGradient from 'react-native-linear-gradient';
-import {useSelector} from 'react-redux';
+} from "react-native";
+import FastImage from "react-native-fast-image";
+import LinearGradient from "react-native-linear-gradient";
+import { useSelector } from "react-redux";
 
 export default function () {
-  const {params} = useRoute();
+  const { params } = useRoute();
   const focused = useIsFocused();
   const Navigation = useNavigation();
   const [focusedItem, setFocusedItem] = React.useState(0);
   const [expandedIndex, setExpandedIndex] = useState(null);
-  const [headerText, setHeaderText] = useState('');
+  const [headerText, setHeaderText] = useState("");
   const [catogoryData, setCatogoryData] = useState([]);
   const [brandUse, setBrandUse] = useState([]);
   const [TopBanners, setTopBanners] = useState([]);
@@ -46,8 +51,9 @@ export default function () {
   const [testi, setTesti] = useState([]);
   const [userData, setUserData] = useState();
   const [imageHeights, setImageHeights] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const user_info = useSelector(v => v.user.userInfo);
+  const user_info = useSelector((v) => v.user.userInfo);
 
   const User_data = useFetch({
     endpoint: Endpoints.getUserDetails + user_info?.user?._id,
@@ -57,7 +63,7 @@ export default function () {
       let details = await User_data.fetchPromise();
       setUserData(details.data);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
 
@@ -77,20 +83,20 @@ export default function () {
       // let tBannerImgs = data?.map(item => item.SliderImage);
       setTopBanners(data);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
 
-  const handleScroll = event => {
+  const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     if (offsetY > 50 || offsetY > 210) {
-      setHeaderText(params ? params.pcname : 'saloon');
+      setHeaderText(params ? params.pcname : "saloon");
     } else {
-      setHeaderText('');
+      setHeaderText("");
     }
   };
 
-  const ExpandableComponent = ({title, content, onPress, expanded}) => {
+  const ExpandableComponent = ({ title, content, onPress, expanded }) => {
     return (
       <View
         style={{
@@ -99,40 +105,44 @@ export default function () {
           padding: 5,
           paddingHorizontal: 10,
           borderRadius: 10,
-        }}>
+        }}
+      >
         <TouchableOpacity onPress={onPress}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
             <Text
               style={{
                 fontSize: 14,
-                fontWeight: '600',
+                fontWeight: "600",
                 fontFamily: Fonts.PoppinsBold,
-                color: 'black',
-              }}>
+                color: "black",
+              }}
+            >
               {title}
             </Text>
             <CustomImage
               style={{
-                alignSelf: 'center',
+                alignSelf: "center",
               }}
               size={14}
-              resizeMode={'center'}
+              resizeMode={"center"}
               src={expanded ? Assets.minus : Assets.plus}
             />
           </View>
         </TouchableOpacity>
         {expanded && (
-          <CustomText regular style={{marginTop: 5}} value={content} />
+          <CustomText regular style={{ marginTop: 5 }} value={content} />
         )}
       </View>
     );
   };
 
-  const handlePress = index => {
+  const handlePress = (index) => {
     setExpandedIndex(index === expandedIndex ? null : index);
   };
 
-  const renderItem = ({item, index, focusedIndex}) => {
+  const renderItem = ({ item, index, focusedIndex }) => {
     return (
       <View style={[styles.item, styles.focusedItem]}>
         {/* <Text style={styles.title}>{item.rev}</Text> */}
@@ -146,9 +156,9 @@ export default function () {
         <CustomImage
           round
           size={50}
-          src={{uri: Endpoints.baseUrl + item.Image}}
+          src={{ uri: Endpoints.baseUrl + item.Image }}
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: -25,
           }}
         />
@@ -162,7 +172,9 @@ export default function () {
     }
   }, [focused]);
 
-  const renderList = ({item, index}) => {
+  console.log("params", params);
+
+  const renderList = ({ item, index }) => {
     return (
       <TouchableOpacity
         onPress={() =>
@@ -170,8 +182,8 @@ export default function () {
             itemId: item._id,
             index: index,
             PCGroup: PCGroup,
-            pcId: item.PCName[0],
-            PCName: params ? params.pcname : 'saloon',
+            pcId: params?.PCid,
+            PCName: params ? params.pcname : "saloon",
           })
         }
         style={{
@@ -179,13 +191,15 @@ export default function () {
           margin: 5,
           width: 100,
 
-          alignItems: 'center',
+          alignItems: "center",
         }}
-        key={index}>
+        key={index}
+      >
         <View
           style={{
             marginTop: 5,
-          }}>
+          }}
+        >
           <FastImage
             resizeMode="cover"
             style={{
@@ -193,36 +207,37 @@ export default function () {
               width: 100,
               borderRadius: 10,
             }}
-            source={{uri: Endpoints.baseUrl + item.CCimage}}
+            source={{ uri: Endpoints.baseUrl + item.CCimage }}
           />
           {item?.CCNotice && (
             <LinearGradient
-              colors={['black', 'rgba(0, 0, 0, 0.5)']}
+              colors={["black", "rgba(0, 0, 0, 0.5)"]}
               style={{
                 height: 20,
                 // width: ,
-                position: 'absolute',
+                position: "absolute",
                 bottom: 0,
-                alignItems: 'center',
-                justifyContent: 'center',
+                alignItems: "center",
+                justifyContent: "center",
                 width: 100,
                 // borderRadius: 10,
                 borderBottomLeftRadius: 10,
                 borderBottomRightRadius: 10,
               }}
-              start={{x: 0, y: 0}} // gradient start position
-              end={{x: 1, y: 1}} // gradient end position
+              start={{ x: 0, y: 0 }} // gradient start position
+              end={{ x: 1, y: 1 }} // gradient end position
             >
               <View
                 style={
                   {
                     // backgroundColor:"linear-gradient(174deg, transparent, rgba(0, 0, 0, .9))"
                   }
-                }>
+                }
+              >
                 <CustomText
                   size={11}
                   medium
-                  color={'white'}
+                  color={"white"}
                   value={item?.CCNotice}
                 />
               </View>
@@ -232,7 +247,7 @@ export default function () {
 
         <View style={{}}>
           <CustomText
-            align={'center'}
+            align={"center"}
             regular
             size={12}
             style={{
@@ -250,37 +265,37 @@ export default function () {
   let e4u = [
     {
       img: Assets.ontime,
-      title: 'On time & Trained Expert',
+      title: "On time & Trained Expert",
       brief:
-        'Our Experts are well trained & will reach on time on your service. (On time, every time).',
+        "Our Experts are well trained & will reach on time on your service. (On time, every time).",
     },
     {
       img: Assets.singlekit,
-      title: 'Single Kit & Branded Products',
+      title: "Single Kit & Branded Products",
       brief:
-        'All our experts use only Branded & single time use Sachet Packets.',
+        "All our experts use only Branded & single time use Sachet Packets.",
     },
     {
       img: Assets.safety,
-      title: 'Single Kit & Branded Products',
+      title: "Single Kit & Branded Products",
       brief:
-        'Your Safety is utmost important for us. Expert will sanitized tools & equipments before and after Service.',
+        "Your Safety is utmost important for us. Expert will sanitized tools & equipments before and after Service.",
     },
     {
       img: Assets.hygene,
-      title: 'Hygiene & mess dree service',
-      brief: 'Your House will be left with no mess at all after services.',
+      title: "Hygiene & mess dree service",
+      brief: "Your House will be left with no mess at all after services.",
     },
     {
       img: Assets.transperent,
-      title: 'Transparent Pricing',
+      title: "Transparent Pricing",
       brief:
-        'Our Experts are well trained & will reach on time on your service. (On time, every time).',
+        "Our Experts are well trained & will reach on time on your service. (On time, every time).",
     },
     {
       img: Assets.packaged,
-      title: 'Package Customizations',
-      brief: 'Freedom to customize your own Package.',
+      title: "Package Customizations",
+      brief: "Freedom to customize your own Package.",
     },
   ];
 
@@ -306,7 +321,7 @@ export default function () {
       let Faqs = await GetFaq.fetchPromise();
       setFaqs(Faqs.data[0].Faqs);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
   const GetbrandWeUse = async () => {
@@ -314,7 +329,7 @@ export default function () {
       let Brands = await Brandweuse.fetchPromise();
       setBrandUse(Brands.data[0].BrandLogo);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
   const GetTestinomial = async () => {
@@ -323,16 +338,18 @@ export default function () {
 
       setTesti(Testi.data);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
 
   const getChildCategory = async () => {
     try {
+      setLoading(true);
       let Ccategory = await Child_category.fetchPromise();
       setCatogoryData(Ccategory.data);
+      setLoading(false);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
 
@@ -350,19 +367,21 @@ export default function () {
     GetTopBannerImages();
   }, []);
 
-  let EditPackageName = catogoryData?.find(
-    item => item.CCName === 'Make Your Package',
-  );
+  let EditPackageName = catogoryData?.find((item) => item.Isedit === 1);
 
-  let CustomizePackage = catogoryData?.find(item =>
-    /^Book any/i.test(item.CCName),
-  );
+  let CustomizePackage = catogoryData?.find((item) => item?.Iscustomize === 1);
 
-  let EditPackageIndex = catogoryData?.find(
-    item => item.CCName === 'Make Your Package',
+  let EditPackageIndex = catogoryData?.find((item) => item.Isedit === 1);
+  let indexOfEdit = catogoryData?.findIndex((item) => item.Isedit === 1);
+  let indexOfCustomize = catogoryData?.findIndex(
+    (item) => item.Iscustomize === 1
   );
 
   let pcname = params?.pcname;
+
+  console.log("EditPackageName", EditPackageName);
+  console.log("CustomizePackage", CustomizePackage);
+  console.log("EditPackageIndex", EditPackageIndex);
 
   // useEffect(() => {
   //   const calculateImageHeights = async () => {
@@ -402,39 +421,43 @@ export default function () {
         style={{
           paddingVertical: 10,
           paddingHorizontal: 10,
-          alignItems: 'center',
-          backgroundColor: 'white',
-        }}>
+          alignItems: "center",
+          backgroundColor: "white",
+        }}
+      >
         <TouchableOpacity
           style={{
-            alignSelf: 'flex-start',
+            alignSelf: "flex-start",
           }}
           onPress={() => {
             Navigation.goBack();
-          }}>
+          }}
+        >
           <CustomIcon
-            type={'AN'}
+            type={"AN"}
             size={25}
             color={Theme.PrimaryColor}
-            name={'arrowleft'}
+            name={"arrowleft"}
           />
         </TouchableOpacity>
         <View
           style={{
-            alignSelf: 'flex-start',
-          }}>
-          <CustomText margin_h={10} medium color={'black'} value={headerText} />
+            alignSelf: "flex-start",
+          }}
+        >
+          <CustomText margin_h={10} medium color={"black"} value={headerText} />
         </View>
 
         <TouchableOpacity
           onPress={() => {
             Navigation.navigate(Routes.SearchScreen);
-          }}>
+          }}
+        >
           <CustomIcon
-            type={'AN'}
+            type={"AN"}
             size={25}
             color={Theme.PrimaryColor}
-            name={'search1'}
+            name={"search1"}
           />
         </TouchableOpacity>
       </CustomRow>
@@ -445,149 +468,189 @@ export default function () {
         scrollEventThrottle={16}
         contentContainerStyle={{
           paddingBottom: 30,
-          backgroundColor: 'white',
-        }}>
+          backgroundColor: "white",
+        }}
+      >
         <View
           style={{
             marginTop: 10,
-          }}>
-          <CustomCarasoul playable={true} swiperImages={TopBanners} />
+          }}
+        >
+          <CustomCarasoul swiperImages={TopBanners} />
         </View>
+        {CustomizePackage && (
+          <CustomCard>
+            <View style={{}}>
+              <CustomHeading heading={params ? params.pcname : "saloon"} />
+            </View>
 
-        <CustomCard>
-          <View style={{}}>
-            <CustomHeading heading={params ? params.pcname : 'saloon'} />
-          </View>
+            <View
+              style={{
+                marginHorizontal: 10,
+                marginTop: 10,
+              }}
+            >
+              <CustomImage
+                onPress={() => {
+                  Navigation.navigate(Routes.ServiceDetailsScreen, {
+                    itemId: CustomizePackage._id,
+                    PCGroup: PCGroup,
+                    pcId: CustomizePackage?.PCName[0],
+                    PCName: pcname,
+                    index: indexOfCustomize,
+                  });
+                }}
+                resizeMode={"contain"}
+                src={Assets.package}
+                style={{
+                  height: 88,
+                  width: "100%",
+                }}
+              />
+            </View>
+          </CustomCard>
+        )}
 
+        {catogoryData.length > 0 ? (
+          <CustomCard>
+            <CustomHeading heading={"Trending Services"} />
+
+            <View>
+              <FlatList
+                showsHorizontalScrollIndicator={false}
+                data={catogoryData}
+                renderItem={renderList}
+                numColumns={3}
+              />
+            </View>
+          </CustomCard>
+        ) : (
           <View
             style={{
-              marginHorizontal: 10,
-              marginTop: 10,
-            }}>
-            <CustomImage
-              onPress={() => {
-                Navigation.navigate(Routes.ServiceDetailsScreen, {
-                  itemId: CustomizePackage._id,
-                  PCGroup: PCGroup,
-                  pcId: CustomizePackage?.PCName[0],
-                  PCName: pcname,
-                });
-              }}
-              resizeMode={'contain'}
-              src={Assets.package}
-              style={{
-                height: 88,
-                width: '100%',
-                // borderRadius: 20,
-              }}
-            />
-          </View>
-        </CustomCard>
-        <CustomCard>
-          <CustomHeading heading={'Trending Services'} />
+              width: "100%",
+              height: 250,
 
-          <View>
-            <FlatList
-              showsHorizontalScrollIndicator={false}
-              data={catogoryData}
-              renderItem={renderList}
-              numColumns={3}
-            />
-          </View>
-        </CustomCard>
-        {/* <CustomCard> */}
-        <View
-          style={{
-            backgroundColor: Theme.PrimaryColor,
-            marginTop: 8,
-
-            borderRadius: 20,
-            marginHorizontal: 10,
-            width: '90%',
-          }}>
-          <CustomRow
-            style={{
-              justifyContent: 'space-between',
-              paddingLeft: 20,
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                Navigation.navigate(Routes.ServiceDetailsScreen, {
-                  itemId: EditPackageName._id,
-                  PCGroup: PCGroup,
-                  pcId: EditPackageIndex?.PCName[0],
-                  PCName: pcname,
-                });
-              }}
-              style={{
-                marginTop: 20,
-              }}>
-              <CustomText
-                value={'Let’s make a package just for you,'}
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {loading ? (
+              <ActivityIndicator size={"large"} color={Theme.PrimaryColor} />
+            ) : (
+              <Image
+                source={Assets.comingsoon}
+                resizeMode="contain"
                 style={{
-                  fontFamily: Fonts.PoppinsMedium,
+                  width: 250,
+                  height: 250,
                 }}
-                color={'white'}
-                size={13}
               />
-              <CustomText
-                value={userData?.name + ' !'}
-                medium
-                color={'white'}
-                size={13}
-              />
-              <CustomRow v_center>
-                <CustomText
-                  value={params ? params.pcname : 'saloon'}
-                  bold
-                  color={'white'}
-                  margin_v={6}
-                  size={13}
-                  style={{
-                    marginRight: 6,
-                  }}
-                />
-                <CustomIcon
-                  size={14}
-                  name={'arrowright'}
-                  type={'AN'}
-                  color={'white'}
-                />
-              </CustomRow>
+            )}
+          </View>
+        )}
 
-              {/* <CustomHeading heading={'Saloon for women'} /> */}
-            </TouchableOpacity>
-            <CustomImage
+        {/* <CustomCard> */}
+        {EditPackageName && (
+          <View
+            style={{
+              backgroundColor: Theme.PrimaryColor,
+              marginTop: 8,
+
+              borderRadius: 20,
+              marginHorizontal: 10,
+              width: "90%",
+            }}
+          >
+            <CustomRow
               style={{
-                height: 100,
-                width: 100,
-                borderRadius: 20,
+                justifyContent: "space-between",
+                paddingLeft: 20,
               }}
-              src={Assets.cardsecondimg}
-              resizeMode={'center'}
-            />
-          </CustomRow>
-        </View>
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  Navigation.navigate(Routes.ServiceDetailsScreen, {
+                    itemId: EditPackageName._id,
+                    PCGroup: PCGroup,
+                    pcId: EditPackageIndex?.PCName[0],
+                    PCName: pcname,
+                    index: indexOfEdit,
+                  });
+                }}
+                style={{
+                  marginTop: 20,
+                }}
+              >
+                <CustomText
+                  value={"Let’s make a package just for you,"}
+                  style={{
+                    fontFamily: Fonts.PoppinsMedium,
+                  }}
+                  color={"white"}
+                  size={13}
+                />
+                <CustomText
+                  value={userData?.name + " !"}
+                  medium
+                  color={"white"}
+                  size={13}
+                />
+                <CustomRow v_center>
+                  <CustomText
+                    value={params ? params.pcname : "saloon"}
+                    bold
+                    color={"white"}
+                    margin_v={6}
+                    size={13}
+                    style={{
+                      marginRight: 6,
+                    }}
+                  />
+                  <CustomIcon
+                    size={14}
+                    name={"arrowright"}
+                    type={"AN"}
+                    color={"white"}
+                  />
+                </CustomRow>
+
+                {/* <CustomHeading heading={'Saloon for women'} /> */}
+              </TouchableOpacity>
+              <CustomImage
+                style={{
+                  height: 100,
+                  width: 100,
+                  borderRadius: 20,
+                }}
+                src={Assets.cardsecondimg}
+                resizeMode={"center"}
+              />
+            </CustomRow>
+          </View>
+        )}
+
         {/* </CustomCard> */}
 
         {brandUse.length > 0 && (
           <CustomCard>
-            <CustomHeading heading={'Brands we use'} />
+            <CustomHeading heading={"Brands we use"} />
             <ScrollView
               showsHorizontalScrollIndicator={false}
-              horizontal={true}>
+              horizontal={true}
+            >
               {brandUse.map((item, index) => {
                 return (
                   <CustomImage
+                    round
                     style={{
                       marginHorizontal: 10,
 
                       height: 70,
                       width: 70,
                     }}
-                    src={{uri: Endpoints.baseUrl + item}}
+                    src={{ uri: Endpoints.baseUrl + item }}
                     key={index}
-                    resizeMode={'cover'}
+                    resizeMode={"cover"}
                   />
                 );
               })}
@@ -596,20 +659,21 @@ export default function () {
         )}
 
         <CustomCard>
-          <CustomHeading heading={'E4U Promise'} />
+          <CustomHeading heading={"E4U Promise"} />
 
           {e4u.length > 0 &&
             e4u.map((item, index) => {
               return (
                 <View
                   style={{
-                    backgroundColor: '#F5F6FB',
+                    backgroundColor: "#F5F6FB",
                     marginVertical: 3,
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingBottom: 10,
                     marginHorizontal: 10,
-                  }}>
+                  }}
+                >
                   <CustomRow
                     h_center
                     ratios={[0, 1]}
@@ -618,10 +682,11 @@ export default function () {
                       marginHorizontal: 10,
                       marginTop: 8,
                       paddingLeft: 10,
-                    }}>
+                    }}
+                  >
                     <View>
                       <CustomImage
-                        resizeMode={'center'}
+                        resizeMode={"center"}
                         size={45}
                         src={item.img}
                         style={{
@@ -632,17 +697,18 @@ export default function () {
                     <View
                       style={{
                         marginLeft: 10,
-                      }}>
+                      }}
+                    >
                       <CustomText
                         size={11.65}
                         bold
-                        align={'left'}
+                        align={"left"}
                         value={item.title}
                         style={{
                           margin: 0,
                         }}
                       />
-                      <CustomText size={10} align={'left'} value={item.brief} />
+                      <CustomText size={10} align={"left"} value={item.brief} />
                     </View>
                   </CustomRow>
                 </View>
@@ -652,16 +718,17 @@ export default function () {
 
         {testi.length > 0 && (
           <CustomCard>
-            <CustomHeading heading={'Testimonials'} />
+            <CustomHeading heading={"Testimonials"} />
             <View
               style={{
                 flex: 1,
-              }}>
+              }}
+            >
               <FlatList
                 horizontal
                 data={testi}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={(item) => item.id}
                 showsHorizontalScrollIndicator={false}
               />
             </View>
@@ -670,7 +737,7 @@ export default function () {
 
         {Faqs.length > 0 && (
           <CustomCard>
-            <CustomHeading heading={'FAQs'} />
+            <CustomHeading heading={"FAQs"} />
 
             {Faqs.map((item, index) => {
               return (
@@ -695,13 +762,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    backgroundColor: '#F5F6FB',
+    backgroundColor: "#F5F6FB",
     margin: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
     padding: 5,
-    borderColor: 'grey',
+    borderColor: "grey",
     marginTop: 30,
     borderRadius: 20,
   },

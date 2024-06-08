@@ -52,9 +52,23 @@ export default () => {
   const [selectedReason, setselectedReason] = useState("");
   const [cancelActive, setcancelActive] = useState(false);
   const [afterResheduleCard, setAfterResheduleCard] = useState(0);
+  const [bookingData, setBookingData] = useState();
+  const [slotss, setSlotss] = useState([]);
+  console.log("params", params?.item);
+
+  useEffect(() => {
+    if (params) {
+      setBookingData(params?.item);
+      GetJob();
+    }
+  }, [params]);
 
   const GetAppointments = useFetch({
     endpoint: Endpoints.GetAppointments,
+    Token: false,
+  });
+  const GetJobData = useFetch({
+    endpoint: Endpoints.getJobById + params?.item?.jobId,
     Token: false,
   });
 
@@ -72,6 +86,17 @@ export default () => {
       console.log("err", e);
     }
   };
+  const GetJob = async () => {
+    try {
+      let job = await GetJobData.fetchPromise();
+      console.log("jobs", job);
+      setBookingData(job?.data?.jobs[0]);
+
+      // setAppointmentsData(appointments?.data);
+    } catch (e) {
+      console.log("err", e);
+    }
+  };
 
   useEffect(() => {
     if (focused) {
@@ -80,7 +105,7 @@ export default () => {
   }, [focused]);
 
   let item = params?.item;
-  let BookingID = item?._id;
+  let BookingID = bookingData?._id;
 
   const { isLoading, response, fetchData, error } = useFetch({
     endpoint: Endpoints.reshedule + BookingID,
@@ -118,6 +143,7 @@ export default () => {
   useEffect(() => {
     if (cancelResponse) {
       handleConfirmHideModal();
+      GetJob();
       scrollToTop();
       ToastMessage.Success("Booking Cancelled successfully");
     }
@@ -175,6 +201,11 @@ export default () => {
       setSelectedDate(AppointmentsData[0].slotDate);
     }
   }, [AppointmentsData]);
+
+  const updatedData = slotsToShow?.map((item) => {
+    const updatedSlotTime = item.slotTime.replace(/(AM|PM)/, "");
+    return { ...item, slotTime: updatedSlotTime };
+  });
 
   const SlotComponent = ({ slots }) => {
     return (
@@ -255,7 +286,7 @@ export default () => {
     "Hired someone else ",
   ];
 
-  let services = item?.cart;
+  let services = bookingData?.cart || [];
   console.log("itembooking?.jobAssignSProviderId", ChargesData);
 
   const scrollToTop = () => {
@@ -338,7 +369,7 @@ export default () => {
           }}
           size={15}
           medium
-          value={item?.cart[0]?.PCGId?.PCGName}
+          value={bookingData?.cart[0]?.PCGId?.PCGName}
         />
         <TouchableOpacity
           onPress={() => {
@@ -355,9 +386,9 @@ export default () => {
           paddingBottom: 60,
         }}
       >
-        {item.jobStatus >= 1 && item.jobStatus <= 6 ? (
+        {bookingData?.jobStatus >= 1 && bookingData?.jobStatus <= 6 ? (
           <CustomCard>
-            <CustomHeading heading={"Order Id: " + item?.jobId} />
+            <CustomHeading heading={"Order Id: " + bookingData?.jobId} />
 
             <CustomRow
               style={{
@@ -371,7 +402,7 @@ export default () => {
                   src={{
                     uri:
                       Endpoints.baseUrl +
-                      item?.jobAssignSProviderId?.ProfilePhoto,
+                      bookingData?.jobAssignSProviderId?.ProfilePhoto,
                   }}
                   resizeMode={"center"}
                   size={50}
@@ -388,7 +419,7 @@ export default () => {
                     value={"Assigned Expert"}
                   />
                   <CustomText
-                    value={item?.jobAssignSProviderId?.Name}
+                    value={bookingData?.jobAssignSProviderId?.Name}
                     medium
                     color={Theme.Black}
                   />
@@ -419,10 +450,10 @@ export default () => {
           </CustomCard>
         ) : null}
 
-        {[0, 7, 9, 10, 11, 12].includes(item.jobStatus) && (
+        {[0, 7, 9, 10, 11, 12].includes(bookingData?.jobStatus) && (
           <CustomCard>
-            <CustomHeading heading={"Order Id: " + item?.jobId} />
-            {item.jobStatus >= 9 && item.jobStatus <= 12 ? (
+            <CustomHeading heading={"Order Id: " + bookingData?.jobId} />
+            {bookingData?.jobStatus >= 9 && bookingData?.jobStatus <= 12 ? (
               <CustomText
                 bold
                 color={"red"}
@@ -432,7 +463,7 @@ export default () => {
               />
             ) : null}
 
-            {item.jobStatus == 0 && (
+            {bookingData?.jobStatus == 0 && (
               <CustomText
                 bold
                 color={Theme.PrimaryColor}
@@ -441,7 +472,7 @@ export default () => {
                 margin_h={5}
               />
             )}
-            {item.jobStatus == 7 && (
+            {bookingData?.jobStatus == 7 && (
               <CustomText
                 bold
                 color={"green"}
@@ -452,7 +483,7 @@ export default () => {
             )}
             <View style={{ marginHorizontal: 5 }}>
               <CustomRow ratios={[0, 1, 0]}>
-                {item.jobStatus == 0 ? (
+                {bookingData?.jobStatus == 0 ? (
                   <View>
                     <CustomText medium value={"Expert is not assigned yet"} />
                     <CustomText
@@ -464,7 +495,7 @@ export default () => {
                   </View>
                 ) : null}
 
-                {item.jobStatus >= 9 && item.jobStatus <= 12 ? (
+                {bookingData?.jobStatus >= 9 && bookingData?.jobStatus <= 12 ? (
                   <View>
                     <CustomText medium value={"Booking has been Cancelled"} />
                     <CustomText
@@ -476,7 +507,7 @@ export default () => {
                   </View>
                 ) : null}
 
-                {item.jobStatus == 7 ? (
+                {bookingData?.jobStatus == 7 ? (
                   <View>
                     <CustomText medium value={"Booking has been Closed"} />
                     <CustomText
@@ -496,85 +527,6 @@ export default () => {
             </View>
           </CustomCard>
         )}
-
-        {/* <CustomCard>
-          <CustomHeading heading={'Order Id: ' + item?.jobId} />
-          {item.jobStatus >= 9 && item.jobStatus <= 12 ? (
-            <CustomText
-              bold
-              color={'red'}
-              size={15}
-              value={'Booking Cancelled'}
-              margin_h={5}
-            />
-          ) : null}
-
-          {item.jobStatus == 0 && (
-            <CustomText
-              bold
-              color={Theme.PrimaryColor}
-              size={15}
-              value={'Booking Accepted'}
-              margin_h={5}
-            />
-          )}
-          {item.jobStatus == 7 && (
-            <CustomText
-              bold
-              color={'green'}
-              size={15}
-              value={'Booking Closed'}
-              margin_h={5}
-            />
-          )}
-          <View
-            style={{
-              marginHorizontal: 5,
-            }}>
-            <CustomRow ratios={[0, 1, 0]}>
-              {item.jobStatus == 0 ? (
-                <View>
-                  <CustomText medium value={'Expert is not assigned yet'} />
-                  <CustomText
-                    regular
-                    value={
-                      'An expert will be assigned before 60 min of schedule time'
-                    }
-                  />
-                </View>
-              ) : null}
-
-              {item.jobStatus >= 9 && item.jobStatus <= 12 ? (
-                <View>
-                  <CustomText medium value={'Booking has been Cancelled'} />
-                  <CustomText
-                    regular
-                    value={
-                      'For more details please  \ncontact on - +91 9711751777'
-                    }
-                  />
-                </View>
-              ) : null}
-
-              {item.jobStatus == 7 ? (
-                <View>
-                  <CustomText medium value={'Booking has been Closed'} />
-                  <CustomText
-                    regular
-                    value={'Thanks For Choosing Us Please book again'}
-                  />
-                </View>
-              ) : null}
-
-              <CustomImage
-                src={Assets.search}
-                size={30}
-                round
-                resizeMode={'contain'}
-              />
-            </CustomRow>
-          </View>
-        </CustomCard> */}
 
         <CustomCard>
           <CustomHeading heading={"Booking Details"} />
@@ -632,37 +584,43 @@ export default () => {
                 textDecorationLine: "line-through",
                 marginRight: 10,
               }}
-              value={"₹" + item?.RPrice}
+              value={"₹" + bookingData?.RPrice}
               color={Theme.Black}
               regular
             />
             <CustomText
               bold
-              value={"₹" + item?.SPrice}
+              value={"₹" + bookingData?.SPrice}
               color={Theme.Black}
               regular
             />
           </CustomRow>
+          {parseInt(bookingData?.tip) > 0 && (
+            <CustomRow
+              ratios={[0, 1, 0]}
+              style={{
+                marginTop: 10,
+                marginHorizontal: 10,
+              }}
+            >
+              <CustomImage src={Assets.mybenifitsicon} size={20} />
+              <CustomText
+                medium
+                margin_h={10}
+                size={13}
+                color={"#757575"}
+                value={"Tip For Service Provider"}
+              />
 
-          <CustomRow
-            ratios={[0, 1, 0]}
-            style={{
-              marginTop: 10,
-              marginHorizontal: 10,
-            }}
-          >
-            <CustomImage src={Assets.mybenifitsicon} size={20} />
-            <CustomText
-              medium
-              margin_h={10}
-              size={13}
-              color={"#757575"}
-              value={"Tip For Service Provider"}
-            />
+              <CustomText
+                color={"#757575"}
+                regular
+                value={"₹" + bookingData?.tip}
+              />
+            </CustomRow>
+          )}
 
-            <CustomText color={"#757575"} regular value={"₹" + item?.tip} />
-          </CustomRow>
-          {parseInt(item?.concession) > 0 && (
+          {parseInt(bookingData?.concession) > 0 && (
             <CustomRow
               ratios={[0, 1, 0]}
               style={{
@@ -682,7 +640,7 @@ export default () => {
               <CustomText
                 color={"red"}
                 regular
-                value={"- ₹" + item?.concession}
+                value={"- ₹" + bookingData?.concession}
               />
             </CustomRow>
           )}
@@ -717,7 +675,7 @@ export default () => {
                 );
               })
             : null}
-          {item?.surgeCharges > 0 && (
+          {bookingData?.surgeCharges > 0 && (
             <CustomRow
               ratios={[0, 1, 0]}
               style={{
@@ -737,11 +695,11 @@ export default () => {
               <CustomText
                 color={"#757575"}
                 regular
-                value={"₹" + item?.surgeCharges}
+                value={"₹" + bookingData?.surgeCharges}
               />
             </CustomRow>
           )}
-          {item?.couponDiscount > 0 && (
+          {bookingData?.couponDiscount > 0 && (
             <CustomRow
               ratios={[0, 1, 0]}
               style={{
@@ -766,7 +724,7 @@ export default () => {
                   color={"red"}
                   size={13}
                   medium
-                  value={"(" + item?.couponCode + ")"}
+                  value={"(" + bookingData?.couponCode + ")"}
                 />
               </View>
 
@@ -774,7 +732,7 @@ export default () => {
                 // color={'#757575'}
                 color={"red"}
                 regular
-                value={" - " + "₹" + item?.couponDiscount}
+                value={" - " + "₹" + bookingData?.couponDiscount}
               />
             </CustomRow>
           )}
@@ -799,7 +757,7 @@ export default () => {
             <CustomText
               color={Theme.Black}
               bold
-              value={"₹" + item?.payableCharges}
+              value={"₹" + bookingData?.payableCharges}
             />
           </CustomRow>
         </CustomCard>
@@ -822,10 +780,10 @@ export default () => {
               margin_h={10}
               regular
               value={
-                item?.clientAddress?.houseOrFlatNo +
+                bookingData?.clientAddress?.houseOrFlatNo +
                 "," +
-                item?.clientAddress?.buildingName +
-                item?.clientAddress?.FullAddress
+                bookingData?.clientAddress?.buildingName +
+                bookingData?.clientAddress?.FullAddress
               }
               // value={item?.clientAddress?.FullAddress}
             />
@@ -849,12 +807,12 @@ export default () => {
               margin_h={10}
               regular
               value={
-                item?.slotDate.slice(0, 10) +
+                bookingData?.slotDate.slice(0, 10) +
                 " (" +
-                item?.slotTime +
+                bookingData?.slotTime +
                 ")" +
                 " - " +
-                item?.TServiceTiming +
+                bookingData?.TServiceTiming +
                 " Mins"
               }
             />
@@ -889,14 +847,14 @@ export default () => {
               marginHorizontal: 10,
             }}
           >
-            <CustomText margin_v={5} value={item?.Note} />
+            <CustomText margin_v={5} value={bookingData?.Note} />
           </View>
         </CustomCard>
       </ScrollView>
-      {item?.jobStatus != 9 &&
-      item?.jobStatus != 10 &&
-      item?.jobStatus != 11 &&
-      item?.jobStatus != 12 ? (
+      {bookingData?.jobStatus != 9 &&
+      bookingData?.jobStatus != 10 &&
+      bookingData?.jobStatus != 11 &&
+      bookingData?.jobStatus != 12 ? (
         <View>
           <CustomCard
             style={{
@@ -1003,10 +961,10 @@ export default () => {
                         numberOfLines={1}
                         margin_h={10}
                         value={
-                          item?.clientAddress?.houseOrFlatNo +
+                          bookingData?.clientAddress?.houseOrFlatNo +
                           "," +
-                          item?.clientAddress?.buildingName +
-                          item?.clientAddress?.FullAddress
+                          bookingData?.clientAddress?.buildingName +
+                          bookingData?.clientAddress?.FullAddress
                         }
                         regular
                         size={13}
@@ -1056,7 +1014,7 @@ export default () => {
                     size={13}
                     value={
                       "Your service will take approx. " +
-                      item?.TServiceTiming +
+                      bookingData?.TServiceTiming +
                       " mins"
                     }
                   />
@@ -1117,7 +1075,7 @@ export default () => {
                       marginTop: 10,
                     }}
                   >
-                    <SlotComponent slots={slotsToShow} />
+                    <SlotComponent slots={updatedData} />
                   </View>
                 </CustomCard>
                 <CustomCard>

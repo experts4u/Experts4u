@@ -280,6 +280,10 @@
         "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_saraswati.png"
     },
     {
+        "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_comingsoon.png.flat",
+        "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_comingsoon.png"
+    },
+    {
         "merged": "com.experts4uu.app-merged_res-45:/drawable-mdpi_src_assets_homegrey.png.flat",
         "source": "com.experts4uu.app-res-40:/drawable-mdpi/src_assets_homegrey.png"
     },

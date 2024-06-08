@@ -4,7 +4,7 @@
             "outputFile": "com.experts4uu.app-mergeReleaseResources-43:/values-zh/values-zh.xml",
             "map": [
                 {
-                    "source": "/Users/deepaksharma/.gradle/caches/transforms-3/0d5200e7c6f2e02eefb8483dce46a169/transformed/jetified-ucrop-2.2.6-native/res/values-zh/values-zh.xml",
+                    "source": "/Users/deepaksharma/.gradle/caches/transforms-3/abfcce4cba1eb4dc50b10e6c20e81297/transformed/jetified-ucrop-2.2.6-native/res/values-zh/values-zh.xml",
                     "from": {
                         "startLines": "2,3,4",
                         "startColumns": "4,4,4",

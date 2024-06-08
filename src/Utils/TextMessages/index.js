@@ -8,18 +8,4 @@ export default {
   PasswordErr: "Please enter password of 8 digits",
   CityErr: "Please enter city",
   adrsErr: "Please enter a valid address",
-
-  RegisterSuccess: "User registered successfully. Please Login to continue",
-  LoginSuccess: "User Logged In succesfully",
-  date: "Please enter valid date",
-  emergency: "Please enter valid emergency mobile number",
-  weight: "Please enter valid weight",
-  medication: "Please enter current medications",
-  ellergy: "Please enter cuurent allerigies",
-  pharmacy: "Please enter about pharmacy",
-  pastsurgry: "Please enter about past surgries",
-  state: "Please select atleast one state",
-  zip: "Please enter valid zipcode",
-  country: "Please enter your country name",
-  passwordchanged: "Password changed successfully",
 };

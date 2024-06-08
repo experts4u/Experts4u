@@ -1,10 +1,10 @@
-import {createStackNavigator} from '@react-navigation/stack';
-import Routes from './Routes';
-import AuthStack from './AuthStack';
-import * as Screens from 'Screens';
+import { createStackNavigator } from "@react-navigation/stack";
+import Routes from "./Routes";
+import AuthStack from "./AuthStack";
+import * as Screens from "Screens";
 
-import SplashScreen from '../Screens/SplashScreen';
-import MainTabStack from './MainTabStack';
+import SplashScreen from "../Screens/SplashScreen";
+import MainTabStack from "./MainTabStack";
 import {
   AboutUsScreen,
   AddAddressScreen,
@@ -30,7 +30,8 @@ import {
   Testing,
   VideoScreen,
   WriteReviewScreen,
-} from 'Screens';
+} from "Screens";
+import TestScreen from "Screens/TestScreen";
 
 const MainStack = createStackNavigator();
 export default function () {
@@ -38,7 +39,9 @@ export default function () {
     <MainStack.Navigator
       screenOptions={{
         headerShown: false,
-      }}>
+      }}
+    >
+      {/* <MainStack.Screen name={"TestScreen"} component={TestScreen} /> */}
       <MainStack.Screen name={Routes.SplashScreen} component={SplashScreen} />
       <MainStack.Screen
         name={Routes.FindLocation}

@@ -1,7 +1,7 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: {
     userInfo: null,
     access_token: null,
@@ -35,8 +35,8 @@ const userSlice = createSlice({
     },
 
     removeFromCart: (state, action) => {
-      const {id} = action.payload;
-      const updatedCart = state.cart.filter(item => item.id !== id);
+      const { id } = action.payload;
+      const updatedCart = state.cart.filter((item) => item.id !== id);
       return {
         ...state,
         cart: updatedCart,
@@ -66,17 +66,17 @@ const userSlice = createSlice({
         state.historyofadress.pop();
       }
     },
-    clearAllHistory: state => {
+    clearAllHistory: (state) => {
       state.history = [];
     },
     updateItemInCart: (state, action) => {
-      const {id, updatedDetails} = action.payload;
+      const { id, updatedDetails } = action.payload;
 
-      const index = state.cart.findIndex(item => item.id === id);
+      const index = state.cart.findIndex((item) => item.id === id);
 
       if (index !== -1) {
         const updatedCart = [...state.cart];
-        updatedCart[index] = {...updatedCart[index], ...updatedDetails};
+        updatedCart[index] = { ...updatedCart[index], ...updatedDetails };
         return {
           ...state,
           cart: updatedCart,
@@ -89,7 +89,7 @@ const userSlice = createSlice({
     addToCart: (state, action) => {
       const newItem = action.payload;
       const existingItemIndex = state.cart.findIndex(
-        item => item.id === newItem?.id,
+        (item) => item.id === newItem?.id
       );
 
       if (existingItemIndex !== -1) {
@@ -117,7 +117,7 @@ const userSlice = createSlice({
     removeByType: (state, action) => {
       const itemTypeToRemove = action.payload;
       const updatedCart = state.cart.filter(
-        item => item.type !== itemTypeToRemove,
+        (item) => item.type !== itemTypeToRemove
       );
       return {
         ...state,
@@ -125,7 +125,7 @@ const userSlice = createSlice({
       };
     },
 
-    clearCart: state => {
+    clearCart: (state) => {
       state.cart = [];
     },
     saveCurrentLocation: (state, action) => {
@@ -138,16 +138,16 @@ const userSlice = createSlice({
       state.currentLocation = null; // Remove the current location from the state
     },
     increaseItemQuantity: (state, action) => {
-      const {itemId} = action.payload;
-      const itemIndex = state.cart.findIndex(item => item.id === itemId);
+      const { itemId } = action.payload;
+      const itemIndex = state.cart.findIndex((item) => item.id === itemId);
       if (itemIndex !== -1) {
         state.cart[itemIndex].quantity += 1;
       }
     },
 
     decreaseItemQuantity: (state, action) => {
-      const {itemId} = action.payload;
-      const itemIndex = state.cart.findIndex(item => item.id === itemId);
+      const { itemId } = action.payload;
+      const itemIndex = state.cart.findIndex((item) => item.id === itemId);
 
       if (itemIndex !== -1 && state.cart[itemIndex].quantity > 0) {
         state.cart[itemIndex].quantity -= 1;
@@ -165,9 +165,9 @@ const userSlice = createSlice({
 
     // Action to edit an existing address
     editAddress: (state, action) => {
-      const {id, updatedAddress} = action.payload;
+      const { id, updatedAddress } = action.payload;
       const addressIndex = state.addresses.findIndex(
-        address => address.id === id,
+        (address) => address.id === id
       );
       if (addressIndex !== -1) {
         state.addresses[addressIndex] = updatedAddress;
@@ -178,7 +178,7 @@ const userSlice = createSlice({
     removeAddress: (state, action) => {
       const addressIdToRemove = action.payload;
       state.addresses = state.addresses.filter(
-        address => address.id !== addressIdToRemove,
+        (address) => address.id !== addressIdToRemove
       );
     },
 

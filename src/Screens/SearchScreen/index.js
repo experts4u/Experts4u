@@ -1,34 +1,34 @@
-import Assets from 'Assets';
-import Container from 'Components/Container';
-import CustomHeader from 'Components/CustomHeader';
-import CustomImage from 'Components/CustomImage';
-import CustomInput from 'Components/CustomInput';
-import CustomRow from 'Components/CustomRow';
-import CustomText from 'Components/CustomText';
+import Assets from "Assets";
+import Container from "Components/Container";
+import CustomHeader from "Components/CustomHeader";
+import CustomImage from "Components/CustomImage";
+import CustomInput from "Components/CustomInput";
+import CustomRow from "Components/CustomRow";
+import CustomText from "Components/CustomText";
 import {
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import Styles from './Styles';
-import {useEffect, useState} from 'react';
-import useFetch from 'Hooks/useFetch';
-import Endpoints from 'Configs/API/Endpoints';
-import CustomIcon from 'Components/CustomIcon';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import Theme from 'Configs/Theme';
-import {Keyboard} from 'react-native';
-import Routes from 'RootNavigation/Routes';
-import Loader from 'Components/CustomLoader';
-import {useDispatch, useSelector} from 'react-redux';
-import {addSearchTerm} from 'ReduxState/Slices/UserSlice';
+} from "react-native";
+import Styles from "./Styles";
+import { useEffect, useState } from "react";
+import useFetch from "Hooks/useFetch";
+import Endpoints from "Configs/API/Endpoints";
+import CustomIcon from "Components/CustomIcon";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import Theme from "Configs/Theme";
+import { Keyboard } from "react-native";
+import Routes from "RootNavigation/Routes";
+import Loader from "Components/CustomLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { addSearchTerm } from "ReduxState/Slices/UserSlice";
 
 export default function () {
   const focused = useIsFocused();
   const [items, setItems] = useState([]);
-  const [keywords, setKeywords] = useState('');
+  const [keywords, setKeywords] = useState("");
   const [timeoutId, setTimeoutId] = useState(null);
   const [trending, setTrending] = useState([]);
   const [allData, setAllData] = useState([]);
@@ -36,9 +36,9 @@ export default function () {
 
   const Navigation = useNavigation();
   const dispatch = useDispatch();
-  const searchHistory = useSelector(state => state?.user?.history);
+  const searchHistory = useSelector((state) => state?.user?.history);
 
-  console.log('search history locallly', searchHistory);
+  console.log("search history locallly", searchHistory);
 
   // const getPackages = useFetch({
   //   endpoint: Endpoints.getPackagesOrServices + getDatabyId,
@@ -60,7 +60,7 @@ export default function () {
 
       // console.log('PackagesData', );
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ export default function () {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (keywords.trim() !== '') {
+      if (keywords.trim() !== "") {
         searches(keywords.trim()); // Trigger search with trimmed keywords
       } else {
         setItems(null);
@@ -107,14 +107,14 @@ export default function () {
       setLoading(true);
       let searchDta = await SearchData.fetchPromise();
       setItems(searchDta.data);
-      console.log('searchedData', searchDta);
+      console.log("searchedData", searchDta);
 
       setLoading(false);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
-  let a = ' &itemId=';
+  let a = " &itemId=";
 
   // useEffect(() => {
   //   if (keywords) {
@@ -130,7 +130,8 @@ export default function () {
       <View
         style={{
           marginTop: 10,
-        }}>
+        }}
+      >
         <View
           style={{
             marginHorizontal: 10,
@@ -138,30 +139,32 @@ export default function () {
             paddingHorizontal: 10,
             // marginTop: 30,
             borderRadius: 10,
-            borderColor: 'grey',
-          }}>
+            borderColor: "grey",
+          }}
+        >
           <CustomRow ratios={[0, 1]} v_center>
             <TouchableOpacity
               onPress={() => {
                 Navigation.goBack();
-              }}>
+              }}
+            >
               <CustomIcon
-                type={'AN'}
+                type={"AN"}
                 size={25}
                 color={Theme.PrimaryColor}
-                name={'arrowleft'}
+                name={"arrowleft"}
               />
             </TouchableOpacity>
             <TextInput
               value={keywords}
-              onChangeText={e => {
+              onChangeText={(e) => {
                 setKeywords(e);
               }}
               style={{
                 height: 40,
               }}
               placeholder="Search for service"
-              placeholderTextColor={'grey'}
+              placeholderTextColor={"grey"}
             />
           </CustomRow>
         </View>
@@ -170,16 +173,18 @@ export default function () {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 50,
-        }}>
+        }}
+      >
         {keywords.length == 0 && (
           <View
             style={{
-              alignItems: 'center',
-              justifyContent: 'center',
+              alignItems: "center",
+              justifyContent: "center",
               marginTop: 10,
               marginBottom: 10,
-            }}>
-            <CustomText size={15} regular value={'Search History'} />
+            }}
+          >
+            <CustomText size={15} regular value={"Search History"} />
           </View>
         )}
         <View>
@@ -191,35 +196,45 @@ export default function () {
                     dispatch(addSearchTerm(item));
 
                     Navigation.navigate(Routes.ServiceDetailsScreen, {
-                      itemId: item?.ChildCatIDs?._id,
+                      itemId: item?.ChildId
+                        ? item?.ChildId[0]?._id
+                        : item?.ChildCatIDs?._id,
                       index: index,
                       PCGroup: item?.ChildCatIDs?.PCName[0]?.PCGroup,
-                      pcId: item?.PCatId,
-                      PCName: item?.ChildCatIDs?.PCName[0]?.PCName,
-                      serviceId: item?.ServiceVarients[0]?._id,
+                      pcId: item?.PcatId ? item?.PcatId : item?.PCatId,
+                      PCName:
+                        item?.ChildCatIDs?.PCName[0]?.PCName ||
+                        item?.ChildId[0]?.PCName[0]?.PCName,
+                      serviceId: item?.ServiceVarients
+                        ? item?.ServiceVarients[0]?._id
+                        : item?._id,
                     });
-                  }}>
+                  }}
+                >
                   <CustomRow
                     // ratios={[0, 1]}
                     style={Styles.container}
                     v_center
-                    key={index}>
+                    key={index}
+                  >
                     <CustomImage
                       key={index}
                       src={Assets.timeIcon}
                       size={20}
-                      resizeMode={'center'}
+                      resizeMode={"center"}
                     />
                     <CustomText
                       regular
                       size={16}
                       style={Styles.txt}
                       value={
-                        item?.ServiceName
-                          ? item?.ServiceName +
-                            ' - ' +
-                            item?.ServiceVarients[0]?.ServiceType?.Name
-                          : item?.packageTitle
+                        item.ServiceName
+                          ? item.ServiceName +
+                            " - " +
+                            (item.ServiceVarients[0]?.ServiceType?.Name === "NA"
+                              ? item.ChildCatIDs?.CCName
+                              : item.ServiceVarients[0]?.ServiceType?.Name)
+                          : item.packageTitle
                       }
                     />
                   </CustomRow>
@@ -233,7 +248,8 @@ export default function () {
           <View
             style={{
               marginTop: 20,
-            }}>
+            }}
+          >
             {items &&
               items.map((item, index) => {
                 return (
@@ -242,24 +258,32 @@ export default function () {
                       dispatch(addSearchTerm(item));
 
                       Navigation.navigate(Routes.ServiceDetailsScreen, {
-                        itemId: item?.ChildCatIDs?._id,
+                        itemId: item?.ChildId
+                          ? item?.ChildId[0]?._id
+                          : item?.ChildCatIDs?._id,
                         index: index,
                         PCGroup: item?.ChildCatIDs?.PCName[0]?.PCGroup,
-                        pcId: item?.PCatId,
-                        PCName: item?.ChildCatIDs?.PCName[0]?.PCName,
-                        serviceId: item?.ServiceVarients[0]?._id,
+                        pcId: item?.PcatId ? item?.PcatId : item?.PCatId,
+                        PCName:
+                          item?.ChildCatIDs?.PCName[0]?.PCName ||
+                          item?.ChildId[0]?.PCName[0]?.PCName,
+                        serviceId: item?.ServiceVarients
+                          ? item?.ServiceVarients[0]?._id
+                          : item?._id,
                       });
-                    }}>
+                    }}
+                  >
                     <CustomRow
                       ratios={[0, 1]}
                       style={Styles.container}
                       v_center
-                      key={index}>
+                      key={index}
+                    >
                       <CustomImage
                         key={index}
                         src={Assets.timeIcon}
                         size={20}
-                        resizeMode={'center'}
+                        resizeMode={"center"}
                       />
                       <CustomText
                         regular
@@ -268,27 +292,13 @@ export default function () {
                         value={
                           item.ServiceName
                             ? item.ServiceName +
-                              ' - ' +
+                              " - " +
                               (item.ServiceVarients[0]?.ServiceType?.Name ===
-                              'NA'
+                              "NA"
                                 ? item.ChildCatIDs?.CCName
                                 : item.ServiceVarients[0]?.ServiceType?.Name)
                             : item.packageTitle
                         }
-                        // value={
-                        //   item?.ServiceName
-                        //     ? item?.ServiceName +
-                        //         ' - ' +
-                        //         item?.ServiceVarients[0]?.ServiceType?.Name !=
-                        //       'NA'
-                        //       ? item?.ServiceName +
-                        //         ' - ' +
-                        //         item?.ServiceVarients[0]?.ServiceType?.Name
-                        //       : item?.ServiceName +
-                        //         ' - ' +
-                        //         item?.ChildCatIDs?.CCName
-                        //     : item?.packageTitle
-                        // }
                       />
                     </CustomRow>
                   </TouchableOpacity>

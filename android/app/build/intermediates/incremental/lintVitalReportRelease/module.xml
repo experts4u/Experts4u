@@ -1,6 +1,6 @@
 <lint-module
     format="1"
-    dir="/Users/deepaksharma/Documents/GitHub/UserApp/android/app"
+    dir="/Users/deepaksharma/Documents/GitHub/Experts4u/android/app"
     name=":app"
     type="APP"
     maven="Experts4u:app:"

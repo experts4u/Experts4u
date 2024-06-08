@@ -19,7 +19,7 @@
 
     <meta-data
         android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyAlwvFRv3sBxaayi2qKQragSuTS4TwfmaQ" />
+        android:value="AIzaSyCBRJgSZT50bFwgbOQHOWdi0giGUEdG3MY" />
 
     <queries>
         <intent>
@@ -83,7 +83,7 @@
         android:usesCleartextTraffic="true" >
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAlwvFRv3sBxaayi2qKQragSuTS4TwfmaQ" />
+            android:value="AIzaSyCBRJgSZT50bFwgbOQHOWdi0giGUEdG3MY" />
 
         <activity
             android:name="com.experts4uu.MainActivity"

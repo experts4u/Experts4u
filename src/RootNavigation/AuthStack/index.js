@@ -1,9 +1,9 @@
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from "@react-navigation/stack";
 
-import SplashScreen from '../../Screens/SplashScreen';
-import WelcomeScreen from '../../Screens/WelcomeScreen';
-import Routes from 'RootNavigation/Routes';
-import * as Screens from 'Screens';
+import SplashScreen from "../../Screens/SplashScreen";
+import WelcomeScreen from "../../Screens/WelcomeScreen";
+import Routes from "RootNavigation/Routes";
+import * as Screens from "Screens";
 
 const Stack = createStackNavigator();
 export default function () {
@@ -11,7 +11,8 @@ export default function () {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-      }}>
+      }}
+    >
       <Stack.Screen
         name={Routes.SignupScreen}
         component={Screens.SignupScreen}

@@ -28,6 +28,7 @@ drawable src_assets_cardsecondimg
 drawable src_assets_clockgrey
 drawable src_assets_cloud
 drawable src_assets_coins
+drawable src_assets_comingsoon
 drawable src_assets_coupen
 drawable src_assets_coupn
 drawable src_assets_couponapply

@@ -50,7 +50,7 @@ import useFetch from "Hooks/useFetch";
 import Endpoints from "Configs/API/Endpoints";
 import AnimatedModal from "Components/AnimatedModal";
 import moment from "moment";
-import GoogleMapsView from "./Components";
+// import GoogleMapsView from "./Components";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Loader from "Components/CustomLoader";
 import ToastMessage from "Utils/ToastMessage";
@@ -58,6 +58,7 @@ import FlashMessage, { showMessage } from "react-native-flash-message";
 import Popup from "./Components/Pupup";
 import DropDown from "Components/Dropdown";
 import FastImage from "react-native-fast-image";
+import GoogleMapsView from "./Components";
 
 export default function () {
   const Navigation = useNavigation();
@@ -117,6 +118,15 @@ export default function () {
   const [coupenListData, setcoupenListData] = useState();
   const [isAnimating, setIsAnimating] = useState(false);
   const [progress] = useState(new Animated.Value(0));
+
+  console.log("editAddress", editAddress);
+  useEffect(() => {
+    if (user_info?.currentLocation[0]) {
+      setLongitude(user_info?.currentLocation[0]);
+      setLatitude(user_info?.currentLocation[1]);
+    }
+  }, []);
+
   const scrollToCenter = (index) => {
     if (slotDateScrollRef?.current) {
       const scrollViewWidth =
@@ -130,6 +140,29 @@ export default function () {
   let addressofHistory = user_info?.historyofadress;
 
   console.log("selectedAddress", selectedAddress);
+
+  const getHighestValueCharges = (data) => {
+    const chargesMap = {};
+
+    data?.forEach((charge) => {
+      const { ChargesName, ChargesValue } = charge;
+      if (
+        !chargesMap[ChargesName] ||
+        chargesMap[ChargesName].ChargesValue < ChargesValue
+      ) {
+        chargesMap[ChargesName] = charge;
+      }
+    });
+
+    return Object.values(chargesMap);
+  };
+
+  let charges = ChargesData && getHighestValueCharges(ChargesData);
+
+  let chargesInfo = charges?.map((charge) => ({
+    charge: charge.ChargesName,
+    price: charge.ChargesValue,
+  }));
 
   useEffect(() => {
     if (isAnimating) {
@@ -300,22 +333,6 @@ export default function () {
       console.log("err", e);
     }
   };
-
-  // const getHighestValueCharges = (data) => {
-  //   const chargesMap = {};
-
-  //   data.forEach((charge) => {
-  //     const { ChargesName, ChargesValue } = charge;
-  //     if (
-  //       !chargesMap[ChargesName] ||
-  //       chargesMap[ChargesName].ChargesValue < ChargesValue
-  //     ) {
-  //       chargesMap[ChargesName] = charge;
-  //     }
-  //   });
-
-  //   return Object.values(chargesMap);
-  // };
 
   const getCharges = async () => {
     try {
@@ -714,7 +731,7 @@ export default function () {
   };
 
   let totalOtherCharges = 0;
-  ChargesData?.forEach((item) => {
+  charges?.forEach((item) => {
     totalOtherCharges += parseInt(item.ChargesValue);
   });
 
@@ -745,6 +762,13 @@ export default function () {
     const timeB = new Date(`1970/01/01 ${b.slotTime.split("-")[0]}`);
     return timeA - timeB;
   });
+
+  const updatedData = slotsToShow?.map((item) => {
+    const updatedSlotTime = item.slotTime.replace(/(AM|PM)/, "");
+    return { ...item, slotTime: updatedSlotTime };
+  });
+
+  console.log("updatedData", updatedData);
 
   console.log("slotstoshow", slotsToShow);
 
@@ -921,15 +945,16 @@ export default function () {
       </View>
     );
   };
-
+  console.log("latitude", latitude, longitude);
   const region = {
-    latitude: latitude, // Latitude of the center of India
-    longitude: longitude, // Longitude of the center of India
-    latitudeDelta: 0.1, // Decreased value for higher zoom
-    longitudeDelta: 0.1, // Decreased value for higher zoom
+    latitude: latitude,
+    longitude: longitude,
+    latitudeDelta: 0.1,
+    longitudeDelta: 0.1,
   };
 
   let myApiKey = "AIzaSyCBRJgSZT50bFwgbOQHOWdi0giGUEdG3MY";
+  // let myApiKey = "AIzaSyAlwvFRv3sBxaayi2qKQragSuTS4TwfmaQ";
   console.log("editaadress", editAddress);
 
   let editData = {
@@ -1051,11 +1076,6 @@ export default function () {
     return commonFields;
   });
 
-  let chargesInfo = ChargesData?.map((charge) => ({
-    charge: charge.ChargesName,
-    price: charge.ChargesValue,
-  }));
-
   useEffect(() => {
     if (cart) {
       getCharges();
@@ -1112,7 +1132,7 @@ export default function () {
   let coupengetData = {
     cartvalue: cart[0]?.PCGroup?.MinCartValue,
     cart: cart,
-    inUserIDs: user_info?.userInfo?.user?._id,
+    // inUserIDs: user_info?.userInfo?.user?._id,
   };
 
   const getCoupensList = useFetch({
@@ -1220,7 +1240,12 @@ export default function () {
         </View>
       ) : (
         <>
-          <KeyboardAvoidingView behavior={"padding"}>
+          <KeyboardAvoidingView
+            style={{
+              flex: 1,
+            }}
+            behavior={"padding"}
+          >
             <ScrollView
               ref={scrollCenterRef}
               stickyHeaderIndices={[0]}
@@ -1229,7 +1254,7 @@ export default function () {
               keyboardDismissMode="on-drag"
               keyboardShouldPersistTaps="never"
               contentContainerStyle={{
-                paddingBottom: 90,
+                paddingBottom: 120,
                 backgroundColor: "white",
               }}
             >
@@ -1426,12 +1451,6 @@ export default function () {
                             margin_h={5}
                             bold
                           />
-                          {/* <CustomIcon
-                          color={Theme.PrimaryColor}
-                          size={15}
-                          name={'right'}
-                          type={'AN'}
-                        /> */}
                         </TouchableOpacity>
                       </CustomRow>
                     </View>
@@ -1592,8 +1611,8 @@ export default function () {
                   </CustomRow>
                 )}
 
-                {ChargesData
-                  ? ChargesData.map((item, index) => {
+                {charges
+                  ? charges?.map((item, index) => {
                       return (
                         <CustomRow
                           ratios={[0, 1, 0]}
@@ -1713,232 +1732,239 @@ export default function () {
                   />
                 </View>
               </CustomCard>
-              <CustomCard>
-                <CustomHeading heading={"Tip your service provider"} />
+              <KeyboardAvoidingView behavior="height">
+                <CustomCard>
+                  <CustomHeading heading={"Tip your service provider"} />
 
-                <CustomRow
-                  style={{
-                    marginTop: 10,
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => handleTipSelection(20)}
-                    style={{
-                      backgroundColor:
-                        selectedTip == 20 ? Theme.PrimaryColor : "transparent",
-                      borderWidth: 1,
-                      borderColor: Theme.PrimaryColor,
-                      padding: 6,
-                      paddingHorizontal: 20,
-                      borderRadius: 10,
-                      marginHorizontal: 10,
-                    }}
-                  >
-                    <CustomText
-                      color={selectedTip == 20 ? "white" : Theme.PrimaryColor}
-                      size={13}
-                      value={"₹20"}
-                      regular
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => handleTipSelection(40)}
-                    style={{
-                      backgroundColor:
-                        selectedTip == 40 ? Theme.PrimaryColor : "transparent",
-                      borderWidth: 1,
-                      borderColor: Theme.PrimaryColor,
-                      padding: 6,
-
-                      paddingHorizontal: 20,
-                      borderRadius: 10,
-                      marginHorizontal: 5,
-                      marginLeft: 5,
-                    }}
-                  >
-                    <CustomText
-                      color={selectedTip == 40 ? "white" : Theme.PrimaryColor}
-                      size={13}
-                      value={"₹40"}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => handleTipSelection(80)}
-                    style={{
-                      backgroundColor:
-                        selectedTip == 80 ? Theme.PrimaryColor : "transparent",
-                      borderWidth: 1,
-                      borderColor: Theme.PrimaryColor,
-                      padding: 6,
-
-                      paddingHorizontal: 20,
-                      borderRadius: 10,
-                      marginHorizontal: 10,
-                    }}
-                  >
-                    <CustomText
-                      color={selectedTip == 80 ? "white" : Theme.PrimaryColor}
-                      size={13}
-                      value={"₹80"}
-                    />
-                  </TouchableOpacity>
                   <CustomRow
-                    v_center
                     style={{
-                      height: 32,
-                      borderWidth: 1,
-                      borderColor: Theme.PrimaryColor,
-
-                      borderRadius: 7,
-                      paddingHorizontal: 15,
-                      color: Theme.PrimaryColor,
-                      marginLeft: 5,
+                      marginTop: 10,
                     }}
                   >
-                    <CustomText
-                      value={"₹"}
-                      size={14}
-                      color={Theme.PrimaryColor}
+                    <TouchableOpacity
+                      onPress={() => handleTipSelection(20)}
                       style={{
-                        marginBottom: 3,
+                        backgroundColor:
+                          selectedTip == 20
+                            ? Theme.PrimaryColor
+                            : "transparent",
+                        borderWidth: 1,
+                        borderColor: Theme.PrimaryColor,
+                        padding: 6,
+                        paddingHorizontal: 20,
+                        borderRadius: 10,
+                        marginHorizontal: 10,
                       }}
-                    />
-                    <TextInput
-                      placeholderTextColor={"grey"}
+                    >
+                      <CustomText
+                        color={selectedTip == 20 ? "white" : Theme.PrimaryColor}
+                        size={13}
+                        value={"₹20"}
+                        regular
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleTipSelection(40)}
                       style={{
-                        color: Theme.PrimaryColor,
-                        paddingTop: 0.5,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 11,
-                        marginTop: 6,
-                        marginBottom: -2,
-                      }}
-                      selectionColor={Theme.PrimaryColor}
-                      // value={selectedTip.toString()}
-                      maxLength={3}
-                      placeholder="Custom"
-                      keyboardType="number-pad"
-                      onChangeText={handleInputChange}
-                    />
-                  </CustomRow>
-                </CustomRow>
-                {selectedTip ? (
-                  <TouchableOpacity onPress={() => {}}>
-                    <CustomRow
-                      style={{
-                        marginTop: 10,
+                        backgroundColor:
+                          selectedTip == 40
+                            ? Theme.PrimaryColor
+                            : "transparent",
+                        borderWidth: 1,
+                        borderColor: Theme.PrimaryColor,
+                        padding: 6,
+
+                        paddingHorizontal: 20,
+                        borderRadius: 10,
+                        marginHorizontal: 5,
                         marginLeft: 5,
                       }}
-                      v_center
                     >
-                      <CheckBox
-                        tintColors={{
-                          true: Theme.PrimaryColor,
-                          false: Theme.PrimaryColor,
-                        }}
-                        onValueChange={() => {
-                          if (user_info?.saveTipForFuture > 0) {
-                            dispatch(saveTipForFuture(0));
-                            setChecked(!checked);
-                          } else {
-                            dispatch(saveTipForFuture(selectedTip));
-                            setChecked(!checked);
-                          }
-                        }}
-                        value={checked}
-                      />
                       <CustomText
-                        size={12}
-                        value={"Add this tip automatically to future ordrs"}
+                        color={selectedTip == 40 ? "white" : Theme.PrimaryColor}
+                        size={13}
+                        value={"₹40"}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleTipSelection(80)}
+                      style={{
+                        backgroundColor:
+                          selectedTip == 80
+                            ? Theme.PrimaryColor
+                            : "transparent",
+                        borderWidth: 1,
+                        borderColor: Theme.PrimaryColor,
+                        padding: 6,
+
+                        paddingHorizontal: 20,
+                        borderRadius: 10,
+                        marginHorizontal: 10,
+                      }}
+                    >
+                      <CustomText
+                        color={selectedTip == 80 ? "white" : Theme.PrimaryColor}
+                        size={13}
+                        value={"₹80"}
+                      />
+                    </TouchableOpacity>
+                    <CustomRow
+                      v_center
+                      style={{
+                        height: 32,
+                        borderWidth: 1,
+                        borderColor: Theme.PrimaryColor,
+
+                        borderRadius: 7,
+                        paddingHorizontal: 15,
+                        color: Theme.PrimaryColor,
+                        marginLeft: 5,
+                      }}
+                    >
+                      <CustomText
+                        value={"₹"}
+                        size={14}
+                        color={Theme.PrimaryColor}
+                        style={{
+                          marginBottom: 3,
+                        }}
+                      />
+                      <TextInput
+                        placeholderTextColor={"grey"}
+                        style={{
+                          color: Theme.PrimaryColor,
+                          paddingTop: 0.5,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 11,
+                          marginTop: 6,
+                          marginBottom: -2,
+                        }}
+                        selectionColor={Theme.PrimaryColor}
+                        // value={selectedTip.toString()}
+                        maxLength={3}
+                        placeholder="Custom"
+                        keyboardType="number-pad"
+                        onChangeText={handleInputChange}
                       />
                     </CustomRow>
-                  </TouchableOpacity>
-                ) : null}
+                  </CustomRow>
+                  {selectedTip ? (
+                    <TouchableOpacity onPress={() => {}}>
+                      <CustomRow
+                        style={{
+                          marginTop: 10,
+                          marginLeft: 5,
+                        }}
+                        v_center
+                      >
+                        <CheckBox
+                          tintColors={{
+                            true: Theme.PrimaryColor,
+                            false: Theme.PrimaryColor,
+                          }}
+                          onValueChange={() => {
+                            if (user_info?.saveTipForFuture > 0) {
+                              dispatch(saveTipForFuture(0));
+                              setChecked(!checked);
+                            } else {
+                              dispatch(saveTipForFuture(selectedTip));
+                              setChecked(!checked);
+                            }
+                          }}
+                          value={checked}
+                        />
+                        <CustomText
+                          size={12}
+                          value={"Add this tip automatically to future ordrs"}
+                        />
+                      </CustomRow>
+                    </TouchableOpacity>
+                  ) : null}
 
-                <View
-                  style={{
-                    marginHorizontal: 10,
-                    marginTop: 20,
-                  }}
-                >
-                  <CustomText
-                    color={"#00000080"}
-                    value={
-                      "Your kindness means a lot! 100% of your tip will go directly to your service provider."
-                    }
-                  />
-                </View>
-              </CustomCard>
+                  <View
+                    style={{
+                      marginHorizontal: 10,
+                      marginTop: 20,
+                    }}
+                  >
+                    <CustomText
+                      color={"#00000080"}
+                      value={
+                        "Your kindness means a lot! 100% of your tip will go directly to your service provider."
+                      }
+                    />
+                  </View>
+                </CustomCard>
+              </KeyboardAvoidingView>
             </ScrollView>
           </KeyboardAvoidingView>
-          <KeyboardAvoidingView
+          {/* <KeyboardAvoidingView
             style={{
-              flex: 1,
+              // flex: 1,
               position: "absolute",
               bottom: 0,
               width: "100%",
               backgroundColor: "white",
             }}
-            behavior={"height"}
-          >
-            <View>
-              <CustomCard
-                style={{
-                  width: "100%",
-                  alignSelf: "center",
-                  paddingBottom: 0,
-                  paddingTop: 0,
+            behavior={"padding"}
+          > */}
+          <View>
+            <CustomCard
+              style={{
+                width: "100%",
+                alignSelf: "center",
+                paddingBottom: 0,
+                paddingTop: 0,
 
-                  borderBottomWidth: 0,
-                }}
-              >
-                {diffrence > 0 && (
-                  <View
-                    style={{
-                      alignSelf: "center",
-                      backgroundColor: "grey",
-                      width: "100%",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: 3,
-                      borderTopLeftRadius: 10,
-                      borderTopRightRadius: 10,
-                    }}
-                  >
-                    <CustomText
-                      margin_h={7}
-                      color={"white"}
-                      value={
-                        "Please add" +
-                        " " +
-                        diffrence +
-                        "Rupees items in your cart"
-                      }
-                    />
-                  </View>
-                )}
-                <CustomButton
-                  onPress={() => {
-                    if (diffrence <= 0) {
-                      if (usersAddreses?.length >= 0) {
-                        handleSavedAddressShowModal();
-                      } else {
-                        handleAdressSuggestionShowModal();
-                      }
-                    }
-                  }}
+                borderBottomWidth: 0,
+              }}
+            >
+              {diffrence > 0 && (
+                <View
                   style={{
-                    width: "90%",
                     alignSelf: "center",
-                    backgroundColor:
-                      diffrence > 0 ? "grey" : Theme.PrimaryColor,
+                    backgroundColor: "grey",
+                    width: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 3,
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
                   }}
-                  title={"Add address and slot"}
-                />
-              </CustomCard>
-            </View>
-          </KeyboardAvoidingView>
+                >
+                  <CustomText
+                    margin_h={7}
+                    color={"white"}
+                    value={
+                      "Please add" +
+                      " " +
+                      diffrence +
+                      "Rupees items in your cart"
+                    }
+                  />
+                </View>
+              )}
+              <CustomButton
+                onPress={() => {
+                  if (diffrence <= 0) {
+                    if (usersAddreses?.length > 0) {
+                      handleSavedAddressShowModal();
+                    } else {
+                      handleAdressSuggestionShowModal();
+                    }
+                  }
+                }}
+                style={{
+                  width: "90%",
+                  alignSelf: "center",
+                  backgroundColor: diffrence > 0 ? "grey" : Theme.PrimaryColor,
+                }}
+                title={"Add address and slot"}
+              />
+            </CustomCard>
+          </View>
+          {/* </KeyboardAvoidingView> */}
 
           <AnimatedModal ref={AdressRef}>
             <View
@@ -2106,7 +2132,7 @@ export default function () {
                   </View>
                 </View>
               </ScrollView>
-              {/* {selectedAddress != null && ( */}
+
               <TouchableOpacity>
                 <CustomButton
                   width={"90%"}
@@ -2135,37 +2161,29 @@ export default function () {
                   title={"Okay, got it"}
                 />
               </TouchableOpacity>
-              {/* )} */}
             </View>
           </AnimatedModal>
 
           <AnimatedModal ref={MapModelRef}>
-            <View
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                flex: 1,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "white",
-                }}
-              >
+            <View>
+              <KeyboardAvoidingView behavior="position">
                 <ScrollView
                   automaticallyAdjustKeyboardInsets={true}
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{
-                    paddingBottom: "80%",
+                    paddingBottom: "100%",
                     backgroundColor: "white",
                   }}
                 >
                   <View
                     style={{
-                      height: "40%",
+                      height: "70%",
                       width: "100%",
                     }}
                   >
-                    <GoogleMapsView region={region} ref={MapViewRef} />
+                    {longitude && latitude ? (
+                      <GoogleMapsView region={region} ref={MapViewRef} />
+                    ) : null}
 
                     <TouchableOpacity
                       onPress={() => {
@@ -2344,38 +2362,45 @@ export default function () {
                             </TouchableOpacity>
                           </CustomRow>
                         </View>
-
-                        <TouchableOpacity>
-                          <CustomButton
-                            onPress={() => {
-                              if (house && apartment) {
-                                fetchData();
-                              } else {
-                                showMessage({
-                                  message:
-                                    "Please Check your House And Apartment Feild if empty fill it",
-                                  icon: "danger",
-                                  type: "danger",
-                                  position: "top",
-                                });
-                              }
-                            }}
-                            width={"90%"}
-                            title={"Save and Proceed to slots"}
-                            style={{
-                              marginTop: 30,
-                              backgroundColor:
-                                house && apartment
-                                  ? Theme.PrimaryColor
-                                  : "grey",
-                            }}
-                          />
-                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>
                 </ScrollView>
-              </View>
+                <TouchableOpacity
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    backgroundColor: "white",
+                    // alignItems: 'center',
+                    justifyContent: "center",
+                    width: "100%",
+                    alignSelf: "center",
+                  }}
+                >
+                  <CustomButton
+                    onPress={() => {
+                      if (house && apartment) {
+                        fetchData();
+                      } else {
+                        showMessage({
+                          message:
+                            "Please Check your House And Apartment Feild if empty fill it",
+                          icon: "danger",
+                          type: "danger",
+                          position: "top",
+                        });
+                      }
+                    }}
+                    width={"90%"}
+                    title={"Save and Proceed to slots"}
+                    style={{
+                      marginTop: 30,
+                      backgroundColor:
+                        house && apartment ? Theme.PrimaryColor : "grey",
+                    }}
+                  />
+                </TouchableOpacity>
+              </KeyboardAvoidingView>
             </View>
           </AnimatedModal>
 
@@ -2555,7 +2580,7 @@ export default function () {
                           marginTop: 20,
                         }}
                       >
-                        <SlotComponent slots={slotsToShow} />
+                        <SlotComponent slots={updatedData} />
                       </View>
                     </CustomCard>
                     <CustomCard>
@@ -2971,7 +2996,7 @@ export default function () {
                       onPress={() => {
                         DeleteAdress();
                         handleEdittHideModal();
-                        handleSavedAddressHideModal();
+                        // handleSavedAddressHideModal();
                         getDetails();
                       }}
                       width={"100%"}
