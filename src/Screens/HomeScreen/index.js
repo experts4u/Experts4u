@@ -67,39 +67,21 @@ export default function () {
     }
   };
 
-  // async function handleEnabledPressed() {
-  //   if (Platform.OS === 'android') {
-  //     try {
-  //       const enableResult = await promptForEnableLocationIfNeeded();
-  //       console.log('enableResult', enableResult);
-  //       // The user has accepted to enable the location services
-  //       // data can be :
-  //       //  - "already-enabled" if the location services has been already enabled
-  //       //  - "enabled" if user has clicked on OK button in the popup
-  //     } catch (error) {
-  //       if (error instanceof Error) {
-  //         console.error(error.message);
-  //         // The user has not accepted to enable the location services or something went wrong during the process
-  //         // "err" : { "code" : "ERR00|ERR01|ERR02|ERR03", "message" : "message"}
-  //         // codes :
-  //         //  - ERR00 : The user has clicked on Cancel button in the popup
-  //         //  - ERR01 : If the Settings change are unavailable
-  //         //  - ERR02 : If the popup has failed to open
-  //         //  - ERR03 : Internal error
-  //       }
-  //     }
-  //   }
-  // }
-
   let abc = [" ", " ", " "];
 
   myApiKey = "AIzaSyCBRJgSZT50bFwgbOQHOWdi0giGUEdG3MY";
 
   let longitude = state?.currentLocation[0];
   let latitude = state?.currentLocation[1];
+  console.log(
+    "user_info?.user",
+    user_info?.user ? user_info?.user?._id : user_info?._id
+  );
 
   const User_data = useFetch({
-    endpoint: Endpoints.getUserDetails + user_info?.user?._id,
+    endpoint: user_info?.user
+      ? Endpoints.getUserDetails + user_info?.user?._id
+      : Endpoints.getUserDetails + user_info?._id,
   });
 
   const getAddressFromCoordinates = () => {
@@ -401,13 +383,19 @@ export default function () {
     if (focused) {
       getChildCategoryNamee();
       GetHeroSlider();
-      getDetails();
+
       getAddressFromCoordinates();
       getParentCatogary();
       getServiceShortcut();
       GetOffersForU();
       HomeBottom();
       GetHeadings();
+    }
+  }, [focused]);
+
+  useEffect(() => {
+    if (user_info?._id || (user_info.user?._id && focused)) {
+      getDetails();
     }
   }, [focused]);
 
@@ -418,14 +406,13 @@ export default function () {
       getChildCategoryNamee();
       getCoverImage();
       GetHeroSlider();
-      getDetails();
+      // getDetails();
       getAddressFromCoordinates();
       getParentCatogary();
       getServiceShortcut();
       GetOffersForU();
       HomeBottom();
       GetHeadings();
-      console.log("refresh hua");
     }, 2000);
   }, []);
 
@@ -1102,6 +1089,7 @@ export default function () {
               {offers4u?.map((item, index) => {
                 return (
                   <TouchableWithoutFeedback
+                    key={index}
                     onPress={() => {
                       if (item?.PCatId) {
                         if (item?.serviceID) {

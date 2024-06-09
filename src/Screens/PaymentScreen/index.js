@@ -75,7 +75,6 @@ export default function () {
   useEffect(() => {
     if (orderResponse) {
       setOrderR(orderResponse?.data);
-      console.log("orderResponse", orderResponse);
     }
   }, [orderResponse]);
 
@@ -84,8 +83,6 @@ export default function () {
       handleOrderResponse();
     }
   }, [orderResponse]);
-
-  console.log("orderR?.order?.amount,", orderR);
 
   const payWithRazorpay = () => {
     let options = {

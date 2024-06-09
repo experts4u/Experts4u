@@ -54,7 +54,6 @@ export default () => {
   const [afterResheduleCard, setAfterResheduleCard] = useState(0);
   const [bookingData, setBookingData] = useState();
   const [slotss, setSlotss] = useState([]);
-  console.log("params", params?.item);
 
   useEffect(() => {
     if (params) {
@@ -89,7 +88,6 @@ export default () => {
   const GetJob = async () => {
     try {
       let job = await GetJobData.fetchPromise();
-      console.log("jobs", job);
       setBookingData(job?.data?.jobs[0]);
 
       // setAppointmentsData(appointments?.data);
@@ -287,7 +285,6 @@ export default () => {
   ];
 
   let services = bookingData?.cart || [];
-  console.log("itembooking?.jobAssignSProviderId", ChargesData);
 
   const scrollToTop = () => {
     if (scrollViewRef.current) {
@@ -332,8 +329,6 @@ export default () => {
       getCharges();
     }
   }, [item]);
-
-  console.log("itemforCoupen", item);
 
   return (
     <View
@@ -536,7 +531,6 @@ export default () => {
             }}
           >
             {services.map((item, inde) => {
-              console.log("item of package", item);
               return (
                 <CustomRow
                   ratios={[1, 0]}

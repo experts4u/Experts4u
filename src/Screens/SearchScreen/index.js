@@ -38,8 +38,6 @@ export default function () {
   const dispatch = useDispatch();
   const searchHistory = useSelector((state) => state?.user?.history);
 
-  console.log("search history locallly", searchHistory);
-
   // const getPackages = useFetch({
   //   endpoint: Endpoints.getPackagesOrServices + getDatabyId,
   // });
@@ -50,15 +48,6 @@ export default function () {
       let PackagesData = await getPackages.fetchPromise();
 
       setAllData(PackagesData?.data);
-
-      // const extractedGroupNames = PackagesData?.data?.flatMap(item =>
-      //   item.ServiceGroups.map(group => group.GroupName),
-      // );
-
-      // Setting the extracted group names to state
-      // setGroupName(extractedGroupNames);
-
-      // console.log('PackagesData', );
     } catch (e) {
       console.log("err", e);
     } finally {
@@ -79,25 +68,6 @@ export default function () {
     return () => clearTimeout(timeoutId);
   }, [keywords]);
 
-  // useEffect(() => {
-  //   if (focused) {
-  //     // setFirstId(params.Id);
-  //     getPackagesData();
-  //   }
-  // }, [focused]);
-  // const handleInputChange = text => {
-  //   setKeywords(text);
-  //   // Clear previous timeout
-  //   if (timeoutId) {
-  //     clearTimeout(timeoutId);
-  //   }
-  //   // Set a new timeout
-  //   const id = setTimeout(() => {
-  //     searches();
-  //   }, 2000);
-  //   setTimeoutId(id);
-  // };
-
   const SearchData = useFetch({
     endpoint: Endpoints.SearchServices + keywords,
   });
@@ -107,7 +77,6 @@ export default function () {
       setLoading(true);
       let searchDta = await SearchData.fetchPromise();
       setItems(searchDta.data);
-      console.log("searchedData", searchDta);
 
       setLoading(false);
     } catch (e) {
@@ -115,15 +84,6 @@ export default function () {
     }
   };
   let a = " &itemId=";
-
-  // useEffect(() => {
-  //   if (keywords) {
-  //     searches();
-  //   } else {
-  //     // Clear items when keywords is empty
-  //     setItems([]);
-  //   }
-  // }, [keywords]);
 
   return (
     <Container>
@@ -200,7 +160,9 @@ export default function () {
                         ? item?.ChildId[0]?._id
                         : item?.ChildCatIDs?._id,
                       index: index,
-                      PCGroup: item?.ChildCatIDs?.PCName[0]?.PCGroup,
+                      PCGroup: item?.PCgroup
+                        ? item?.PCgroup
+                        : item?.ChildCatIDs?.PCName[0]?.PCGroup,
                       pcId: item?.PcatId ? item?.PcatId : item?.PCatId,
                       PCName:
                         item?.ChildCatIDs?.PCName[0]?.PCName ||
@@ -257,20 +219,29 @@ export default function () {
                     onPress={() => {
                       dispatch(addSearchTerm(item));
 
-                      Navigation.navigate(Routes.ServiceDetailsScreen, {
-                        itemId: item?.ChildId
-                          ? item?.ChildId[0]?._id
-                          : item?.ChildCatIDs?._id,
-                        index: index,
-                        PCGroup: item?.ChildCatIDs?.PCName[0]?.PCGroup,
-                        pcId: item?.PcatId ? item?.PcatId : item?.PCatId,
-                        PCName:
-                          item?.ChildCatIDs?.PCName[0]?.PCName ||
-                          item?.ChildId[0]?.PCName[0]?.PCName,
-                        serviceId: item?.ServiceVarients
-                          ? item?.ServiceVarients[0]?._id
-                          : item?._id,
-                      });
+                      // Navigation.navigate(Routes.ServiceDetailsScreen, {
+                      //   itemId: item?.ChildId
+                      //     ? item?.ChildId[0]?._id
+                      //     : item?.ChildCatIDs?._id,
+                      //   index: index,
+                      //   PCGroup: item?.PCgroup
+                      //     ? item?.PCgroup
+                      //     : item?.ChildCatIDs?.PCName[0]?.PCGroup,
+                      //   pcId: item?.PcatId ? item?.PcatId : item?.PCatId,
+                      //   PCName:
+                      //     item?.ChildCatIDs?.PCName[0]?.PCName ||
+                      //     item?.ChildId[0]?.PCName[0]?.PCName,
+                      //   serviceId: item?.ServiceVarients
+                      //     ? item?.ServiceVarients[0]?._id
+                      //     : item?._id,
+                      // });
+
+                      console.log(
+                        "dffd",
+                        item?.PCgroup
+                          ? item?.PCgroup
+                          : item?.ChildCatIDs?.PCName[0]?.PCGroup
+                      );
                     }}
                   >
                     <CustomRow

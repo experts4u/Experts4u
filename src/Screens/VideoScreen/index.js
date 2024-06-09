@@ -22,8 +22,6 @@ export default (source) => {
 
   let data = Route.params;
 
-  // console.log('ddd', data.videoUrl);
-
   const format = (seconds) => {
     let mins = parseInt(seconds / 60)
       .toString()

@@ -1,5 +1,5 @@
-import ElevatedCard from 'Components/ElevatedCard';
-import React, {forwardRef, useImperativeHandle, useState} from 'react';
+import ElevatedCard from "Components/ElevatedCard";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import {
   Dimensions,
   Pressable,
@@ -9,14 +9,17 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Modal from 'react-native-modal';
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import MCIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Modal from "react-native-modal";
 
-function AnimatedModal({children, parentStyle, backdropFunction}, ref) {
+function AnimatedModal(
+  { children, parentStyle, backdropFunction, customHeight },
+  ref
+) {
   const [visible, setVisible] = useState(false);
-  let {top} = useSafeAreaInsets();
+  let { top } = useSafeAreaInsets();
 
   useImperativeHandle(
     ref,
@@ -30,7 +33,7 @@ function AnimatedModal({children, parentStyle, backdropFunction}, ref) {
         },
       };
     },
-    [],
+    []
   );
   const CloseButton = () => {
     return (
@@ -38,9 +41,10 @@ function AnimatedModal({children, parentStyle, backdropFunction}, ref) {
         style={styles.closeButton}
         onPress={() => {
           setVisible(false);
-        }}>
+        }}
+      >
         <ElevatedCard>
-          <MCIcons name="close" color={'black'} size={25} />
+          <MCIcons name="close" color={"black"} size={25} />
         </ElevatedCard>
       </Pressable>
     );
@@ -88,21 +92,23 @@ function AnimatedModal({children, parentStyle, backdropFunction}, ref) {
       backdropColor="rgba(0, 0, 0, 0.8)"
       style={{
         flex: 1,
-        width: '100%',
-        alignSelf: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        height: Dimensions.get('screen').height,
+        width: "100%",
+        alignSelf: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        // height:  Dimensions.get("screen").height,
       }}
       transparent
       visible={visible}
       onRequestClose={() => setVisible(false)}
-      statusBarTranslucent={true}>
-      <View style={[styles.modal, {marginTop: top}]}>
+      statusBarTranslucent={true}
+    >
+      <View style={[styles.modal, { marginTop: top }]}>
         <View
           style={{
             flex: 1,
-            marginTop: parentStyle ? parentStyle : '40%',
-          }}>
+            marginTop: parentStyle ? parentStyle : "40%",
+          }}
+        >
           {children}
         </View>
       </View>
@@ -118,13 +124,13 @@ const styles = StyleSheet.create({
   closeButton: {
     width: 30,
     height: 30,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 100,
     right: 10,
     top: 10,
-    position: 'absolute',
+    position: "absolute",
   },
 });
 

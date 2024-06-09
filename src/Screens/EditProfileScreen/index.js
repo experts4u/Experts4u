@@ -36,7 +36,7 @@ export default function () {
   const focused = useIsFocused();
   const [userData, setUserData] = useState();
 
-  const [gender, setGender] = useState(userData?.gender == "male" ? 1 : 0);
+  const [gender, setGender] = useState(0);
   const [name, setName] = useState(userData?.name);
   const [profileImage, setProfileImage] = useState();
   const Navigation = useNavigation();
@@ -56,11 +56,15 @@ export default function () {
     }
   };
   const User_data = useFetch({
-    endpoint: Endpoints.getUserDetails + user_info?.user?._id,
+    endpoint: user_info?.user
+      ? Endpoints.getUserDetails + user_info?.user?._id
+      : Endpoints.getUserDetails + user_info?._id,
   });
 
   const { response, fetchPromise } = useFetch({
-    endpoint: Endpoints.EditProfile + user_info?.user?._id,
+    endpoint: user_info?.user
+      ? Endpoints.EditProfile + user_info?.user?._id
+      : Endpoints.EditProfile + user_info?._id,
     formData: true,
     method: "put",
   });
@@ -90,6 +94,7 @@ export default function () {
       console.log("my_new_error", e);
     }
   };
+
   const getDetails = async () => {
     try {
       let details = await User_data.fetchPromise();
@@ -100,7 +105,7 @@ export default function () {
   };
 
   useEffect(() => {
-    if (focused) {
+    if (user_info?._id || (user_info.user?._id && focused)) {
       getDetails();
     }
   }, [focused]);
@@ -108,10 +113,9 @@ export default function () {
   useEffect(() => {
     if (userData) {
       setName(userData?.name);
+      setGender(userData?.gender == "male" ? 0 : 1);
     }
   }, [userData]);
-
-  console.log("userData", userData?.name);
 
   return (
     <KeyboardAvoidingView

@@ -62,6 +62,7 @@ class GoogleMapsView extends Component {
             center={this.props.region}
           />
           <CenterMarker center={this.props.region} />
+          {/* <View style={Sty} /> */}
         </MapView>
 
         {/* Fake marker. This is not accurate, if you zoom out too much, it will give on wrong coordinates. For accuracy use actual maker, which lags but is accurate */}
@@ -81,7 +82,8 @@ class CenterMarker extends Component {
   render() {
     return (
       <Marker coordinate={this.state.center} anchor={{ x: 0.5, y: 0.5 }}>
-        <CustomImage src={Assets.mapimage} size={40} />
+        {/* <CustomImage src={Assets.mapimage} size={40} /> */}
+        <View style={Styles.pin2} />
       </Marker>
     );
   }
@@ -128,161 +130,3 @@ const Styles = StyleSheet.create({
   },
 });
 export default GoogleMapsView;
-
-// import Theme from "Configs/Theme";
-// import React, { Component } from "react";
-// import { View, StyleSheet, PermissionsAndroid, Platform } from "react-native";
-// import MapView, { PROVIDER_GOOGLE, Circle, Marker } from "react-native-maps";
-
-// const CIRCLE_RADIUS = 50;
-
-// class GoogleMapsView extends Component {
-//   mapViewRef = null;
-
-//   async componentDidMount() {
-//     if (Platform.OS === "android") {
-//       await this.requestLocationPermission();
-//     }
-//   }
-
-//   requestLocationPermission = async () => {
-//     try {
-//       const granted = await PermissionsAndroid.request(
-//         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-//         {
-//           title: "Location Permission",
-//           message:
-//             "This app needs access to your location to show you on the map.",
-//           buttonNeutral: "Ask Me Later",
-//           buttonNegative: "Cancel",
-//           buttonPositive: "OK",
-//         }
-//       );
-//       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-//         console.log("Location permission denied");
-//       }
-//     } catch (err) {
-//       console.warn(err);
-//     }
-//   };
-
-//   animateToRegion = (region, duration = 300) => {
-//     if (this.mapViewRef && this.mapViewRef.animateToRegion)
-//       this.mapViewRef.animateToRegion(region, duration);
-//   };
-
-//   render() {
-//     const {
-//       region,
-//       regionCircleVisible,
-//       handleMapReady,
-//       handleMapPress,
-//       handleMapPoiPress,
-//       handleMapRegionChange,
-//       hanldeMapRegionChangeComplete,
-//       hanldeMapPanDragByUser,
-//       handleMapDoubleTap,
-//     } = this.props;
-
-//     return (
-//       <View style={styles.container}>
-//         <MapView
-//           ref={(ref) => {
-//             this.mapViewRef = ref;
-//           }}
-//           style={styles.map}
-//           provider={PROVIDER_GOOGLE}
-//           initialRegion={region}
-//           showsUserLocation={true}
-//           showsBuildings={true}
-//           showsPointsOfInterest={true}
-//           showsTraffic={false}
-//           showsIndoors={false}
-//           loadingEnabled={true}
-//           onMapReady={handleMapReady}
-//           onPress={handleMapPress}
-//           onPoiClick={handleMapPoiPress}
-//           onRegionChange={(coordinates) => {
-//             if (this.centerMarkerRef)
-//               this.centerMarkerRef.setCenter(coordinates);
-//             if (handleMapRegionChange) handleMapRegionChange();
-//           }}
-//           onRegionChangeComplete={hanldeMapRegionChangeComplete}
-//           onPanDrag={hanldeMapPanDragByUser}
-//           onDoublePress={handleMapDoubleTap}
-//         >
-//           <RegionCircle
-//             regionCircleVisible={regionCircleVisible}
-//             center={region}
-//           />
-//         </MapView>
-
-//         <View style={styles.pin2} />
-//       </View>
-//     );
-//   }
-// }
-
-// class CenterMarker extends Component {
-//   state = { center: this.props.center };
-
-//   setCenter = (center) => {
-//     this.setState({ center });
-//   };
-
-//   render() {
-//     return (
-//       <Marker coordinate={this.state.center} anchor={{ x: 0.5, y: 0.5 }}>
-//         <View style={styles.pin} />
-//       </Marker>
-//     );
-//   }
-// }
-
-// const RegionCircle = ({ regionCircleVisible, center }) => {
-//   if (!regionCircleVisible) return null;
-//   return (
-//     <Circle
-//       center={{
-//         latitude: center.latitude,
-//         longitude: center.longitude,
-//       }}
-//       radius={CIRCLE_RADIUS}
-//       strokeWidth={2}
-//       strokeColor="rgba(0, 0, 255, 0.3)"
-//       fillColor="rgba(0, 185, 255, 0.3)"
-//     />
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//   },
-//   map: {
-//     ...StyleSheet.absoluteFillObject,
-//   },
-//   pin: {
-//     width: 10,
-//     height: 10,
-//     borderRadius: 5,
-//     borderColor: "#172a50",
-//     borderWidth: 4,
-//   },
-//   pin2: {
-//     position: "absolute",
-//     alignSelf: "center",
-//     elevation: 2,
-//     zIndex: 100,
-//     width: 0,
-//     height: 0,
-//     borderLeftWidth: 5,
-//     borderLeftColor: "transparent",
-//     borderRightWidth: 5,
-//     borderRightColor: "transparent",
-//     borderTopWidth: 10,
-//     borderTopColor: Theme.PrimaryColor,
-//   },
-// });
-
-// export default GoogleMapsView;

@@ -1,7 +1,8 @@
+import Assets from "Assets";
 import CustomHeader from "Components/CustomHeader";
 import CustomText from "Components/CustomText";
 import Theme from "Configs/Theme";
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 
 export default function () {
   return (
@@ -14,15 +15,17 @@ export default function () {
       <View
         style={{
           marginHorizontal: 30,
-          marginTop: "50%",
+          marginTop: "40%",
           alignSelf: "center",
         }}
       >
-        <CustomText
-          color={Theme.PrimaryColor}
-          size={44}
-          bold
-          value={"Coming Soon..."}
+        <Image
+          source={Assets.comingsoon}
+          resizeMode="contain"
+          style={{
+            width: 250,
+            height: 250,
+          }}
         />
       </View>
     </View>

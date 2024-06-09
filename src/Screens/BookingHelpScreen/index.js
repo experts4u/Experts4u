@@ -1,26 +1,31 @@
-import CustomHeader from 'Components/CustomHeader';
-import CustomText from 'Components/CustomText';
-import Theme from 'Configs/Theme';
-import {View} from 'react-native';
+import Assets from "Assets";
+import CustomHeader from "Components/CustomHeader";
+import CustomText from "Components/CustomText";
+import Theme from "Configs/Theme";
+import { Image, View } from "react-native";
 
 export default () => {
   return (
     <View
       style={{
         flex: 1,
-      }}>
-      <CustomHeader l_type={'back_arrow'} title={'Booking help'} />
+      }}
+    >
+      <CustomHeader l_type={"back_arrow"} title={"Booking help"} />
       <View
         style={{
           marginHorizontal: 30,
-          marginTop: '50%',
-          alignSelf: 'center',
-        }}>
-        <CustomText
-          color={Theme.PrimaryColor}
-          size={44}
-          bold
-          value={'Coming Soon...'}
+          marginTop: "40%",
+          alignSelf: "center",
+        }}
+      >
+        <Image
+          source={Assets.comingsoon}
+          resizeMode="contain"
+          style={{
+            width: 250,
+            height: 250,
+          }}
         />
       </View>
     </View>

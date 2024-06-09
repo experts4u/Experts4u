@@ -1,9 +1,9 @@
 // import Fonts from 'Configs/Fonts';
 // import Theme from 'Configs/Theme';
-import Theme from 'Configs/Theme';
-import React from 'react';
-import {StyleSheet, Text} from 'react-native';
-import fonts from '../../../assets/fonts';
+import Theme from "Configs/Theme";
+import React from "react";
+import { StyleSheet, Text } from "react-native";
+import fonts from "../../../assets/fonts";
 
 let styles = StyleSheet.create({
   regular: {
@@ -40,23 +40,23 @@ export default function ({
   numberOfLines,
 }) {
   let textStyles = StyleSheet.flatten([
-    margin_h && {marginHorizontal: margin_h},
-    margin_v && {marginVertical: margin_v},
-    align && {textAlign: align},
-    {color: Theme.Black},
-    {lineHeight: 14 * 1.4},
+    margin_h && { marginHorizontal: margin_h },
+    margin_v && { marginVertical: margin_v },
+    align && { textAlign: align },
+    { color: Theme.Black },
+    { lineHeight: 14 * 1.4 },
     regular && styles.regular,
     medium && styles.medium,
     bold && styles.bold,
     thin && styles.thin,
     light && styles.light,
-    color && {color: color},
-    size && {fontSize: size, lineHeight: size * 1.4},
+    color && { color: color },
+    size && { fontSize: size, lineHeight: size * 1.4 },
     style,
   ]);
   return (
     <Text numberOfLines={numberOfLines} style={[textStyles]}>
-      {value ? value : ''}
+      {value ? value : ""}
     </Text>
   );
 }

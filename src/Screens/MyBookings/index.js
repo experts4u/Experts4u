@@ -1,41 +1,44 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import Assets from 'Assets';
-import CustomCard from 'Components/CustomCard';
-import CustomHeader from 'Components/CustomHeader';
-import CustomHeading from 'Components/CustomHeading';
-import CustomIcon from 'Components/CustomIcon';
-import CustomImage from 'Components/CustomImage';
-import CustomRow from 'Components/CustomRow';
-import CustomText from 'Components/CustomText';
-import Theme from 'Configs/Theme';
-import {useState} from 'react';
-import {ScrollView, useWindowDimensions} from 'react-native';
-import Routes from 'RootNavigation/Routes';
-import * as React from 'react';
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import Assets from "Assets";
+import CustomCard from "Components/CustomCard";
+import CustomHeader from "Components/CustomHeader";
+import CustomHeading from "Components/CustomHeading";
+import CustomIcon from "Components/CustomIcon";
+import CustomImage from "Components/CustomImage";
+import CustomRow from "Components/CustomRow";
+import CustomText from "Components/CustomText";
+import Theme from "Configs/Theme";
+import { useState } from "react";
+import { ScrollView, useWindowDimensions } from "react-native";
+import Routes from "RootNavigation/Routes";
+import * as React from "react";
 import {
   Animated,
   View,
   TouchableOpacity,
   StyleSheet,
   StatusBar,
-} from 'react-native';
-import {TabView, SceneMap} from 'react-native-tab-view';
-import Fonts from 'Configs/Fonts';
-import Endpoints from 'Configs/API/Endpoints';
-import {useEffect} from 'react';
-import useFetch from 'Hooks/useFetch';
-import {useSelector} from 'react-redux';
+} from "react-native";
+import { TabView, SceneMap } from "react-native-tab-view";
+import Fonts from "Configs/Fonts";
+import Endpoints from "Configs/API/Endpoints";
+import { useEffect } from "react";
+import useFetch from "Hooks/useFetch";
+import { useSelector } from "react-redux";
 
 export default function () {
   const focused = useIsFocused();
-  const user = useSelector(v => v?.user?.userInfo?.user);
+  const user = useSelector((v) => v?.user?.userInfo?.user);
+  const user_info = useSelector((v) => v.user);
   const Navigation = useNavigation();
   const [index, setIndex] = useState(0);
   const [bookingData, setBookingData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const GetBookings = useFetch({
-    endpoint: Endpoints.MyBokings + '/' + user?._id,
+    endpoint: user_info?.user
+      ? Endpoints.MyBokings + "/" + user_info?.user?._id
+      : Endpoints.MyBokings + "/" + user_info?._id,
     Token: false,
   });
 
@@ -47,23 +50,24 @@ export default function () {
 
       setLoading(false);
     } catch (e) {
-      console.log('err', e);
+      console.log("err", e);
     }
   };
+
   useEffect(() => {
-    if (focused) {
+    if (user_info?._id || (user_info.user?._id && focused)) {
       mbokings();
     }
   }, [focused]);
 
   function filterTodayBookings(bookingData) {
     const today = new Date();
-    const todayFormatted = today?.toISOString().split('T')[0];
+    const todayFormatted = today?.toISOString().split("T")[0];
 
     return (
       bookingData &&
-      bookingData?.filter(booking => {
-        return booking?.slotDate?.split('T')[0] === todayFormatted;
+      bookingData?.filter((booking) => {
+        return booking?.slotDate?.split("T")[0] === todayFormatted;
       })
     );
   }
@@ -71,24 +75,30 @@ export default function () {
   const todayBookings = filterTodayBookings(bookingData);
 
   const FirstRoute = () => (
-    <ScrollView>
-      {todayBookings.length > 0 &&
+    <ScrollView
+      contentContainerStyle={{
+        backgroundColor: "white",
+      }}
+    >
+      {todayBookings.length > 0 ? (
         todayBookings?.map((item, index) => (
           <CustomCard
             key={index}
             Clickable
             onPress={() => {
-              Navigation.navigate(Routes.BookingOrderDetailScreen, {item});
+              Navigation.navigate(Routes.BookingOrderDetailScreen, { item });
             }}
             style={{
               marginTop: 5,
-            }}>
-            <CustomHeading heading={'Order Id -' + item?.jobId} />
+            }}
+          >
+            <CustomHeading heading={"Order Id -" + item?.jobId} />
             <CustomRow
               ratios={[1, 0]}
               style={{
                 marginHorizontal: 10,
-              }}>
+              }}
+            >
               <View>
                 <CustomText regular value={item?.cart[0]?.PCGroup?.PCGName} />
                 <CustomText regular value={item?.slotDate.slice(0, 10)} />
@@ -100,15 +110,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#346cb0',
+                      backgroundColor: "#346cb0",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Shedule'}
+                      value={"Shedule"}
                       size={10}
                     />
                   </View>
@@ -117,15 +128,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#346cb0',
+                      backgroundColor: "#346cb0",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Open'}
+                      value={"Open"}
                       size={10}
                     />
                   </View>
@@ -134,15 +146,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#f7c46c',
+                      backgroundColor: "#f7c46c",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'black'}
+                      color={"black"}
                       regular
-                      value={'Start Journey'}
+                      value={"Start Journey"}
                       size={10}
                     />
                   </View>
@@ -151,15 +164,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#f7c46c',
+                      backgroundColor: "#f7c46c",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'black'}
+                      color={"black"}
                       regular
-                      value={'Stop Journey'}
+                      value={"Stop Journey"}
                       size={10}
                     />
                   </View>
@@ -168,15 +182,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e0751a',
+                      backgroundColor: "#e0751a",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Progress'}
+                      value={"Progress"}
                       size={10}
                     />
                   </View>
@@ -185,15 +200,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#346cb0',
+                      backgroundColor: "#346cb0",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Pause'}
+                      value={"Pause"}
                       size={10}
                     />
                   </View>
@@ -202,15 +218,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e0751a',
+                      backgroundColor: "#e0751a",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Progress'}
+                      value={"Progress"}
                       size={10}
                     />
                   </View>
@@ -219,15 +236,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#65bd14',
+                      backgroundColor: "#65bd14",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Closed'}
+                      value={"Closed"}
                       size={10}
                     />
                   </View>
@@ -237,15 +255,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e22d2d',
+                      backgroundColor: "#e22d2d",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Canceled'}
+                      value={"Canceled"}
                       size={10}
                     />
                   </View>
@@ -254,15 +273,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e22d2d',
+                      backgroundColor: "#e22d2d",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Cancel IR'}
+                      value={"Cancel IR"}
                       size={10}
                     />
                   </View>
@@ -271,15 +291,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e22d2d',
+                      backgroundColor: "#e22d2d",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Cancel CR'}
+                      value={"Cancel CR"}
                       size={10}
                     />
                   </View>
@@ -288,15 +309,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e22d2d',
+                      backgroundColor: "#e22d2d",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Cancel NR'}
+                      value={"Cancel NR"}
                       size={10}
                     />
                   </View>
@@ -319,7 +341,7 @@ export default function () {
                     regular
                     size={12}
                     margin_v={10}
-                    value={'SP Assigned'}
+                    value={"SP Assigned"}
                   />
                 ) : null}
               </View>
@@ -348,28 +370,41 @@ export default function () {
             <View
               style={{
                 borderTopWidth: 1,
-                borderColor: '#E3E3E3FF',
+                borderColor: "#E3E3E3FF",
 
-                alignItems: 'center',
-                justifyContent: 'center',
+                alignItems: "center",
+                justifyContent: "center",
                 marginTop: 10,
                 marginHorizontal: 10,
-                borderStyle: 'dashed',
-              }}>
+                borderStyle: "dashed",
+              }}
+            >
               <CustomText
                 margin_v={10}
                 bold
                 color={Theme.Black}
-                value={'View details'}
+                value={"View details"}
               />
             </View>
           </CustomCard>
-        ))}
+        ))
+      ) : (
+        <View
+          style={{
+            alignSelf: "center",
+            marginTop: 40,
+            backgroundColor: "white",
+            flex: 1,
+          }}
+        >
+          <CustomImage src={Assets.nodata} size={300} />
+        </View>
+      )}
     </ScrollView>
   );
 
   const CancelledAppointments = bookingData.filter(
-    appointment => appointment.slotDate === 'Cancel',
+    (appointment) => appointment.slotDate === "Cancel"
   );
 
   const ThirdRoute = () => (
@@ -380,20 +415,22 @@ export default function () {
             key={index}
             Clickable
             onPress={() => {
-              Navigation.navigate(Routes.BookingOrderDetailScreen, {item});
+              Navigation.navigate(Routes.BookingOrderDetailScreen, { item });
             }}
             style={{
               marginTop: 5,
-            }}>
-            <CustomHeading heading={'Order Id' + item?.jobId} />
+            }}
+          >
+            <CustomHeading heading={"Order Id" + item?.jobId} />
             <CustomRow
               ratios={[1, 0]}
               style={{
                 marginHorizontal: 10,
-              }}>
+              }}
+            >
               <View>
                 <CustomText regular value={item?.cart[0]?.PCGId?.PCGName} />
-                <CustomText regular value={'08-May, 2023 Mon,'} />
+                <CustomText regular value={"08-May, 2023 Mon,"} />
                 <CustomText regular value={item?.TServiceTiming} />
               </View>
 
@@ -403,7 +440,7 @@ export default function () {
                   bold
                   value={item?.jobStatus}
                 />
-                <CustomText regular value={'SP Assigned'} />
+                <CustomText regular value={"SP Assigned"} />
               </View>
             </CustomRow>
 
@@ -430,19 +467,20 @@ export default function () {
             <View
               style={{
                 borderTopWidth: 1,
-                borderColor: '#E3E3E3FF',
+                borderColor: "#E3E3E3FF",
 
-                alignItems: 'center',
-                justifyContent: 'center',
+                alignItems: "center",
+                justifyContent: "center",
                 marginTop: 10,
                 marginHorizontal: 10,
-                borderStyle: 'dashed',
-              }}>
+                borderStyle: "dashed",
+              }}
+            >
               <CustomText
                 margin_v={10}
                 bold
                 color={Theme.Black}
-                value={'View details'}
+                value={"View details"}
               />
             </View>
           </CustomCard>
@@ -450,27 +488,33 @@ export default function () {
     </ScrollView>
   );
 
-  console.log('todayBookings', todayBookings);
+  console.log("todayBookings", todayBookings);
 
   const SecondRoute = () => (
-    <ScrollView>
-      {bookingData &&
+    <ScrollView
+      contentContainerStyle={{
+        backgroundColor: "white",
+      }}
+    >
+      {bookingData.length > 0 ? (
         bookingData?.map((item, index) => (
           <CustomCard
             key={index}
             Clickable
             onPress={() => {
-              Navigation.navigate(Routes.BookingOrderDetailScreen, {item});
+              Navigation.navigate(Routes.BookingOrderDetailScreen, { item });
             }}
             style={{
               marginTop: 5,
-            }}>
-            <CustomHeading heading={'Order Id -' + item?.jobId} />
+            }}
+          >
+            <CustomHeading heading={"Order Id -" + item?.jobId} />
             <CustomRow
               ratios={[1, 0]}
               style={{
                 marginHorizontal: 10,
-              }}>
+              }}
+            >
               <View>
                 <CustomText regular value={item?.cart[0]?.PCGroup?.PCGName} />
                 <CustomText regular value={item?.slotDate?.slice(0, 10)} />
@@ -482,15 +526,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#346cb0',
+                      backgroundColor: "#346cb0",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Shedule'}
+                      value={"Shedule"}
                       size={10}
                     />
                   </View>
@@ -499,15 +544,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#346cb0',
+                      backgroundColor: "#346cb0",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Open'}
+                      value={"Open"}
                       size={10}
                     />
                   </View>
@@ -516,15 +562,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#f7c46c',
+                      backgroundColor: "#f7c46c",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'black'}
+                      color={"black"}
                       regular
-                      value={'Start Journey'}
+                      value={"Start Journey"}
                       size={10}
                     />
                   </View>
@@ -533,15 +580,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#f7c46c',
+                      backgroundColor: "#f7c46c",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'black'}
+                      color={"black"}
                       regular
-                      value={'Stop Journey'}
+                      value={"Stop Journey"}
                       size={10}
                     />
                   </View>
@@ -550,15 +598,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e0751a',
+                      backgroundColor: "#e0751a",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Progress'}
+                      value={"Progress"}
                       size={10}
                     />
                   </View>
@@ -567,15 +616,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#346cb0',
+                      backgroundColor: "#346cb0",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Pause'}
+                      value={"Pause"}
                       size={10}
                     />
                   </View>
@@ -584,15 +634,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e0751a',
+                      backgroundColor: "#e0751a",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Progress'}
+                      value={"Progress"}
                       size={10}
                     />
                   </View>
@@ -601,15 +652,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#65bd14',
+                      backgroundColor: "#65bd14",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Closed'}
+                      value={"Closed"}
                       size={10}
                     />
                   </View>
@@ -619,15 +671,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e22d2d',
+                      backgroundColor: "#e22d2d",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Canceled'}
+                      value={"Canceled"}
                       size={10}
                     />
                   </View>
@@ -636,15 +689,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e22d2d',
+                      backgroundColor: "#e22d2d",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Cancel IR'}
+                      value={"Cancel IR"}
                       size={10}
                     />
                   </View>
@@ -653,15 +707,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e22d2d',
+                      backgroundColor: "#e22d2d",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Cancel CR'}
+                      value={"Cancel CR"}
                       size={10}
                     />
                   </View>
@@ -670,15 +725,16 @@ export default function () {
                   <View
                     style={{
                       padding: 5,
-                      backgroundColor: '#e22d2d',
+                      backgroundColor: "#e22d2d",
                       borderRadius: 5,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <CustomText
-                      color={'white'}
+                      color={"white"}
                       regular
-                      value={'Cancel NR'}
+                      value={"Cancel NR"}
                       size={10}
                     />
                   </View>
@@ -701,7 +757,7 @@ export default function () {
                     regular
                     size={12}
                     margin_v={10}
-                    value={'SP Assigned'}
+                    value={"SP Assigned"}
                   />
                 ) : null}
               </View>
@@ -730,35 +786,48 @@ export default function () {
             <View
               style={{
                 borderTopWidth: 1,
-                borderColor: '#E3E3E3FF',
+                borderColor: "#E3E3E3FF",
 
-                alignItems: 'center',
-                justifyContent: 'center',
+                alignItems: "center",
+                justifyContent: "center",
                 marginTop: 10,
                 marginHorizontal: 10,
-                borderStyle: 'dashed',
-              }}>
+                borderStyle: "dashed",
+              }}
+            >
               <CustomText
                 margin_v={10}
                 bold
                 color={Theme.Black}
-                value={'View details'}
+                value={"View details"}
               />
             </View>
           </CustomCard>
-        ))}
+        ))
+      ) : (
+        <View
+          style={{
+            alignSelf: "center",
+            marginTop: 40,
+            backgroundColor: "white",
+            flex: 1,
+          }}
+        >
+          <CustomImage src={Assets.nodata} size={300} />
+        </View>
+      )}
     </ScrollView>
   );
 
   state = {
     index: 0,
     routes: [
-      {key: 'first', title: 'Upcoming'},
-      {key: 'second', title: 'Second'},
+      { key: "first", title: "Upcoming" },
+      { key: "second", title: "Second" },
     ],
   };
 
-  const RenderTabBar = ({navigationState, position}) => {
+  const RenderTabBar = ({ navigationState, position }) => {
     const inputRange = navigationState.routes.map((x, i) => i);
 
     return (
@@ -771,19 +840,21 @@ export default function () {
               style={[
                 styles.tabItem,
                 {
-                  borderBottomColor: isActive ? Theme.PrimaryColor : 'white',
+                  borderBottomColor: isActive ? Theme.PrimaryColor : "white",
                   borderBottomWidth: 1,
                   paddingVertical: 5,
-                  backgroundColor: 'white',
+                  backgroundColor: "white",
                 },
               ]}
-              onPress={() => setIndex(i)}>
+              onPress={() => setIndex(i)}
+            >
               <Animated.Text
                 style={{
                   fontSize: 14,
-                  color: isActive ? Theme.PrimaryColor : 'grey',
+                  color: isActive ? Theme.PrimaryColor : "grey",
                   fontFamily: Fonts.PoppinsMedium,
-                }}>
+                }}
+              >
                 {route.title}
               </Animated.Text>
             </TouchableOpacity>
@@ -802,34 +873,33 @@ export default function () {
     <ScrollView
       contentContainerStyle={{
         flex: 1,
-      }}>
+        backgroundColor: "white",
+      }}
+    >
       <CustomHeader
         leftComponent={
           <CustomIcon
-            name={'arrowleft'}
-            type={'AN'}
+            name={"arrowleft"}
+            type={"AN"}
             color={Theme.PrimaryColor}
           />
         }
-        l_type={'back_arrow'}
-        title={'My Bookings'}
+        l_type={"back_arrow"}
+        title={"My Bookings"}
       />
-      {bookingData?.length > 0 ? (
-        <TabView
-          navigationState={{
-            index,
-            routes: [
-              {key: 'first', title: 'Ongoing'},
-              {key: 'second', title: 'History/Upcoming'},
-            ],
-          }}
-          renderScene={_renderScene}
-          renderTabBar={RenderTabBar}
-          onIndexChange={setIndex}
-        />
-      ) : (
-        <CustomText value={'No Bookings yet'} />
-      )}
+
+      <TabView
+        navigationState={{
+          index,
+          routes: [
+            { key: "first", title: "Ongoing" },
+            { key: "second", title: "History/Upcoming" },
+          ],
+        }}
+        renderScene={_renderScene}
+        renderTabBar={RenderTabBar}
+        onIndexChange={setIndex}
+      />
     </ScrollView>
   );
 }
@@ -839,14 +909,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    flexDirection: 'row',
+    flexDirection: "row",
     // paddingTop: StatusBar.currentHeight,
   },
   tabItem: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     // padding: 16,
-    borderBottomColor: 'black',
+    borderBottomColor: "black",
     borderBottomWidth: 1,
   },
 });

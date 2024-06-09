@@ -1,15 +1,15 @@
-import CustomImage from 'Components/CustomImage';
-import CustomRow from 'Components/CustomRow';
-import CustomText from 'Components/CustomText';
-import Theme from 'Configs/Theme';
-import {Platform, StyleSheet, TextInput, View} from 'react-native';
-import Styles from './Styles';
+import CustomImage from "Components/CustomImage";
+import CustomRow from "Components/CustomRow";
+import CustomText from "Components/CustomText";
+import Theme from "Configs/Theme";
+import { Platform, StyleSheet, TextInput, View } from "react-native";
+import Styles from "./Styles";
 
-const LeftIcon = ({leftIcon, leftIconStyle, leftOnpress}) => {
+const LeftIcon = ({ leftIcon, leftIconStyle, leftOnpress }) => {
   return (
     <CustomImage
       onPress={leftOnpress}
-      resizeMode={Platform.OS ? 'contain' : 'center'}
+      resizeMode={Platform.OS ? "contain" : "center"}
       style={leftIconStyle}
       src={leftIcon}
       size={22}
@@ -47,29 +47,29 @@ const CenterView = ({
       textAlignVertical={textAlignVertical}
       editable={editable}
       // pointerEvents="none"
-      placeholderTextColor={placeholderColor ? placeholderColor : 'grey'}
+      placeholderTextColor={placeholderColor ? placeholderColor : "grey"}
       style={
         style
           ? style
           : {
-              backgroundColor: 'transparent',
+              backgroundColor: "transparent",
               padding: 4,
               // fontFamily: Fonts.GothamBook,
-              color: 'grey',
+              color: "grey",
             }
       }
     />
   );
 };
 
-const RightIcon = ({rightIcon, RightText, rightonpress}) => {
+const RightIcon = ({ rightIcon, RightText, rightonpress }) => {
   if (RightText) {
     return <CustomText value={RightText} />;
   } else {
     return (
       <CustomImage
         onPress={rightonpress}
-        resizeMode={'center'}
+        resizeMode={"center"}
         size={21}
         src={rightIcon}
       />
@@ -108,16 +108,17 @@ export default function ({
 }) {
   let styles = StyleSheet.flatten([
     Styles.input,
-    borderRed && {borderColor: 'grey'},
-    borderBlue && {borderColor: Theme.SecondaryColor},
+    borderRed && { borderColor: "grey" },
+    borderBlue && { borderColor: Theme.SecondaryColor },
     containerStyle,
   ]);
   return (
     <View
       style={{
-        width: 99 + '%',
+        width: 99 + "%",
         marginTop: 10,
-      }}>
+      }}
+    >
       <CustomRow ratios={[0, 1, 0]} h_center v_center style={styles}>
         {Left ? (
           <LeftIcon

@@ -1,13 +1,13 @@
-import {NavigationContainer, useIsFocused} from '@react-navigation/native';
-import {Navigation_ref} from './src/Utils/NavigationHelper';
-import RootNavigation from './src/RootNavigation';
-import FlashMessage from 'react-native-flash-message';
-import Fonts from 'Configs/Fonts';
+import { NavigationContainer, useIsFocused } from "@react-navigation/native";
+import { Navigation_ref } from "./src/Utils/NavigationHelper";
+import RootNavigation from "./src/RootNavigation";
+import FlashMessage from "react-native-flash-message";
+import Fonts from "Configs/Fonts";
 
-import {PersistGate} from 'redux-persist/integration/react';
-import {persistor, store} from 'ReduxState';
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "ReduxState";
 
-import {enableLatestRenderer} from 'react-native-maps';
+import { enableLatestRenderer } from "react-native-maps";
 
 const App = () => {
   enableLatestRenderer();
@@ -155,7 +155,7 @@ const App = () => {
       <NavigationContainer ref={Navigation_ref}>
         <RootNavigation />
         <FlashMessage
-          position="bottom"
+          position="top"
           titleStyle={{
             fontFamily: Fonts.PoppinsMedium,
           }}

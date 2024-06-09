@@ -80,8 +80,8 @@ export default function () {
       myfavimg: Assets.privacypolicy,
       myadd: "Support",
       myaddimg: Assets.support,
-      bookimg: Assets.feedback,
-      mybook: "Give us a Feadback",
+      // bookimg: Assets.feedback,
+      // mybook: "Give us a Feadback",
       myrat: "My Rating",
       myratimg: Assets.myratimg,
       share: "Share E4U",
@@ -274,7 +274,7 @@ export default function () {
   const handleShare = async () => {
     try {
       const result = await Share.share({
-        message: "abcd", // Message to be shared
+        message: "https://experts4u.in/", // Message to be shared
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -295,7 +295,9 @@ export default function () {
   };
 
   const User_data = useFetch({
-    endpoint: Endpoints.getUserDetails + user_info?.user?._id,
+    endpoint: user_info?.user
+      ? Endpoints.getUserDetails + user_info?.user?._id
+      : Endpoints.getUserDetails + user_info?._id,
   });
 
   const getDetails = async () => {
@@ -307,13 +309,18 @@ export default function () {
     }
   };
 
+  // useEffect(() => {
+  //   if (focused) {
+  //     getDetails();
+  //   }
+  // }, [focused]);
+
   useEffect(() => {
-    if (focused) {
+    if (user_info?._id || (user_info?.user?._id && focused)) {
       getDetails();
     }
   }, [focused]);
 
-  console.log("daaaata", userData);
   return (
     <View>
       <CustomHeader l_type={"back_arrow"} title={"Profile"} />
@@ -461,7 +468,7 @@ export default function () {
                   />
                 </CustomRow>
               </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   Navigation.navigate(Routes.FavouriteBookingScreen);
                 }}
@@ -498,7 +505,7 @@ export default function () {
                     size={17}
                   />
                 </CustomRow>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 onPress={() => {
                   Navigation.navigate(Routes.MyAddressScreen);
@@ -776,7 +783,7 @@ export default function () {
                   />
                 </CustomRow>
               </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   Navigation.navigate(Routes.WriteReviewScreen);
                 }}
@@ -811,8 +818,8 @@ export default function () {
                     size={17}
                   />
                 </CustomRow>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </TouchableOpacity> */}
+              {/* <TouchableOpacity
                 onPress={() => {
                   Navigation.navigate(Routes.MyRatingScreen);
                 }}
@@ -847,7 +854,7 @@ export default function () {
                     size={17}
                   />
                 </CustomRow>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 onPress={() => {
                   handleShare();

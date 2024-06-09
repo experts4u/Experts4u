@@ -83,6 +83,7 @@ export default function () {
 
   const CoupenApplyRef = useRef();
   const user_info = useSelector((v) => v.user);
+
   const user_ = useSelector((v) => v.user.userInfo);
   const [find, setFind] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -104,11 +105,12 @@ export default function () {
   const [latitude, setLatitude] = useState(user_info?.currentLocation[1]);
   const [landmark, setLandmark] = useState("");
   const [adressEdit, setadressEdit] = useState(false);
+
   const [house, setHouse] = useState(
     editAddress?.houseOrFlatNo ? editAddress?.houseOrFlatNo : ""
   );
   const [apartment, setApartment] = useState("");
-  const [usersAddreses, setusersAddreses] = useState();
+  const [usersAddreses, setusersAddreses] = useState([]);
   const [AppointmentsData, setAppointmentsData] = useState("");
   const [selectedAddress, setselectedAddress] = useState(null);
   const [editAddress, setEditAddress] = useState([]);
@@ -118,8 +120,10 @@ export default function () {
   const [coupenListData, setcoupenListData] = useState();
   const [isAnimating, setIsAnimating] = useState(false);
   const [progress] = useState(new Animated.Value(0));
+  const [lazyLoading, setLazyLoading] = useState(false);
+  const [listWidth, setListWidth] = useState(Dimensions.get("window").width);
+  const [itemWidth, setItemWidth] = useState(100);
 
-  console.log("editAddress", editAddress);
   useEffect(() => {
     if (user_info?.currentLocation[0]) {
       setLongitude(user_info?.currentLocation[0]);
@@ -138,8 +142,6 @@ export default function () {
   };
 
   let addressofHistory = user_info?.historyofadress;
-
-  console.log("selectedAddress", selectedAddress);
 
   const getHighestValueCharges = (data) => {
     const chargesMap = {};
@@ -198,7 +200,8 @@ export default function () {
   useEffect(() => {
     if (responsee) {
       ToastMessage.Success("Address deleted succesfully");
-      getDetails();
+      // getDetails();
+      console.log("user_info", user_);
     }
   }, [responsee]);
 
@@ -206,7 +209,9 @@ export default function () {
   let cart = user_info?.cart;
 
   const User_data = useFetch({
-    endpoint: Endpoints.getUserDetails + user_?.user?._id,
+    endpoint: user_?.user
+      ? Endpoints.getUserDetails + user_?.user?._id
+      : Endpoints.getUserDetails + user_?._id,
   });
 
   const calculateTotalServiceTime = () => {
@@ -238,8 +243,6 @@ export default function () {
   const getDetails = async () => {
     try {
       let details = await User_data.fetchPromise();
-      console.log("details of address", details?.data?.address.length);
-
       setusersAddreses(details.data.address);
       setselectedAddress(details.data.address[0]);
     } catch (e) {
@@ -309,7 +312,6 @@ export default function () {
     return Array.from(commonPcatIds); // Convert set to array for easier manipulation
   };
 
-  console.log("selectedAddress", selectedAddress);
   const commonPcatIds = extractCommonPcatIds(user_info?.cart);
 
   const GetOtherCharges = useFetch({
@@ -344,7 +346,6 @@ export default function () {
   };
   useEffect(() => {
     if (focused) {
-      getDetails();
       GetAppoinmentData();
       getCharges();
       setselectedCoupen(null);
@@ -356,24 +357,26 @@ export default function () {
   }, [focused]);
 
   useEffect(() => {
+    if (user_?._id || (user_.user?._id && focused)) {
+      getDetails();
+    }
+  }, [focused]);
+
+  useEffect(() => {
     if (latitude !== undefined && longitude !== undefined) {
       getAddressFromCoordinates();
     }
   }, [latitude, longitude]);
 
   const getAddressFromCoordinates = () => {
-    console.log("call hua");
-    console.log("latitude", latitude);
-    console.log("longitude", longitude);
     fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${myApiKey}`
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log("data aya ", data);
         if (data.status === "OK") {
           const address = data.results[0].formatted_address;
-          console.log(address, "adress");
+
           setFind(true);
           setCurrentAddress(address);
         } else {
@@ -768,28 +771,11 @@ export default function () {
     return { ...item, slotTime: updatedSlotTime };
   });
 
-  console.log("updatedData", updatedData);
-
-  console.log("slotstoshow", slotsToShow);
-
   useEffect(() => {
     if (AppointmentsData.length > 0) {
       setSelectedDate(AppointmentsData[0].slotDate);
     }
   }, [AppointmentsData]);
-  // const scrollToCenter = index => {
-  //   if (slotDateScrollRef.current) {
-  //     const scrollViewWidth =
-  //       slotDateScrollRef.current.props.data.length * 120; // Adjust 120 according to your item width
-  //     const itemWidth = 100; // Adjust this according to your item width
-  //     const scrollToX =
-  //       index * itemWidth - scrollViewWidth / 2 + itemWidth / 2;
-  //     slotDateScrollRef.current.scrollToOffset({
-  //       offset: scrollToX,
-  //       animated: true,
-  //     });
-  //   }
-  // };
 
   const handleDatePresss = (item, index) => {
     setSelectedDate(item.slotDate);
@@ -799,8 +785,6 @@ export default function () {
   };
 
   const DateContent = ({ dates }) => {
-    const slotDateScrollRef = useRef(null);
-
     const scrollToCenter = (index) => {
       if (slotDateScrollRef.current) {
         const scrollViewWidth =
@@ -812,9 +796,18 @@ export default function () {
       }
     };
 
+    const scrollToCenterchild = (index) => {
+      if (slotDateScrollRef?.current && listWidth && itemWidth) {
+        const offset = index * itemWidth - listWidth / 2 + itemWidth / 2;
+        slotDateScrollRef?.current?.scrollTo({ x: offset, animated: true });
+      }
+    };
+
     const handleDatePress = React.useCallback(
       (item, index) => {
-        scrollToCenter(index);
+        // scrollToCenter(index);
+        // scrollToCenterchild(index);
+        setLazyLoading(true);
 
         setSelectedDate(item.slotDate);
         setSelectSlot(null);
@@ -865,6 +858,11 @@ export default function () {
   };
 
   const MemoizedDateContent = React.memo(DateContent);
+
+  const memoizedAppointmentsData = React.useMemo(() => {
+    console.log("Memoizing AppointmentsData");
+    return AppointmentsData;
+  }, [AppointmentsData]);
 
   const SlotComponent = ({ slots }) => {
     return (
@@ -945,17 +943,25 @@ export default function () {
       </View>
     );
   };
-  console.log("latitude", latitude, longitude);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (lazyLoading == true) {
+        setLazyLoading(false);
+      }
+    }, 1000);
+  }, [selectedDate]);
+
+  console.log("lazyLoading", lazyLoading);
   const region = {
     latitude: latitude,
     longitude: longitude,
-    latitudeDelta: 0.1,
-    longitudeDelta: 0.1,
+    latitudeDelta: 0.0005,
+    longitudeDelta: 0.0005,
   };
 
   let myApiKey = "AIzaSyCBRJgSZT50bFwgbOQHOWdi0giGUEdG3MY";
   // let myApiKey = "AIzaSyAlwvFRv3sBxaayi2qKQragSuTS4TwfmaQ";
-  console.log("editaadress", editAddress);
 
   let editData = {
     addressId: deleteAdr,
@@ -982,7 +988,7 @@ export default function () {
   };
   const { response, fetchData, isLoading } = useFetch({
     endpoint: editAddress?.FullAddress
-      ? Endpoints.editAddressEndpoint + user_?.user?._id
+      ? Endpoints.editAddressEndpoint + user_?._id
       : Endpoints.AddAddress,
     body: editAddress?.FullAddress ? editData : addData,
     method: "post",
@@ -1132,7 +1138,6 @@ export default function () {
   let coupengetData = {
     cartvalue: cart[0]?.PCGroup?.MinCartValue,
     cart: cart,
-    // inUserIDs: user_info?.userInfo?.user?._id,
   };
 
   const getCoupensList = useFetch({
@@ -1161,8 +1166,6 @@ export default function () {
   const handleCouponApplyHideModel = () => {
     CoupenApplyRef.current.hideModal();
   };
-
-  console.log("slotsToShow", slotsToShow);
 
   const scrollToCenterf = (index) => {
     if (scrollCenterRef?.current) {
@@ -1975,7 +1978,10 @@ export default function () {
                 borderTopRightRadius: 10,
                 marginTop: 20,
                 paddingTop: 10,
-                marginTop: "40%",
+                // marginTop: "40%",
+                position: "absolute",
+                bottom: 0,
+                width: "100%",
               }}
             >
               <CustomRow
@@ -2165,7 +2171,18 @@ export default function () {
           </AnimatedModal>
 
           <AnimatedModal ref={MapModelRef}>
-            <View>
+            <View
+              style={{
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+
+                position: "absolute",
+                bottom: 0,
+                width: "100%",
+                maxHeight: Dimensions.get("screen").height - 100,
+                overflow: "hidden",
+              }}
+            >
               <KeyboardAvoidingView behavior="position">
                 <ScrollView
                   automaticallyAdjustKeyboardInsets={true}
@@ -2220,7 +2237,7 @@ export default function () {
                         marginHorizontal: 10,
                       }}
                       v_center
-                      ratios={[2, 1]}
+                      ratios={[2, 0]}
                     >
                       <View
                         style={{
@@ -2244,16 +2261,16 @@ export default function () {
                           handleMapHideModal();
                         }}
                         style={{
-                          borderWidth: 1,
-                          borderColor: "grey",
-                          borderRadius: 10,
                           alignItems: "center",
                           justifyContent: "center",
                           padding: 5,
-                          marginTop: 10,
                         }}
                       >
-                        <CustomText medium value={"Change"} />
+                        <CustomIcon
+                          name={"pencil-square-o"}
+                          type={"FA"}
+                          size={18}
+                        />
                       </TouchableOpacity>
                     </CustomRow>
                     <View
@@ -2407,10 +2424,14 @@ export default function () {
           <AnimatedModal ref={slotRef}>
             <View
               style={{
-                flex: 1,
-                backgroundColor: "white",
-                borderTopRightRadius: 20,
-                borderTopLeftRadius: 20,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+
+                position: "absolute",
+                bottom: 0,
+                width: "100%",
+                maxHeight: Dimensions.get("screen").height - 100,
+                overflow: "hidden",
               }}
             >
               <ScrollView
@@ -2552,7 +2573,7 @@ export default function () {
                           marginHorizontal: 10,
                         }}
                       >
-                        <MemoizedDateContent dates={AppointmentsData} />
+                        <DateContent dates={memoizedAppointmentsData} />
                       </CustomRow>
                       {slotsToShow.length > 0 && (
                         <CustomRow
@@ -2580,7 +2601,11 @@ export default function () {
                           marginTop: 20,
                         }}
                       >
-                        <SlotComponent slots={updatedData} />
+                        {lazyLoading == true ? (
+                          <Loader size={23} />
+                        ) : (
+                          <SlotComponent slots={updatedData} />
+                        )}
                       </View>
                     </CustomCard>
                     <CustomCard>
@@ -2651,6 +2676,14 @@ export default function () {
           <AnimatedModal ref={ConfirmSlot}>
             <View
               style={{
+                //   borderTopLeftRadius: 10,
+                //   borderTopRightRadius: 10,
+
+                //   position: "absolute",
+                //   bottom: 0,
+                //   width: "100%",
+                //   maxHeight: Dimensions.get("screen").height - 100,
+                //   overflow: "hidden",
                 flex: 1,
               }}
             >
@@ -2822,9 +2855,8 @@ export default function () {
                 fetchDetails={true}
                 ref={suggestionsRef}
                 nearbyPlacesAPI="GooglePlacesSearch"
-                placeholder="Search"
+                placeholder="Search Apartment,Building Name,Area"
                 onPress={(data, details = null) => {
-                  console.log("data", data);
                   let item = {
                     latitude: details.geometry.location.lat,
                     longitude: details.geometry.location.lng,
@@ -2983,7 +3015,7 @@ export default function () {
                         setHouse(editAddress?.houseOrFlatNo);
                         setLandmark(editAddress?.landmark);
                         setApartment(editAddress?.buildingName);
-                        console.log("editAddress", editAddress);
+
                         handleEdittHideModal();
                         handleMapShowModal();
                       }}
@@ -3010,9 +3042,15 @@ export default function () {
           <AnimatedModal ref={CoupenRef}>
             <View
               style={{
-                borderTopRightRadius: 20,
-                borderTopLeftRadius: 20,
-                backgroundColor: "white",
+                // borderTopRightRadius: 20,
+                // borderTopLeftRadius: 20,
+                // backgroundColor: "white",
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+
+                position: "absolute",
+                bottom: 0,
+                width: "100%",
               }}
             >
               <CustomRow
@@ -3139,7 +3177,7 @@ export default function () {
                       if (item?.couponType == "FirstTime" || "Fixed") {
                         afterDiscount = item?.couponValue;
                       }
-                      console.log("affrrrre", afterDiscount);
+
                       if (item?.couponType == "discount") {
                         if (item?.couponCapping) {
                           afterDiscount = item?.couponCapping;

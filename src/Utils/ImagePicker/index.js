@@ -25,7 +25,6 @@ export default function () {
       });
     return;
     launchImageLibrary({ quality: 0.5, includeBase64: true }, (resp) => {
-      // console.log('resp',resp);
       if (resp.didCancel) {
         reject(resp);
       } else {

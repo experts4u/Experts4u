@@ -56,7 +56,9 @@ export default function () {
   const user_info = useSelector((v) => v.user.userInfo);
 
   const User_data = useFetch({
-    endpoint: Endpoints.getUserDetails + user_info?.user?._id,
+    endpoint: user_info?.user
+      ? Endpoints.getUserDetails + user_info?.user?._id
+      : Endpoints.getUserDetails + user_info?._id,
   });
   const getDetails = async () => {
     try {
@@ -76,8 +78,6 @@ export default function () {
   const GetTopBannerImages = async () => {
     try {
       let tBannerImg = await TopBanner.fetchPromise();
-      // setHeroData(HeroSliderData.Data);
-      // console.log('hhhh', HeroSliderData);
 
       let data = tBannerImg.data;
       // let tBannerImgs = data?.map(item => item.SliderImage);
@@ -167,7 +167,7 @@ export default function () {
   };
 
   useEffect(() => {
-    if (focused) {
+    if (user_info?._id || (user_info.user?._id && focused)) {
       getDetails();
     }
   }, [focused]);
@@ -378,41 +378,6 @@ export default function () {
   );
 
   let pcname = params?.pcname;
-
-  console.log("EditPackageName", EditPackageName);
-  console.log("CustomizePackage", CustomizePackage);
-  console.log("EditPackageIndex", EditPackageIndex);
-
-  // useEffect(() => {
-  //   const calculateImageHeights = async () => {
-  //     try {
-  //       if (brandUse?.length === 0) return; // Prevent unnecessary calculation if lastImage is empty
-
-  //       const heights = await Promise.all(
-  //         brandUse?.map(async (image, index) => {
-  //           console.log('image andar vali', image);
-  //           return new Promise((resolve, reject) => {
-  //             Image.getSize(
-  //               Endpoints.baseUrl + image,
-  //               (width, height) => {
-  //                 const calculatedHeight =
-  //                   (Dimensions.get('window').width / width) * height;
-  //                 resolve({id: index, height: calculatedHeight});
-  //               },
-  //               reject,
-  //             );
-  //           });
-  //         }),
-  //       );
-  //       setImageHeights(heights);
-  //     } catch (error) {
-  //       console.error('Error fetching image sizes:', error);
-  //       // Handle the error here (e.g., display an error message to the user)
-  //     }
-  //   };
-
-  //   calculateImageHeights();
-  // }, [brandUse]);
 
   return (
     <Container>

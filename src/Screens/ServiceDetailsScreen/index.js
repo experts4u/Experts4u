@@ -87,6 +87,7 @@ export default function () {
   const [selectedCustomizeServices, setSelectedcustomizeServices] = useState(
     []
   );
+  const [customizedServiceId, setcustomizedServiceId] = useState([]);
   const [viewDetails, setViewDetails] = useState();
   const [viewDetailsPackageModal, setviewDetailsPackageModal] = useState();
   const [totalTime, setTotalTime] = useState(0);
@@ -114,8 +115,6 @@ export default function () {
   });
 
   let ServiceId = params?.serviceId;
-
-  console.log("selectedpackagedata", selectedpackagedata);
 
   useEffect(() => {
     if (focused) {
@@ -200,6 +199,7 @@ export default function () {
 
   let PCGroup = params.PCGroup;
 
+  console.log("PCGroup", PCGroup);
   // Sum of packageRegulerPrice of all items
   const sumRegulerPrice = user_info?.cart.reduce(
     (total, item) =>
@@ -213,7 +213,7 @@ export default function () {
   );
 
   let minCartValue = parseInt(PCGroup?.MinCartValue);
-  let diffrence = parseInt(PCGroup?.MinCartValue) - parseInt(sumTotalPrice);
+  let diffrence = parseInt(minCartValue) - parseInt(sumTotalPrice);
 
   const TotalSavedItemsCart =
     parseInt(sumRegulerPrice) - parseInt(sumTotalPrice);
@@ -460,6 +460,8 @@ export default function () {
       serviceType: serviceType,
       serviceTime: service?.ServiceTime,
       serviceIdd: serviceIdd,
+      ccName: ccName,
+      iscombo: service.ChildCatIDs.Iscombo,
     });
   });
 
@@ -494,6 +496,8 @@ export default function () {
   useEffect(() => {
     initializeSelectedPrices();
   }, []);
+
+  console.log("selectedServices", selectedServices);
   const GroupedServicesList = ({ groupedServices }) => {
     const renderItem = ({ item }) => {
       return (
@@ -515,6 +519,7 @@ export default function () {
           <FlatList
             data={item.services}
             renderItem={({ item, index }) => {
+              console.log("item", item);
               return (
                 <View
                   style={{
@@ -523,74 +528,76 @@ export default function () {
                     marginTop: 10,
                   }}
                 >
-                  {/* {item?.ServiceVarients[0]?.ServiceType?.Name != "NA" && (
-                    <>
-                      <CustomRow>
-                        <CustomText
-                          style={{
-                            fontWeight: "600",
-                            marginBottom: 5,
-                          }}
-                          color={Theme.Black}
-                          value={
-                            item?.ChildCatIDs?.Iscombo === 1
-                              ? "\u2022 " +
-                                item?.ServiceVarients[0]?.ServiceType?.Name
-                              : "\u2022 " + item?.ChildCatIDs?.CCName + " : "
-                          }
-                          size={12}
-                        />
-
-                        <CustomText
-                          value={
-                            item?.ChildCatIDs?.Iscombo === 1
-                              ? " - " + item?.ServiceName
-                              : item?.ServiceName +
-                                " - " +
-                                item?.ServiceVarients[0]?.ServiceType?.Name
-                          }
-                          size={12}
-                        />
-                      </CustomRow>
-                    </>
-                  )}
-                  {item?.ServiceVarients[0]?.ServiceType?.Name == "NA" && (
-                    <CustomRow>
-                      <CustomText
-                        style={{
-                          fontWeight: "600",
-                          marginBottom: 5,
-                        }}
-                        color={Theme.Black}
-                        value={"\u2022 " + item?.ChildCatIDs?.CCName + " : "}
-                        size={12}
-                      />
-                      <CustomText size={12} value={item?.ServiceName} />
-                    </CustomRow>
-                  )} */}
-
                   <CustomRow v_center ratios={[0, 1, 0]}>
                     <TouchableOpacity
                       onPress={() => {
                         const isItemSelected = selectedServices.some(
-                          (service) => service.ServiceName === item.serviceName
+                          (service) => service.id == item.serviceIdd
                         );
 
                         if (isItemSelected) {
-                          // If the item is already selected, remove it from the state
-                          handleRemoveService(item.serviceName);
+                          let service = "";
+
+                          if (item?.serviceType[0]?.ServiceType?.Name != "NA") {
+                            console.log("item  with cariants", item);
+                            value =
+                              item?.Iscombo === 1
+                                ? item?.serviceType[0]?.ServiceType?.Name
+                                : item?.ccName + " : ";
+
+                            fgr =
+                              item?.Iscombo === 1
+                                ? " - " + item?.serviceName
+                                : item?.serviceName +
+                                  " - " +
+                                  item?.serviceType[0]?.ServiceType?.Name;
+
+                            service = value + fgr;
+                          } else if (
+                            item?.serviceType[0]?.ServiceType?.Name == "NA"
+                          ) {
+                            console.log("item  without cariants", item);
+                            df = item?.ccName + " : " + item?.serviceName;
+
+                            service = df;
+                          }
+                          handleRemoveService(item?.serviceIdd);
                         } else {
-                          // If the item is not selected, add it to the state
+                          let service = "";
+
+                          if (item?.serviceType[0]?.ServiceType?.Name != "NA") {
+                            console.log("item  with cariants");
+                            value =
+                              item?.Iscombo === 1
+                                ? item?.serviceType[0]?.ServiceType?.Name
+                                : item?.ccName + " : ";
+
+                            fgr =
+                              item?.Iscombo === 1
+                                ? " - " + item?.serviceName
+                                : item?.serviceName +
+                                  " - " +
+                                  item?.serviceType[0]?.ServiceType?.Name;
+
+                            service = value + fgr;
+                          } else if (
+                            item?.serviceType[0]?.ServiceType?.Name == "NA"
+                          ) {
+                            df = item?.ccName + " : " + item?.serviceName;
+
+                            service = df;
+                          }
 
                           handleCheckboxToglee(
-                            item.serviceName,
+                            service,
                             parseInt(
                               item?.serviceType[0]?.VarientDiscription[0]
                                 ?.ServiceTime
                             ),
                             item.salePrice,
                             item.regulerPrice,
-                            item?.serviceType[0]?.ServiceType?.Name
+                            item?.serviceType[0]?.ServiceType?.Name,
+                            item?.serviceIdd
                           );
                         }
                       }}
@@ -601,8 +608,7 @@ export default function () {
                         size={14}
                         name={
                           selectedServices.some(
-                            (service) =>
-                              service.ServiceName === item.serviceName
+                            (service) => service.id == item.serviceIdd
                           )
                             ? "checkbox-marked"
                             : "checkbox-blank-outline"
@@ -610,38 +616,170 @@ export default function () {
                       />
                     </TouchableOpacity>
 
-                    <View
-                      style={{
-                        marginLeft: 10,
+                    <TouchableWithoutFeedback
+                      onPress={() => {
+                        const isItemSelected = selectedServices.some(
+                          (service) => service.id == item.serviceIdd
+                        );
+                        console.log("isItemSelected", isItemSelected);
+
+                        if (isItemSelected) {
+                          let service = "";
+
+                          if (item?.serviceType[0]?.ServiceType?.Name != "NA") {
+                            console.log("item  with cariants", item);
+                            value =
+                              item?.Iscombo === 1
+                                ? item?.serviceType[0]?.ServiceType?.Name
+                                : item?.ccName + " : ";
+
+                            fgr =
+                              item?.Iscombo === 1
+                                ? " - " + item?.serviceName
+                                : item?.serviceName +
+                                  " - " +
+                                  item?.serviceType[0]?.ServiceType?.Name;
+
+                            service = value + fgr;
+                          } else if (
+                            item?.serviceType[0]?.ServiceType?.Name == "NA"
+                          ) {
+                            console.log("item  without cariants", item);
+                            df = item?.ccName + " : " + item?.serviceName;
+
+                            service = df;
+                          }
+                          // If the item is already selected, remove it from the state
+                          handleRemoveService(item?.serviceIdd);
+                        } else {
+                          let service = "";
+
+                          if (item?.serviceType[0]?.ServiceType?.Name != "NA") {
+                            console.log("item  with cariants");
+                            value =
+                              item?.Iscombo === 1
+                                ? item?.serviceType[0]?.ServiceType?.Name
+                                : item?.ccName + " : ";
+
+                            fgr =
+                              item?.Iscombo === 1
+                                ? " - " + item?.serviceName
+                                : item?.serviceName +
+                                  " - " +
+                                  item?.serviceType[0]?.ServiceType?.Name;
+
+                            service = value + fgr;
+                          } else if (
+                            item?.serviceType[0]?.ServiceType?.Name == "NA"
+                          ) {
+                            df = item?.ccName + " : " + item?.serviceName;
+
+                            service = df;
+                          }
+
+                          handleCheckboxToglee(
+                            service,
+                            parseInt(
+                              item?.serviceType[0]?.VarientDiscription[0]
+                                ?.ServiceTime
+                            ),
+                            item.salePrice,
+                            item.regulerPrice,
+                            item?.serviceType[0]?.ServiceType?.Name,
+                            item?.serviceIdd
+                          );
+                        }
                       }}
                     >
-                      <CustomText regular value={item.serviceName} />
+                      <View
+                        style={{
+                          marginLeft: 10,
+                        }}
+                      >
+                        {/* {item?.ServiceVarients[0]?.ServiceType?.Name !=
+                          "NA" && (
+                          <>
+                            <CustomRow>
+                              <CustomText
+                                style={{
+                                  fontWeight: "600",
+                                  marginBottom: 5,
+                                }}
+                                color={Theme.Black}
+                                value={
+                                  item?.ChildCatIDs?.Iscombo === 1
+                                    ? "\u2022 " +
+                                      item?.ServiceVarients[0]?.ServiceType
+                                        ?.Name
+                                    : "\u2022 " +
+                                      item?.ChildCatIDs?.CCName +
+                                      " : "
+                                }
+                                size={12}
+                              />
 
-                      {((selectedService) =>
-                        selectedService ? (
-                          <View>
+                              <CustomText
+                                value={
+                                  item?.ChildCatIDs?.Iscombo === 1
+                                    ? " - " + item?.ServiceName
+                                    : item?.ServiceName +
+                                      " - " +
+                                      item?.ServiceVarients[0]?.ServiceType
+                                        ?.Name
+                                }
+                                size={12}
+                              />
+                            </CustomRow>
+                          </>
+                        )}
+                        {item?.ServiceVarients[0]?.ServiceType?.Name ==
+                          "NA" && (
+                          <CustomRow>
                             <CustomText
-                              regular
+                              style={{
+                                fontWeight: "600",
+                                marginBottom: 5,
+                              }}
+                              color={Theme.Black}
                               value={
-                                selectedService.ServicePrice !== undefined
-                                  ? "₹ " + selectedService.ServicePrice
-                                  : "₹ " + item?.salePrice
+                                "\u2022 " + item?.ChildCatIDs?.CCName + " : "
                               }
+                              size={12}
                             />
-                          </View>
-                        ) : (
-                          <View>
-                            <CustomText
-                              regular
-                              value={"₹ " + item?.salePrice}
-                            />
-                          </View>
-                        ))(
-                        selectedServices.find(
-                          (service) => service.ServiceName === item.serviceName
-                        )
-                      )}
-                    </View>
+                            <CustomText size={12} value={item?.ServiceName} />
+                          </CustomRow>
+                        )} */}
+                        <CustomText regular value={item.serviceName} />
+
+                        {((selectedService) =>
+                          selectedService ? (
+                            <View>
+                              <CustomText
+                                size={12}
+                                regular
+                                value={
+                                  selectedService.ServicePrice !== undefined
+                                    ? "₹ " + selectedService.ServicePrice
+                                    : "₹ " + item?.salePrice
+                                }
+                              />
+                            </View>
+                          ) : (
+                            <View>
+                              <CustomText
+                                size={12}
+                                regular
+                                value={"₹ " + item?.salePrice}
+                              />
+                            </View>
+                          ))(
+                          selectedServices.find(
+                            (service) =>
+                              service.ServiceName === item.serviceName
+                          )
+                        )}
+                      </View>
+                    </TouchableWithoutFeedback>
 
                     {item?.serviceType[0]?.ServiceType?.Name != "NA" && (
                       <TouchableOpacity
@@ -651,9 +789,10 @@ export default function () {
                           borderWidth: 1,
                           borderColor: "grey",
                           borderWidth: 1,
-                          // width: 90,
+                          width: 90,
                           height: 25,
                           borderRadius: 5,
+                          overflow: "hidden",
                           paddingHorizontal: 10,
                         }}
                         onPress={() => {
@@ -661,10 +800,17 @@ export default function () {
                           handleSelctserviceModal();
                         }}
                       >
-                        <CustomRow v_center>
+                        <CustomRow
+                          ratios={[1, 0]}
+                          style={{
+                            width: "100%",
+                          }}
+                          v_center
+                        >
                           <CustomText
                             numberOfLines={1}
                             regular
+                            size={12}
                             value={
                               selectedServices.find(
                                 (service) =>
@@ -769,29 +915,6 @@ export default function () {
     parseInt(totalRegularPrice) - parseInt(totalSalePrice);
 
   const RenderServices = React.memo(({ item }) => {
-    const handleShare = async () => {
-      try {
-        const result = await Share.share({
-          message: "abcd", // Message to be shared
-        });
-        if (result.action === Share.sharedAction) {
-          if (result.activityType) {
-            // Shared successfully
-            console.log("Shared successfully");
-          } else {
-            // Dismissed the share sheet
-            console.log("Dismissed the share sheet");
-          }
-        } else if (result.action === Share.dismissedAction) {
-          // Share was dismissed
-          console.log("Share was dismissed");
-        }
-      } catch (error) {
-        // Error while sharing
-        console.error("Error while sharing:", error.message);
-      }
-    };
-
     const QuantityControl = ({ quantity, onIncrease, onDecrease }) => {
       return (
         <View
@@ -1103,7 +1226,6 @@ export default function () {
                 onPress={() => {
                   setViewDetails(item);
                   handleDetailsShowModal();
-                  console.log("pressed", viewDetails);
                 }}
                 style={{
                   marginTop: 40,
@@ -1139,6 +1261,20 @@ export default function () {
       let totalSalePrice = 0;
       let totalRegularPrice = 0;
       let totalServiceTime = 0;
+
+      const extractAndSplitLogs = (logs) => {
+        return logs.map((log) => {
+          // Remove the "LOG  service names " part
+          let trimmedLog = log.replace("LOG  service names ", "");
+          // Split into parts before and after the colon
+          let parts = trimmedLog.split(" : ");
+          return {
+            beforeColon: parts[0],
+            afterColon: parts[1],
+          };
+        });
+      };
+      let ffdd = foundItem && extractAndSplitLogs(foundItem?.packageName);
 
       services.forEach((servicee) => {
         let service = servicee?.service;
@@ -1221,8 +1357,6 @@ export default function () {
         }
       });
 
-      console.log("cart", cart);
-      console.log("primaryServices", primaryServices);
       const selectedEditPckageDetails = {
         packageName: primaryServices,
         packageTotalTime: totalTime ? totalTime : totalServiceTime,
@@ -1242,28 +1376,6 @@ export default function () {
         PCGroup: selectedpackagedata
           ? selectedpackagedata?.ChildId[0]?.PCName[0]?.PCGroup
           : item?.ChildId[0]?.PCName[0]?.PCGroup,
-        pcatId: pcatId,
-      };
-
-      const selectedEditPckageDetailsonfirst = {
-        packageName: primaryServices,
-        packageTotalTime: totalTime ? totalTime : totalServiceTime,
-        packagetotalPrice: editableTotalPrice
-          ? editableTotalPrice
-          : totalSalePrice,
-        packageRegulerPrice: editableRegulerPrice
-          ? editableRegulerPrice
-          : totalRegularPrice,
-        type: "Editable",
-        packageTitle: selectedpackagedata?.packageTitle
-          ? selectedpackagedata?.packageTitle
-          : item?.packageTitle,
-        quantity: 1,
-        id: selectedpackagedata?._id ? selectedpackagedata?._id : item?._id,
-
-        PCGroup: selectedpackagedata
-          ? selectedpackagedata?.ChildCatIDs?.PCName[0]?.PCGroup
-          : Package?.ChildCatIDs?.PCName[0]?.PCGroup,
         pcatId: pcatId,
       };
 
@@ -1371,17 +1483,24 @@ export default function () {
                 />
 
                 {foundItem ? (
-                  foundItem?.packageName?.map((item, index) => {
+                  ffdd?.map((item, index) => {
                     return (
-                      <View>
+                      <View
+                        style={{
+                          width: "85%",
+                        }}
+                      >
                         <CustomRow>
-                          <CustomText value={"\u2022 "} />
                           <CustomText
-                            value={item}
-                            medium
-                            color={Theme.Black}
                             size={12}
+                            value={"\u2022 " + item?.beforeColon + " : "}
+                            style={{
+                              fontWeight: "600",
+                              marginBottom: 5,
+                            }}
+                            color={Theme.Black}
                           />
+                          <CustomText size={12} value={item?.afterColon} />
                         </CustomRow>
                       </View>
                     );
@@ -1799,7 +1918,7 @@ export default function () {
                                       color={Theme.PrimaryColor}
                                       size={19}
                                       name={
-                                        selectedCustomizeServices.includes(
+                                        foundItem?.packageName?.includes(
                                           item?.ServiceVarients[0]?.ServiceType
                                             ?.Name == "NA"
                                             ? item.ServiceName +
@@ -2342,7 +2461,8 @@ export default function () {
     ServiceTime,
     ServicePrice,
     RegulerPrice,
-    variantId
+    variantId,
+    id
   ) => {
     console.log(
       ServiceName,
@@ -2354,7 +2474,7 @@ export default function () {
 
     setSelectedServices((prevSelectedServices) => {
       const index = prevSelectedServices.findIndex(
-        (service) => service.ServiceName === ServiceName
+        (service) => service.id === id
       );
       const updatedServices = [...prevSelectedServices];
       if (index === -1) {
@@ -2364,6 +2484,7 @@ export default function () {
           ServicePrice: parseInt(ServicePrice),
           RegulerPrice: parseInt(RegulerPrice),
           variantId,
+          id,
         });
       } else {
         updatedServices[index] = {
@@ -2373,6 +2494,7 @@ export default function () {
           ServicePrice: parseInt(ServicePrice),
           RegulerPrice: parseInt(RegulerPrice),
           variantId,
+          id,
         };
       }
 
@@ -2383,7 +2505,7 @@ export default function () {
   const handleRemoveService = (serviceName) => {
     setSelectedServices((prevSelectedServices) => {
       const updatedServices = prevSelectedServices.filter(
-        (service) => service.ServiceName !== serviceName
+        (service) => service.id !== serviceName
       );
       return updatedServices;
     });
@@ -2393,12 +2515,13 @@ export default function () {
     ServiceName,
     ServiceTime,
     ServicePrice,
-    RegulerPrice
+    RegulerPrice,
+    id
   ) => {
     // Check if the service is already selected
-    const index = selectedCustomizeServices.indexOf(ServiceName);
+    const index = selectedCustomizeServices.indexOf(id);
     const selectedCount = selectedCustomizeServices.length;
-    console.log("number", selectedCustomizePackageData?.mandatoryServices);
+    console.log("index", index);
     const maxMandatoryServices = parseInt(
       selectedCustomizePackageData?.mandatoryServices || null
     );
@@ -2419,6 +2542,7 @@ export default function () {
 
     if (index === -1) {
       setSelectedcustomizeServices([...selectedCustomizeServices, ServiceName]);
+      setcustomizedServiceId([...customizedServiceId, id]);
 
       setTotalCustomizeTime((prevTotalTime) => prevTotalTime + ServiceTime);
       setCustomizeTotalPrice(
@@ -2430,6 +2554,9 @@ export default function () {
     } else if (index !== -1) {
       setSelectedcustomizeServices(
         selectedCustomizeServices.filter((service) => service !== ServiceName)
+      );
+      setcustomizedServiceId(
+        customizedServiceId.filter((service) => service !== id)
       );
 
       setTotalCustomizeTime((prevTotalTime) => prevTotalTime - ServiceTime);
@@ -2447,12 +2574,17 @@ export default function () {
     modelRef?.current?.showModal();
   };
   const handleCustomizeModal = () => {
+    setSelectedcustomizeServices([]);
+    setTotalCustomizeTime(0);
     customizePackageRef?.current?.showModal();
   };
   const handleHideModal = () => {
+    setSelectedcustomizeServices([]);
+    setSelectedServices([]);
     modelRef?.current?.hideModal();
   };
   const handlecustomizeHideModal = () => {
+    setSelectedcustomizeServices([]);
     customizePackageRef?.current?.hideModal();
   };
   const handleDetailsShowModal = () => {
@@ -2498,7 +2630,10 @@ export default function () {
 
   let TotalItems = selectedCustomizeServices.length;
   let TotalEditableItems = selectedServices.length;
-  let TotalSaved = customizeRegulerPrice - customizeTotalPrice;
+  let TotalSaved =
+    selectedCustomizePackageData?.RPrice - selectedCustomizePackageData?.payble;
+
+  // let TotalSaved = customizeRegulerPrice - customizeTotalPrice;
   console.log("totalSalePrice", totalSalePrice);
   console.log("totalRegularPrice", totalRegularPrice);
   // const discountAmount =
@@ -2514,25 +2649,21 @@ export default function () {
       10
     );
     const discountAmount = Math.round(
-      (totalRegularPrice * discountPercentage) / 100
+      (totalSalePrice * discountPercentage) / 100
     );
     return {
       discountAmount,
-      discountedPrice: totalRegularPrice - discountAmount,
+      discountedPrice: totalSalePrice - discountAmount,
     };
   };
 
   let { discountedPrice } = calculateDiscountedPrice(
-    totalRegularPrice,
+    totalSalePrice,
     discountAmount
   );
 
-  // console.log("discountedPrice", discountedPrice);
-
-  // const discountAmount = Math.round(
-  //   (totalRegularPrice * parseInt(selectedpackagedata?.discount)) / 100
-  // );
-  let totalSavedPrice = totalRegularPrice - discountAmount;
+  let totalSavedPrice = totalRegularPrice - discountedPrice;
+  let moreServiceValueForDiscount = 799 - totalSalePrice;
 
   const selectedEditPckageDetails = {
     packageName: selectedServiceNames,
@@ -2540,7 +2671,7 @@ export default function () {
       (total, service) => total + parseInt(service?.ServiceTime),
       0
     ),
-    packagetotalPrice: discountedPrice,
+    packagetotalPrice: totalSalePrice > 799 ? discountedPrice : totalSalePrice,
     packageRegulerPrice: totalRegularPrice,
     type: "Editable",
     packageTitle: selectedpackagedata?.packageTitle,
@@ -2550,7 +2681,6 @@ export default function () {
     pcatId: selectedpackagedata?.PcatId,
   };
 
-  console.log("selectedpackagedata", selectedpackagedata);
   let packageTotalTimeInModal = 0;
   let packageTotalPriceInModal =
     viewDetailsPackageModal?.RPrice || totalRegularPrice;
@@ -2592,161 +2722,6 @@ export default function () {
 
     packageTotalTimeInModal += serviceTime;
   });
-
-  const handleViewDetailsModal = () => {
-    if (viewDetailsPackageModal.packageType == "Editable") {
-      let services = viewDetailsPackageModal?.serviceId;
-
-      const serviceNames = [];
-      let totalSalePrice = 0;
-      let totalRegularPrice = 0;
-      let totalServiceTime = 0;
-      // Iterate over each service
-
-      services.forEach((servicee) => {
-        let service = servicee.service;
-        // Extract service name
-        const serviceName = service.ServiceName;
-        serviceNames.push(serviceName);
-
-        // Extract total sale price and total regular price
-        service.ServiceVarients.forEach((variant) => {
-          variant.VarientDiscription.forEach((discription) => {
-            totalSalePrice += parseInt(discription.salePrice);
-            totalRegularPrice += parseInt(discription.regularPrice);
-            totalServiceTime += parseInt(
-              service?.ServiceVarients[0]?.VarientDiscription[0]?.ServiceTime
-            );
-          });
-        });
-      });
-
-      let primaryServices = [];
-      viewDetailsPackageModal?.serviceId?.forEach((serviceObjectt) => {
-        let serviceObject = serviceObjectt?.service;
-        const serviceNames = serviceObject?.ServiceName;
-        if (serviceNames) {
-          primaryServices.push(serviceNames);
-        }
-      });
-      const selectedEditPckageDetails = {
-        packageName: primaryServices,
-        packageTotalTime: totalServiceTime,
-        packagetotalPrice: totalSalePrice,
-        packageRegulerPrice: totalRegularPrice,
-        type: "Editable",
-        packageTitle: viewDetailsPackageModal?.packageTitle,
-        quantity: 1,
-        id: viewDetailsPackageModal?._id,
-        PCGroup: viewDetailsPackageModal?.ChildId[0]?.PCName[0]?.PCGroup,
-        pcatId: viewDetailsPackageModal.PCatId,
-      };
-
-      addToCartAction(selectedEditPckageDetails);
-      handleDetailsPackageHideModal();
-
-      console.log("Editable Pressed", selectedEditPckageDetails);
-    }
-
-    if (viewDetailsPackageModal.packageType == "Customize") {
-      let services = viewDetailsPackageModal?.serviceId;
-
-      console.log("customized", services);
-
-      const serviceNames = [];
-      let totalSalePrice = 0;
-      let totalRegularPrice = 0;
-      let totalServiceTime = 0;
-      // Iterate over each service
-      services.forEach((servicee) => {
-        let service = servicee.service;
-
-        // Extract service name
-        const serviceName = service.ServiceName;
-        serviceNames.push(serviceName);
-
-        // Extract total sale price and total regular price
-        service.ServiceVarients.forEach((variant) => {
-          variant.VarientDiscription.forEach((discription) => {
-            totalSalePrice += parseInt(discription.salePrice);
-            totalRegularPrice += parseInt(discription.regularPrice);
-            totalServiceTime += parseInt(
-              service?.ServiceVarients[0]?.VarientDiscription[0]?.ServiceTime
-            );
-          });
-        });
-      });
-
-      let primaryServices = [];
-      viewDetailsPackageModal?.serviceId?.forEach((serviceObject) => {
-        const serviceNames = serviceObject?.ServiceName;
-        if (serviceNames) {
-          primaryServices.push(serviceNames);
-        }
-      });
-      const selectedCustomizePckageDetails = {
-        packageName: primaryServices,
-        packageTotalTime: totalServiceTime,
-        packagetotalPrice: totalSalePrice,
-        packageRegulerPrice: totalRegularPrice,
-        type: "Customize",
-        packageTitle: viewDetailsPackageModal?.packageTitle,
-        quantity: 1,
-        id: viewDetailsPackageModal?._id,
-        PCGroup: viewDetailsPackageModal?.ChildCatIDs?.PCName[0]?.PCGroup,
-        pcatId: viewDetailsPackageModal?.PcatId,
-      };
-
-      addToCartAction(selectedCustomizePckageDetails);
-      handleDetailsPackageHideModal();
-
-      console.log("Customize Pressed", selectedCustomizePckageDetails);
-    } else {
-      let services = viewDetailsPackageModal?.serviceId;
-
-      const serviceNames = [];
-      let totalSalePrice = 0;
-      let totalRegularPrice = 0;
-      let totalServiceTime = 0;
-
-      // Iterate over each service
-      services.forEach((servicee) => {
-        let service = servicee.service;
-        // Extract service name
-        const serviceName = service.ServiceName;
-        serviceNames.push(serviceName);
-
-        // Extract total sale price and total regular price
-        service.ServiceVarients.forEach((variant) => {
-          variant.VarientDiscription.forEach((discription) => {
-            totalSalePrice += parseInt(discription.salePrice);
-            totalRegularPrice += parseInt(discription.regularPrice);
-            totalServiceTime += parseInt(
-              service?.ServiceVarients[0]?.VarientDiscription[0]?.ServiceTime
-            );
-          });
-        });
-      });
-
-      const selectedNormalPckageDetails = {
-        packageName: serviceNames,
-        packageTotalTime: totalServiceTime,
-        packagetotalPrice: totalSalePrice,
-        packageRegulerPrice: totalRegularPrice,
-        type: "Normal",
-        packageTitle: viewDetailsPackageModal?.packageTitle,
-        quantity: 1,
-        id: viewDetailsPackageModal?._id,
-        PCGroup: viewDetailsPackageModal?.ChildCatIDs?.PCName[0]?.PCGroup,
-        pcatId: viewDetailsPackageModal?.PcatId,
-      };
-
-      addToCartAction(selectedNormalPckageDetails);
-      handleDetailsPackageHideModal();
-
-      console.log("Editable Pressed", selectedNormalPckageDetails);
-    }
-  };
 
   const renderTitle = (title) => {
     return (
@@ -2813,7 +2788,7 @@ export default function () {
     },
   };
 
-  console.log("selectedpackagedata", selectedpackagedata);
+  console.log("cartt", cart);
 
   return (
     <Container>
@@ -3200,11 +3175,26 @@ export default function () {
                         flexDirection: "row",
                       }}
                     >
-                      <CustomText
-                        margin_h={7}
-                        color={"white"}
-                        value={"Congratulation you saved ₹ " + totalSavedPrice}
-                      />
+                      {moreServiceValueForDiscount > 0 ? (
+                        <CustomText
+                          margin_h={7}
+                          color={"white"}
+                          value={
+                            "Add services ₹" +
+                            moreServiceValueForDiscount +
+                            " more to get 10% off"
+                          }
+                        />
+                      ) : (
+                        <CustomText
+                          margin_h={7}
+                          color={"white"}
+                          value={
+                            "Congratulation! you have saved ₹ " +
+                            totalSavedPrice
+                          }
+                        />
+                      )}
                     </View>
                     <CustomRow
                       style={{
@@ -3227,9 +3217,15 @@ export default function () {
                           <CustomText
                             margin_h={10}
                             align={"left"}
-                            value={discountedPrice ? discountedPrice : "0"}
+                            style={{
+                              fontWeight: "600",
+                            }}
+                            value={
+                              totalSalePrice > 799
+                                ? "₹ " + discountedPrice
+                                : "₹ " + totalSalePrice
+                            }
                             size={15}
-                            medium
                           />
                           <CustomText
                             size={11}
@@ -3237,7 +3233,7 @@ export default function () {
                               textDecorationLine: "line-through",
                             }}
                             value={
-                              "₹" + totalRegularPrice ? totalRegularPrice : "0"
+                              totalRegularPrice ? "₹ " + totalRegularPrice : "0"
                             }
                           />
                         </View>
@@ -3289,11 +3285,19 @@ export default function () {
             <AnimatedModal ref={customizePackageRef}>
               <View
                 style={{
-                  flex: 1,
+                  // flex: 1,
                   backgroundColor: "white",
+                  // borderTopLeftRadius: 10,
+                  // borderTopRightRadius: 10,
+                  // paddingBottom: 150,
                   borderTopLeftRadius: 10,
                   borderTopRightRadius: 10,
-                  paddingBottom: 150,
+
+                  position: "absolute",
+                  bottom: 0,
+                  width: "100%",
+                  maxHeight: Dimensions.get("screen").height - 100,
+                  overflow: "hidden",
                 }}
               >
                 <View
@@ -3361,8 +3365,8 @@ export default function () {
                 </View>
                 <ScrollView
                   contentContainerStyle={{
-                    flexGrow: 1,
-                    paddingBottom: "80%",
+                    // flexGrow: 1,
+                    paddingBottom: "40%",
                   }}
                 >
                   <View
@@ -3404,16 +3408,15 @@ export default function () {
                                               "-" +
                                               item?.ServiceVarients[0]
                                                 ?.ServiceType?.Name,
-
                                         parseInt(
                                           item.ServiceVarients[0]
                                             .VarientDiscription[0].ServiceTime
                                         ),
-
                                         item.ServiceVarients[0]
                                           .VarientDiscription[0].salePrice,
                                         item.ServiceVarients[0]
-                                          .VarientDiscription[0].regularPrice
+                                          .VarientDiscription[0].regularPrice,
+                                        item?._id
                                       );
                                     }}
                                   >
@@ -3423,7 +3426,6 @@ export default function () {
                                       size={19}
                                       name={
                                         selectedCustomizeServices.includes(
-                                          //
                                           item?.ServiceVarients[0]?.ServiceType
                                             ?.Name == "NA"
                                             ? item.ServiceName +
@@ -3440,7 +3442,61 @@ export default function () {
                                     />
                                   </TouchableOpacity>
 
-                                  <View
+                                  {item?.ServiceVarients[0]?.ServiceType
+                                    ?.Name != "NA" && (
+                                    <>
+                                      <CustomRow>
+                                        <CustomText
+                                          style={{
+                                            fontWeight: "600",
+                                          }}
+                                          color={Theme.Black}
+                                          value={
+                                            item?.ChildCatIDs?.Iscombo === 1
+                                              ? item?.ServiceVarients[0]
+                                                  ?.ServiceType?.Name
+                                              : item?.ChildCatIDs?.CCName +
+                                                " : "
+                                          }
+                                          size={14}
+                                        />
+
+                                        <CustomText
+                                          value={
+                                            item?.ChildCatIDs?.Iscombo === 1
+                                              ? " - " + item?.ServiceName
+                                              : item?.ServiceName +
+                                                " - " +
+                                                item?.ServiceVarients[0]
+                                                  ?.ServiceType?.Name
+                                          }
+                                          size={14}
+                                        />
+                                      </CustomRow>
+                                    </>
+                                  )}
+                                  {item?.ServiceVarients[0]?.ServiceType
+                                    ?.Name == "NA" && (
+                                    <CustomRow>
+                                      <CustomText
+                                        style={{
+                                          fontWeight: "600",
+                                          marginBottom: 5,
+                                        }}
+                                        color={Theme.Black}
+                                        value={
+                                          item?.ChildCatIDs?.CCName + " : "
+                                        }
+                                        size={14}
+                                      />
+                                      <CustomText
+                                        size={14}
+                                        value={item?.ServiceName}
+                                      />
+                                    </CustomRow>
+                                  )}
+
+                                  {/* <View
                                     style={{
                                       marginLeft: 10,
                                     }}
@@ -3459,7 +3515,7 @@ export default function () {
                                               ?.ServiceType?.Name
                                       }
                                     />
-                                  </View>
+                                  </View> */}
                                 </CustomRow>
                               </View>
                             </View>
@@ -3497,7 +3553,7 @@ export default function () {
                       <CustomText
                         margin_h={7}
                         color={"white"}
-                        value={"Congratulation you saved ₹ " + totalSavedPrice}
+                        value={"Congratulation you saved ₹ " + TotalSaved}
                       />
                     </View>
                     <CustomRow
@@ -3567,20 +3623,23 @@ export default function () {
           )}
         </View>
 
-        <AnimatedModal ref={selectServiceModal}>
+        <AnimatedModal customHeight={300} ref={selectServiceModal}>
           <View
             style={{
-              flex: 1,
               borderTopLeftRadius: 10,
               borderTopRightRadius: 10,
-              marginTop: "60%",
+
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
             }}
           >
             <ScrollView
               contentContainerStyle={{
-                paddingBottom: "40%",
+                paddingBottom: "10%",
                 flexGrow: 1,
                 backgroundColor: "white",
+
                 borderTopLeftRadius: 10,
                 borderTopRightRadius: 10,
               }}
@@ -3624,7 +3683,6 @@ export default function () {
               <View>
                 {selectedVariant != undefined &&
                   selectedVariant?.serviceType?.map((item, index) => {
-                    console.log("item in edit package modal", item);
                     const isSelected = selectedVariants === index;
                     return (
                       <TouchableOpacity
@@ -3634,7 +3692,8 @@ export default function () {
                             parseInt(item?.VarientDiscription[0]?.ServiceTime),
                             item?.VarientDiscription[0]?.salePrice,
                             item?.VarientDiscription[0]?.regularPrice,
-                            item?.ServiceType?.Name
+                            item?.ServiceType?.Name,
+                            selectedVariant?.serviceIdd
                           );
                           console.log(
                             "item?.VarientDiscription[0]?.ServiceTime",
@@ -3652,13 +3711,15 @@ export default function () {
                       >
                         <CustomRow ratios={[0, 0, 1]} v_center>
                           <CustomIcon
-                            name={"dot-circle"}
-                            type={"FA5"}
+                            name={
+                              isSelected ? "circle-slice-8" : "circle-outline"
+                            }
+                            type={"MC"}
                             size={20}
-                            color={isSelected ? Theme.PrimaryColor : "grey"}
+                            color={Theme.PrimaryColor}
                           />
                           <CustomText
-                            size={20}
+                            // size={12}
                             regular
                             margin_h={10}
                             value={item?.ServiceType?.Name}
@@ -4178,7 +4239,7 @@ export default function () {
                   >
                     <CustomButton
                       onPress={() => {
-                        handleViewDetailsModal();
+                        // handleViewDetailsModal();
                       }}
                       width={"90%"}
                       title={"Add to Cart"}

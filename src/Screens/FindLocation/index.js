@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 import {
   PermissionsAndroid,
   View,
@@ -8,32 +8,32 @@ import {
   Button,
   BackHandler,
   AppState,
-} from 'react-native';
+} from "react-native";
 import {
   useFocusEffect,
   useIsFocused,
   useNavigation,
-} from '@react-navigation/native';
-import FastImage from 'react-native-fast-image';
-import GetLocation from 'react-native-get-location';
-import {useDispatch, useSelector} from 'react-redux';
-import {saveCurrentLocation} from 'ReduxState/Slices/UserSlice';
-import CustomText from 'Components/CustomText';
-import Assets from 'Assets';
-import Routes from 'RootNavigation/Routes';
-import {useCallback} from 'react';
+} from "@react-navigation/native";
+import FastImage from "react-native-fast-image";
+import GetLocation from "react-native-get-location";
+import { useDispatch, useSelector } from "react-redux";
+import { saveCurrentLocation } from "ReduxState/Slices/UserSlice";
+import CustomText from "Components/CustomText";
+import Assets from "Assets";
+import Routes from "RootNavigation/Routes";
+import { useCallback } from "react";
 
 export default function () {
   const [find, setFind] = useState(false);
   const [longitude, setLongitude] = useState();
   const [latitude, setLatitude] = useState();
-  const [currentAddress, setCurrentAddress] = useState('');
+  const [currentAddress, setCurrentAddress] = useState("");
   const dispatch = useDispatch();
   const [appState, setAppState] = useState(AppState.currentState);
   const [isDataEnabled, setDataEnabled] = useState(false);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const userState = useSelector(state => state.user);
+  const userState = useSelector((state) => state.user);
 
   useEffect(() => {
     if (isFocused) {
@@ -47,8 +47,8 @@ export default function () {
     }
   }, [latitude, longitude]);
   useEffect(() => {
-    const handleAppStateChange = nextAppState => {
-      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+    const handleAppStateChange = (nextAppState) => {
+      if (appState.match(/inactive|background/) && nextAppState === "active") {
         // App resumed from the background
         // Reinitialize location service to fetch updated location
         requestLocationPermission();
@@ -57,8 +57,8 @@ export default function () {
     };
 
     const appStateSubscription = AppState.addEventListener(
-      'change',
-      handleAppStateChange,
+      "change",
+      handleAppStateChange
     );
 
     return () => {
@@ -73,22 +73,22 @@ export default function () {
       const permissionResult = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: 'Location Permission',
-          message: 'This app needs access to your location.',
-          buttonPositive: 'OK',
-        },
+          title: "Location Permission",
+          message: "This app needs access to your location.",
+          buttonPositive: "OK",
+        }
       );
 
       if (
         permissionResult !== PermissionsAndroid.RESULTS.GRANTED &&
         permissionResult !== PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN
       ) {
-        console.log('Location permission denied');
+        console.log("Location permission denied");
         return;
       }
 
       if (permissionResult === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-        console.log('Location permission denied and cannot be requested again');
+        console.log("Location permission denied and cannot be requested again");
         return;
       }
 
@@ -97,34 +97,34 @@ export default function () {
         timeout: 60000,
         showLocationDialog: true,
       });
-      console.log('Location:', location);
+      console.log("Location:", location);
       setLongitude(location.longitude);
       setLatitude(location.latitude);
       dispatch(saveCurrentLocation([location.longitude, location.latitude]));
     } catch (error) {
-      console.warn('Error:', error);
-      if (error == 'Error: Location not available') {
+      console.warn("Error:", error);
+      if (error == "Error: Location not available") {
         Alert.alert(
-          'Navigate Confirmation',
+          "Navigate Confirmation",
           "For a better experience,turn on device location,which uses Google's location service.",
           [
             {
-              text: 'NO',
+              text: "NO",
               onPress: () => BackHandler.exitApp(),
-              style: 'cancel',
+              style: "cancel",
             },
             {
-              text: 'Yes, Navigate Me',
+              text: "Yes, Navigate Me",
               onPress: () =>
-                Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS'),
+                Linking.sendIntent("android.settings.LOCATION_SOURCE_SETTINGS"),
             },
           ],
-          {cancelable: false},
+          { cancelable: false }
         );
       }
 
       // Log the error object to see its structure
-      console.log('Error object:', error);
+      console.log("Error object:", error);
 
       // To open GPS Location setting
       // Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS');
@@ -160,38 +160,29 @@ export default function () {
     }
   };
 
-  let myApiKey = 'AIzaSyCBRJgSZT50bFwgbOQHOWdi0giGUEdG3MY';
+  let myApiKey = "AIzaSyCBRJgSZT50bFwgbOQHOWdi0giGUEdG3MY";
 
   const getAddressFromCoordinates = () => {
     fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${myApiKey}`,
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${myApiKey}`
     )
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'OK') {
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "OK") {
           const address = data.results[0].formatted_address;
-          console.log(address, 'adress');
           setFind(true);
           setCurrentAddress(address);
         } else {
-          console.warn('Address not found');
+          console.warn("Address not found");
         }
       })
-      .catch(error => {
-        console.warn('Error getting address:', error);
+      .catch((error) => {
+        console.warn("Error getting address:", error);
 
-        if (error == 'TypeError: Network request failed') {
+        if (error == "TypeError: Network request failed") {
         }
       });
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        console.log('refresed');
-      };
-    }, []),
-  );
 
   useEffect(() => {
     if (find) {
@@ -212,13 +203,14 @@ export default function () {
     <View
       style={{
         flex: 1,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
+        backgroundColor: "white",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <FastImage
         source={find ? Assets.locationgif2 : Assets.locationgif1}
-        style={{height: find ? 170 : 170, width: 500}}
+        style={{ height: find ? 170 : 170, width: 500 }}
         resizeMode="center"
       />
 
@@ -231,14 +223,15 @@ export default function () {
       <View
         style={{
           // backgroundColor: 'red',
-          width: '50%',
-        }}>
+          width: "50%",
+        }}
+      >
         <CustomText
           size={19}
           bold
-          color={'black'}
-          align={'center'}
-          value={currentAddress ? currentAddress : 'Fetching Your Location'}
+          color={"black"}
+          align={"center"}
+          value={currentAddress ? currentAddress : "Fetching Your Location"}
         />
       </View>
     </View>
