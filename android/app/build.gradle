@@ -75,13 +75,13 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.experts4uu"
+    namespace "com.expertss4u"
     defaultConfig {
-        applicationId "com.experts4uu"
+        applicationId "com.expertss4u"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.0"
+        versionCode 19
+        versionName "1.1"
     }
     signingConfigs {
         debug {

@@ -237,7 +237,7 @@ export default function () {
           </CustomRow>
         </TouchableOpacity>
 
-        <CustomRow
+        {/* <CustomRow
           v_center
           ratios={[0, 1, 0]}
           style={{
@@ -246,7 +246,7 @@ export default function () {
             marginLeft: 30,
           }}
         >
-          {/* <CustomImage src={bookimg} resizeMode={'center'} size={15} /> */}
+       
           <CustomIcon
             name={"payment"}
             type={"M"}
@@ -267,7 +267,7 @@ export default function () {
             color={Theme.PrimaryColor}
             size={17}
           />
-        </CustomRow>
+        </CustomRow> */}
       </CustomCard>
     );
   };
@@ -627,7 +627,7 @@ export default function () {
               </CustomRow>
               <TouchableOpacity
                 onPress={() => {
-                  Navigation.navigate(Routes.AboutUsScreen);
+                  Linking.openURL("https://experts4u.in/about");
                 }}
               >
                 <CustomRow
@@ -645,13 +645,8 @@ export default function () {
                     color={Theme.PrimaryColor}
                     type={"FE"}
                   />
-                  {/* <CustomImage
-                      src={item.aboutimg}
-                      resizeMode={'center'}
-                      size={15}
-                    /> */}
+
                   <CustomText
-                    // margin_h={10}
                     value={item.aboutus}
                     medium
                     color={Theme.Black}
@@ -694,7 +689,6 @@ export default function () {
                     type={"M"}
                   />
                   <CustomText
-                    // margin_h={10}
                     value={item.myboo}
                     medium
                     color={Theme.Black}
@@ -731,7 +725,6 @@ export default function () {
                     type={"M"}
                   />
                   <CustomText
-                    // margin_h={10}
                     value={item.myfav}
                     medium
                     color={Theme.Black}

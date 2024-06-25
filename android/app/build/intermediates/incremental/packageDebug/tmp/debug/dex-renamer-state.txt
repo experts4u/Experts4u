@@ -1,11 +1,11 @@
-#Wed Jun 05 20:15:23 IST 2024
-path.4=8/classes.dex
+#Mon Jun 24 20:31:23 IST 2024
+path.4=6/classes.dex
 path.3=14/classes.dex
 path.2=0/classes.dex
 path.1=0/classes.dex
 path.5=classes2.dex
 path.0=classes.dex
-base.4=/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/build/intermediates/dex/debug/mergeProjectDexDebug/8/classes.dex
+base.4=/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/build/intermediates/dex/debug/mergeProjectDexDebug/6/classes.dex
 base.3=/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/build/intermediates/dex/debug/mergeProjectDexDebug/14/classes.dex
 base.2=/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
 base.1=/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/build/intermediates/dex/debug/mergeLibDexDebug/0/classes.dex

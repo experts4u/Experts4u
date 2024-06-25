@@ -20,11 +20,32 @@ export default function () {
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
+  console.log("params ", params?.date?.slotDate);
+
+  const givenDate = new Date(params?.date?.slotDate);
+
+  // Get the current date and time
+  const currentDate = new Date();
+
+  // Compare the given date to the current date
+  const isFuture = givenDate > currentDate;
+
+  console.log("Is the given date in the future?", isFuture);
+
   useEffect(() => {
     if (isFocused) {
       const timeout = setTimeout(() => {
         dispatch(clearCart());
-        Navigation.navigate(Routes.MyBooking);
+        if (params?.direct == 1) {
+          console.log("params?.direct", params?.direct);
+          Navigation.navigate(Routes.MainTabStack);
+        } else {
+          console.log("params?.direct nhii", params?.direct);
+
+          Navigation.navigate(Routes.MyBooking, {
+            isFuture: isFuture == true ? 1 : 0,
+          });
+        }
       }, 3000);
 
       return () => clearTimeout(timeout);

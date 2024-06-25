@@ -64,6 +64,7 @@ export default {
   threedotgrey: require("./threedotgrey.png"),
   upiselect: require("./upiselect.png"),
   upiselectgrey: require("./upiselectgrey.png"),
+  mapicon: require("./mapicon.png"),
   upi: require("./upi.png"),
   gpay: require("./gpay.png"),
   wallets: require("./wallets.png"),
@@ -100,4 +101,5 @@ export default {
   noCoupens: require("./noCoupens.gif"),
   couponapply: require("./couponapply.gif"),
   paymentSucces: require("./paymentSucces.gif"),
+  supportt: require("./support1.png"),
 };

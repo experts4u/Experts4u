@@ -1,5 +1,9 @@
-import React from "react";
+import Assets from "Assets";
+import CustomText from "Components/CustomText";
+import Theme from "Configs/Theme";
+import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   Pressable,
   StyleSheet,
@@ -20,6 +24,7 @@ export default function ({
   borderWidth,
   borderColor,
 }) {
+  const [isLoading, setLoading] = useState(true);
   let styles = StyleSheet.flatten([
     borderWidth && { borderWidth: borderWidth, borderColor: "white" },
     borderColor && { borderColor },
@@ -29,13 +34,29 @@ export default function ({
     center && { alignSelf: "center" },
     style,
   ]);
+
+  function onLoadStart() {
+    setLoading(true);
+    // setErrorMessage(false);
+  }
+
+  function onLoadEnd() {
+    setLoading(false);
+  }
   return (
     <TouchableOpacity
       disabled={!onPress}
       onPress={onPress}
-      style={[{ overflow: "hidden" }, styles]}
+      style={[
+        {
+          overflow: "hidden",
+        },
+        styles,
+      ]}
     >
       <FastImage
+        // onLoadStart={onLoadStart}
+        // onLoadEnd={onLoadEnd}
         source={src}
         resizeMode={resizeMode || "cover"}
         style={{ width: 100 + "%", height: 100 + "%" }}

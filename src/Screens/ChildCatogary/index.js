@@ -72,6 +72,8 @@ export default function () {
   let PCid = params.PCid;
   let PCGroup = params?.PCGroup;
 
+  console.log("params?.PCGroup", params?.PCGroup);
+
   const TopBanner = useFetch({
     endpoint: Endpoints.getChildCTopBanner + PCid,
   });
@@ -292,11 +294,11 @@ export default function () {
       brief:
         "Our Experts are well trained & will reach on time on your service. (On time, every time).",
     },
-    {
-      img: Assets.packaged,
-      title: "Package Customizations",
-      brief: "Freedom to customize your own Package.",
-    },
+    // {
+    //   img: Assets.packaged,
+    //   title: "Package Customizations",
+    //   brief: "Freedom to customize your own Package.",
+    // },
   ];
 
   const Child_category = useFetch({

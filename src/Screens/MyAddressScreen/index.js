@@ -15,8 +15,17 @@ import Theme from "Configs/Theme";
 import useFetch from "Hooks/useFetch";
 import { editAddress } from "ReduxState/Slices/UserSlice";
 import GoogleMapsView from "Screens/SummaryScreen/Components";
+import ToastMessage from "Utils/ToastMessage";
 import { useEffect, useRef, useState } from "react";
-import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { showMessage } from "react-native-flash-message";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { useSelector } from "react-redux";
 
@@ -36,6 +45,7 @@ export default () => {
   const [edit, setEdit] = useState("");
   const [deleteAdr, setDeleteAdr] = useState("");
   const user_info = useSelector((v) => v.user);
+  const user_infoo = useSelector((v) => v.user.userInfo);
   const [SuggestedAddress, setSuggestedAddress] = useState("");
   const [landmark, setLandmark] = useState("");
   const [house, setHouse] = useState("");
@@ -95,9 +105,9 @@ export default () => {
   };
 
   const User_data = useFetch({
-    endpoint: user_info?.user
-      ? Endpoints.getUserDetails + user_info?.user?._id
-      : Endpoints.getUserDetails + user_info?._id,
+    endpoint: user_infoo?.user
+      ? Endpoints.getUserDetails + user_infoo?.user?._id
+      : Endpoints.getUserDetails + user_infoo?._id,
   });
 
   const getDetails = async () => {
@@ -109,7 +119,7 @@ export default () => {
     }
   };
   useEffect(() => {
-    if (user_info?._id || (user_info.user?._id && focused)) {
+    if (user_infoo?._id || (user_infoo.user?._id && focused)) {
       getDetails();
     }
   }, [focused]);
@@ -146,10 +156,10 @@ export default () => {
   });
 
   const region = {
-    latitude: latitude, // Latitude of the center of India
-    longitude: longitude, // Longitude of the center of India
-    latitudeDelta: 0.1, // Decreased value for higher zoom
-    longitudeDelta: 0.1, // Decreased value for higher zoom
+    latitude: latitude,
+    longitude: longitude,
+    latitudeDelta: 0.0005,
+    longitudeDelta: 0.0005,
   };
 
   useEffect(() => {
@@ -161,6 +171,9 @@ export default () => {
   const handleResponse = () => {
     handleMapHideModal();
   };
+
+  console.log("house.length", house.length);
+  console.log("house.length", apartment.length);
 
   return (
     <SafeAreaView
@@ -207,6 +220,7 @@ export default () => {
                             item?.houseOrFlatNo +
                             "," +
                             item?.buildingName +
+                            "\n" +
                             item?.FullAddress
                           }
                           regular
@@ -279,25 +293,33 @@ export default () => {
         <AnimatedModal ref={MapModelRef}>
           <View
             style={{
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              flex: 1,
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+
+              position: "absolute",
+              bottom: -10,
+              width: "100%",
+              maxHeight: Dimensions.get("screen").height - 100,
+              overflow: "hidden",
             }}
           >
-            <View
+            <KeyboardAvoidingView
+              behavior="padding"
               style={{
                 backgroundColor: "white",
               }}
             >
               <ScrollView
+                automaticallyAdjustKeyboardInsets={true}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
-                  paddingBottom: "80%",
+                  paddingBottom: "100%",
                   backgroundColor: "white",
                 }}
               >
                 <View
                   style={{
-                    height: "40%",
+                    height: "70%",
                     width: "100%",
                   }}
                 >
@@ -315,11 +337,11 @@ export default () => {
                       marginVertical: 10,
                     }}
                     v_center
-                    ratios={[3, 0.7]}
+                    ratios={[2, 0]}
                   >
                     <TouchableOpacity
                       style={{
-                        width: "90%",
+                        width: "80%",
                       }}
                     >
                       <CustomText
@@ -333,16 +355,16 @@ export default () => {
                         handleMapHideModal();
                       }}
                       style={{
-                        borderWidth: 1,
-                        borderColor: "grey",
-                        borderRadius: 10,
                         alignItems: "center",
                         justifyContent: "center",
                         padding: 5,
-                        // marginTop: 10,
                       }}
                     >
-                      <CustomText medium value={"Change"} />
+                      <CustomIcon
+                        name={"pencil-square-o"}
+                        type={"FA"}
+                        size={18}
+                      />
                     </TouchableOpacity>
                   </CustomRow>
                   <View
@@ -451,27 +473,45 @@ export default () => {
                           </TouchableOpacity>
                         </CustomRow>
                       </View>
-
-                      <TouchableOpacity
-                        onPress={() => {
-                          // handleMapHideModal();
-                          fetchData();
-                          // console.log('fkds');
-                        }}
-                      >
-                        <CustomButton
-                          width={"90%"}
-                          title={"Save Address"}
-                          style={{
-                            marginTop: 30,
-                          }}
-                        />
-                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
               </ScrollView>
-            </View>
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  width: "100%",
+                  backgroundColor: "white",
+                }}
+              >
+                <CustomButton
+                  width={"90%"}
+                  title={"Save Address"}
+                  onPress={() => {
+                    // handleMapHideModal();
+
+                    if (house.length == 0 || apartment.length == 0) {
+                      showMessage({
+                        message: "Please fill all feilds",
+                        icon: "danger",
+                        type: "danger",
+                        position: "top",
+                      });
+                    } else {
+                      fetchData();
+                    }
+                  }}
+                  style={{
+                    marginTop: 30,
+                    backgroundColor:
+                      house.length == 0 || apartment.length == 0
+                        ? "grey"
+                        : Theme.PrimaryColor,
+                  }}
+                />
+              </View>
+            </KeyboardAvoidingView>
           </View>
         </AnimatedModal>
 
@@ -557,7 +597,6 @@ export default () => {
         <TouchableOpacity
           onPress={() => {
             handleMapShowModal();
-            console.log("predd");
           }}
           style={{
             position: "absolute",

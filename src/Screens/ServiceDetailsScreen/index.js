@@ -16,7 +16,7 @@ import Fonts from "Configs/Fonts";
 import Theme from "Configs/Theme";
 import useFetch from "Hooks/useFetch";
 import Routes from "RootNavigation/Routes";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import Modal from "react-native-modal";
 import {
@@ -63,11 +63,10 @@ export default function () {
   const GroupRef = useRef(null);
   const viewDetailsPackage = useRef();
   const focused = useIsFocused();
-  const customizePackageRef = useRef(null);
+  const customizePackageRef = useRef();
   const selectServiceModal = useRef(null);
   const scrollViewRef = useRef(null);
   const scrollViewchildRef = useRef(null);
-
   const { params } = useRoute();
   const dispatch = useDispatch();
   const [expandedIndex, setExpandedIndex] = useState(params?.itemId);
@@ -116,11 +115,55 @@ export default function () {
 
   let ServiceId = params?.serviceId;
 
-  useEffect(() => {
-    if (focused) {
-      dispatch(removeByType("Customize"));
-    }
-  }, [focused]);
+  // const handleCustomizeModal = () => {
+  //   console.log("first step", customizePackageRef?.current);
+
+  //   customizePackageRef?.current?.showModal();
+  //   console.log("second step", customizePackageRef?.current);
+
+  //   const foundItem = user_info?.cart.find(
+  //     (item) => item.id === selectedCustomizePackageData?._id
+  //   );
+  //   if (foundItem) {
+  //     setcustomizedServiceId(foundItem?.servicesIdS);
+  //     setTotalCustomizeTime(foundItem?.packageTotalTime);
+  //     setCustomizeTotalPrice(foundItem?.packagetotalPrice);
+  //     setCustomizeRegulerPrice(foundItem?.packageRegulerPrice);
+  //     setSelectedcustomizeServices(foundItem?.packageName);
+  //   } else {
+  //     setcustomizedServiceId([]);
+  //     setTotalCustomizeTime(0);
+  //     setCustomizeTotalPrice(0);
+  //     setCustomizeRegulerPrice(0);
+  //     setSelectedcustomizeServices([]);
+  //   }
+  //   console.log("third step", customizePackageRef?.current);
+  // };
+
+  const handleCustomizeModal = (Package) => {
+    setselectedCustomizePackageData(Package);
+
+    setTimeout(() => {
+      customizePackageRef?.current?.showModal();
+
+      const foundItem = user_info?.cart.find(
+        (item) => item.id === Package?._id
+      );
+      if (foundItem) {
+        setcustomizedServiceId(foundItem?.servicesIdS);
+        setTotalCustomizeTime(foundItem?.packageTotalTime);
+        setCustomizeTotalPrice(foundItem?.packagetotalPrice);
+        setCustomizeRegulerPrice(foundItem?.packageRegulerPrice);
+        setSelectedcustomizeServices(foundItem?.packageName);
+      } else {
+        setcustomizedServiceId([]);
+        setTotalCustomizeTime(0);
+        setCustomizeTotalPrice(0);
+        setCustomizeRegulerPrice(0);
+        setSelectedcustomizeServices([]);
+      }
+    }, 0); // Delay execution to allow state to update
+  };
 
   useEffect(() => {
     if (scrollViewRef.current) {
@@ -265,7 +308,6 @@ export default function () {
   };
 
   const handleSelectablePress = (itemId, index) => {
-    // scrollToCenterchild(index);
     setExpandedIndex(itemId);
     setGetDatabyId(itemId);
     setSelectedGroup(0);
@@ -301,14 +343,6 @@ export default function () {
         scrollViewchildRef?.current?.scrollTo({ x: offset, animated: true });
       }
     };
-    //   if (flatListRef?.current) {
-    //     flatListRef.current.scrollToIndex({
-    //       index,
-    //       animated: true,
-    //       viewPosition: 0.5, // Center the item in the view
-    //     });
-    //   }
-    // };
 
     return (
       <TouchableOpacity
@@ -321,12 +355,10 @@ export default function () {
           borderColor: isExpanded ? "red" : "white",
           borderBottomWidth: 4,
           paddingBottom: 10,
-          // height: 105,
+
           alignItems: "center",
           justifyContent: "center",
           paddingTop: 10,
-
-          // backgroundColor: 'red',
         }}
       >
         <FastImage
@@ -351,16 +383,6 @@ export default function () {
           />
         </View>
       </TouchableOpacity>
-      // <Selectable
-      //   index={index}
-      //   expanded={isExpanded}
-      //   onPress={() => {
-      //     handleSelectablePress(item._id, index);
-      //     scrollToCenterchild(index);
-      //   }}
-      //   img={Endpoints.baseUrl + item?.CCimage}
-      //   txt={item.CCName}
-      // />
     );
   };
 
@@ -440,7 +462,7 @@ export default function () {
     }
     return 0;
   });
-
+  console.log("selectedCustomizeServices", selectedCustomizeServices);
   const groupedServices = {};
 
   items.forEach((servicee) => {
@@ -1017,7 +1039,7 @@ export default function () {
         >
           <CustomRow
             style={{
-              gap: 15,
+              gap: 5,
             }}
             ratios={[1, 0]}
           >
@@ -1031,39 +1053,71 @@ export default function () {
                 <>
                   <CustomRow
                     style={{
-                      width: "85%",
+                      flexWrap: "wrap",
                     }}
                   >
-                    <CustomText
+                    <Text
                       style={{
                         fontWeight: "600",
-                        marginBottom: 5,
+                        color: Theme.Black,
                       }}
-                      color={Theme.Black}
-                      value={item?.ServiceName}
-                    />
-                    <CustomText
-                      margin_h={5}
-                      value={item?.ServiceVarients[0]?.ServiceType?.Name}
-                    />
+                    >
+                      {item?.ServiceName + " : "}
+
+                      <Text
+                        style={{
+                          marginHorizontal: 5,
+                          color: Theme.Black,
+                          fontWeight: "400",
+                        }}
+                      >
+                        {item?.ServiceVarients[0]?.ServiceType?.Name}
+                      </Text>
+                    </Text>
                   </CustomRow>
                 </>
               )}
               {item?.ServiceVarients[0]?.ServiceType?.Name == "NA" && (
                 <CustomRow
                   style={{
-                    width: "90%",
+                    flexWrap: "wrap",
                   }}
                 >
-                  <CustomText
+                  <Text
                     style={{
                       fontWeight: "600",
-                      marginBottom: 5,
+                      lineHeight: 14,
+                      color: Theme.Black,
+                    }}
+                  >
+                    {item?.ServiceName + " : "}
+
+                    <Text
+                      style={{
+                        lineHeight: 15,
+                        marginHorizontal: 5,
+                        fontWeight: "400",
+                      }}
+                    >
+                      {CCName}
+                    </Text>
+                  </Text>
+                  {/* <CustomText
+                    style={{
+                      fontWeight: "600",
+                      lineHeight: 14,
                     }}
                     color={Theme.Black}
-                    value={item?.ServiceName}
+                    value={item?.ServiceName + " :"}
                   />
-                  <CustomText margin_h={5} value={CCName} />
+
+                  <CustomText
+                    style={{
+                      lineHeight: 15,
+                    }}
+                    margin_h={5}
+                    value={CCName}
+                  /> */}
                 </CustomRow>
               )}
 
@@ -1715,6 +1769,8 @@ export default function () {
       let pcatId = item?.PcatId;
       const foundItem = user_info?.cart.find((item) => item.id === Package._id);
 
+      console.log("foundItem", foundItem);
+
       let customizeAddedTotalPrice = foundItem?.packagetotalPrice;
       let customizeRegulerPricee = foundItem?.packageRegulerPrice;
       let customizeTotalTime = foundItem?.packageTotalTime;
@@ -1724,15 +1780,27 @@ export default function () {
       let totalServiceTime = 0;
 
       services?.forEach((servicee) => {
-        let service = servicee.service;
-
-        const serviceName = service?.ServiceName;
-        serviceNames.push(serviceName);
-
+        let service = servicee?.service;
         service?.ServiceVarients?.forEach((variant) => {
-          totalServiceTime += parseInt(
-            variant.VarientDiscription[0]?.ServiceTime
-          );
+          variant.VarientDiscription.forEach((discription) => {
+            totalRegularPrice += parseInt(discription.regularPrice);
+            totalServiceTime += parseInt(
+              service?.ServiceVarients[0]?.VarientDiscription[0]?.ServiceTime
+            );
+
+            let serviceName = "";
+            if (service?.ServiceVarients[0]?.ServiceType?.Name !== "NA") {
+              if (service?.ChildCatIDs?.Iscombo === 1) {
+                serviceName = `${service?.ServiceVarients[0]?.ServiceType?.Name} : ${service?.ServiceName}`;
+              } else {
+                serviceName = `${service?.ChildCatIDs?.CCName} : ${service?.ServiceName} - ${service?.ServiceVarients[0]?.ServiceType?.Name}`;
+              }
+            } else {
+              serviceName = `${service?.ChildCatIDs?.CCName} : ${service?.ServiceName}`;
+            }
+            console.log("serviceName", serviceName);
+            serviceNames.push(serviceName);
+          });
         });
       });
 
@@ -1799,17 +1867,17 @@ export default function () {
             }}
             ratios={[1, 0]}
           >
-            <TouchableWithoutFeedback
+            <TouchableOpacity
               onPress={() => {
-                setselectedCustomizePackageData(Package);
-                handleCustomizeModal();
+                handleCustomizeModal(Package);
+                // setselectedCustomizePackageData(Package);
               }}
             >
               <View>
                 <TouchableOpacity
                   onPress={() => {
-                    setselectedCustomizePackageData(Package);
-                    handleCustomizeModal();
+                    handleCustomizeModal(Package);
+                    // setselectedCustomizePackageData(Package);
                   }}
                 >
                   <CustomText
@@ -1854,7 +1922,7 @@ export default function () {
                   />
                 </CustomRow>
 
-                {totalCustomizeTime > 0 && (
+                {foundItem?.packageTotalTime > 0 && (
                   <CustomRow v_center>
                     <CustomIcon
                       name={"clock"}
@@ -1866,15 +1934,14 @@ export default function () {
                       size={12}
                       margin_h={5}
                       color={"grey"}
-                      value={totalCustomizeTime + " Mins"}
+                      value={foundItem?.packageTotalTime + " Mins"}
                     />
                   </CustomRow>
                 )}
 
                 <TouchableWithoutFeedback
                   onPress={() => {
-                    setselectedCustomizePackageData(Package);
-                    handleCustomizeModal();
+                    handleCustomizeModal(Package);
                   }}
                   style={{
                     width: "75%",
@@ -1893,7 +1960,6 @@ export default function () {
                     {customizedItems &&
                       customizedItems.map((itemm, index) => {
                         let item = itemm.service;
-
                         return (
                           <View>
                             <View
@@ -1901,11 +1967,15 @@ export default function () {
                                 width: "85%",
                               }}
                             >
-                              <CustomRow v_center>
+                              <CustomRow
+                                style={{
+                                  marginBottom: 5,
+                                }}
+                              >
                                 <TouchableWithoutFeedback
                                   onPress={() => {
-                                    setselectedCustomizePackageData(Package);
-                                    handleCustomizeModal();
+                                    handleCustomizeModal(Package);
+                                    // setselectedCustomizePackageData(Package);
                                   }}
                                 >
                                   <View>
@@ -1913,21 +1983,17 @@ export default function () {
                                       type={"MC"}
                                       style={{
                                         marginRight: 10,
-                                        marginTop: -5,
                                       }}
                                       color={Theme.PrimaryColor}
                                       size={19}
                                       name={
                                         foundItem?.packageName?.includes(
                                           item?.ServiceVarients[0]?.ServiceType
-                                            ?.Name == "NA"
-                                            ? item.ServiceName +
-                                                "-" +
-                                                item?.ChildCatIDs?.CCName
-                                            : item.ServiceName +
-                                                "-" +
-                                                item?.ServiceVarients[0]
-                                                  ?.ServiceType?.Name
+                                            ?.Name !== "NA"
+                                            ? item?.ChildCatIDs?.Iscombo === 1
+                                              ? `${item?.ServiceVarients[0]?.ServiceType?.Name} : ${item?.ServiceName}`
+                                              : `${item?.ChildCatIDs?.CCName} : ${item?.ServiceName} - ${item?.ServiceVarients[0]?.ServiceType?.Name}`
+                                            : `${item?.ChildCatIDs?.CCName} : ${item?.ServiceName}`
                                         )
                                           ? "checkbox-marked"
                                           : "checkbox-blank-outline"
@@ -1945,7 +2011,7 @@ export default function () {
                                             fontSize: 12,
                                             color: Theme.Black,
                                             fontWeight: "600",
-                                            marginBottom: 5,
+                                            // marginBottom: 5,
                                           }}
                                         >
                                           {item?.ChildCatIDs?.Iscombo === 1
@@ -2001,7 +2067,7 @@ export default function () {
                                       <Text
                                         style={{
                                           fontWeight: "600",
-                                          marginBottom: 5,
+
                                           color: Theme.Black,
                                           fontSize: 12,
                                         }}
@@ -2028,7 +2094,7 @@ export default function () {
                   </View>
                 </TouchableWithoutFeedback>
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
 
             <View>
               <View>
@@ -2048,8 +2114,7 @@ export default function () {
                 {!foundItem ? (
                   <TouchableWithoutFeedback
                     onPress={() => {
-                      setselectedCustomizePackageData(Package);
-                      handleCustomizeModal();
+                      handleCustomizeModal(Package);
                     }}
                   >
                     <View
@@ -2086,6 +2151,7 @@ export default function () {
                         dispatch(decreaseItemQuantity({ itemId: item?._id }));
                         if (foundItem?.quantity == 1) {
                           setSelectedcustomizeServices([]);
+                          setcustomizedServiceId([]);
                         }
                       }}
                       onIncrease={() => {
@@ -2126,10 +2192,24 @@ export default function () {
             totalServiceTime += parseInt(
               service?.ServiceVarients[0]?.VarientDiscription[0]?.ServiceTime
             );
+
+            let serviceName = "";
+            if (service?.ServiceVarients[0]?.ServiceType?.Name !== "NA") {
+              if (service?.ChildCatIDs?.Iscombo === 1) {
+                serviceName = `${service?.ServiceVarients[0]?.ServiceType?.Name} : ${service?.ServiceName}`;
+              } else {
+                serviceName = `${service?.ChildCatIDs?.CCName} : ${service?.ServiceName} - ${service?.ServiceVarients[0]?.ServiceType?.Name}`;
+              }
+            } else {
+              serviceName = `${service?.ChildCatIDs?.CCName} : ${service?.ServiceName}`;
+            }
+            console.log("serviceName", serviceName);
+            serviceNames.push(serviceName);
           });
         });
       });
 
+      console.log("selectedpackagedata", selectedpackagedata);
       const selectedNormalPckageDetails = {
         packageName: serviceNames,
         packageTotalTime: totalServiceTime,
@@ -2139,7 +2219,10 @@ export default function () {
         packageTitle: item?.packageTitle,
         quantity: 1,
         id: item?._id,
-        PCGroup: item?.ChildCatIDs?.PCName[0]?.PCGroup,
+        PCGroup: selectedpackagedata
+          ? selectedpackagedata?.ChildId[0]?.PCName[0]?.PCGroup
+          : item?.ChildId[0]?.PCName[0]?.PCGroup,
+        pcatId: item?.PcatId,
       };
 
       return (
@@ -2232,33 +2315,6 @@ export default function () {
                   <View key={index}>
                     {item?.ServiceVarients[0]?.ServiceType?.Name != "NA" && (
                       <>
-                        {/* <CustomRow>
-                          <CustomText
-                            size={12}
-                            style={{
-                              fontWeight: "600",
-                              marginBottom: 5,
-                            }}
-                            color={Theme.Black}
-                            value={
-                              item?.ChildCatIDs?.Iscombo === 1
-                                ? "\u2022 " +
-                                  item?.ServiceVarients[0]?.ServiceType?.Name
-                                : "\u2022 " + item?.ChildCatIDs?.CCName + " : "
-                            }
-                          />
-
-                          <CustomText
-                            size={12}
-                            value={
-                              item?.ChildCatIDs?.Iscombo === 1
-                                ? " - " + item?.ServiceName
-                                : item?.ServiceName +
-                                  " - " +
-                                  item?.ServiceVarients[0]?.ServiceType?.Name
-                            }
-                          />
-                        </CustomRow> */}
                         <CustomRow>
                           <CustomText value={"\u2022 "} size={12} />
                           <Text
@@ -2287,31 +2343,6 @@ export default function () {
                                   item?.ServiceVarients[0]?.ServiceType?.Name}
                             </Text>
                           </Text>
-                          {/* <CustomText
-                            size={12}
-                            style={{
-                              fontWeight: "600",
-                              marginBottom: 5,
-                            }}
-                            color={Theme.Black}
-                            value={
-                              item?.ChildCatIDs?.Iscombo === 1
-                                ? "\u2022 " +
-                                  item?.ServiceVarients[0]?.ServiceType?.Name
-                                : "\u2022 " + item?.ChildCatIDs?.CCName + " : "
-                            }
-                          /> */}
-
-                          {/* <CustomText
-                            size={12}
-                            value={
-                              item?.ChildCatIDs?.Iscombo === 1
-                                ? " - " + item?.ServiceName
-                                : item?.ServiceName +
-                                  " - " +
-                                  item?.ServiceVarients[0]?.ServiceType?.Name
-                            }
-                          /> */}
                         </CustomRow>
                       </>
                     )}
@@ -2352,41 +2383,6 @@ export default function () {
                   </View>
                 );
               })}
-
-              <TouchableOpacity
-                onPress={() => {
-                  setviewDetailsPackageModal(item);
-                  handleDetailsPackageShowModal();
-                }}
-                style={{
-                  marginTop: 10,
-                }}
-              >
-                <CustomRow
-                  style={{
-                    // backgroundColor: "red",
-                    alignSelf: "flex-start",
-                    borderWidth: 1,
-                    borderColor: Theme.PrimaryColor,
-                    borderRadius: 10,
-                    padding: 5,
-                    paddingHorizontal: 12,
-                  }}
-                  v_center
-                >
-                  <CustomText
-                    value={"View Details "}
-                    size={11}
-                    color={Theme.PrimaryColor}
-                  />
-                  <CustomIcon
-                    size={12}
-                    color={Theme.PrimaryColor}
-                    name={"doubleright"}
-                    type={"AN"}
-                  />
-                </CustomRow>
-              </TouchableOpacity>
             </TouchableOpacity>
             <View>
               <View>
@@ -2519,7 +2515,7 @@ export default function () {
     id
   ) => {
     // Check if the service is already selected
-    const index = selectedCustomizeServices.indexOf(id);
+    const index = customizedServiceId.indexOf(id);
     const selectedCount = selectedCustomizeServices.length;
     console.log("index", index);
     const maxMandatoryServices = parseInt(
@@ -2529,7 +2525,7 @@ export default function () {
     if (selectedCount >= maxMandatoryServices && index === -1) {
       showMessage({
         message:
-          "Please select any " +
+          "You can select any " +
           maxMandatoryServices +
           " services from the list",
         icon: "danger",
@@ -2541,6 +2537,7 @@ export default function () {
     }
 
     if (index === -1) {
+      console.log("index nhi mila", id);
       setSelectedcustomizeServices([...selectedCustomizeServices, ServiceName]);
       setcustomizedServiceId([...customizedServiceId, id]);
 
@@ -2552,6 +2549,7 @@ export default function () {
         (prevRegulerPrice) => prevRegulerPrice + parseInt(RegulerPrice)
       );
     } else if (index !== -1) {
+      console.log("index mila", id);
       setSelectedcustomizeServices(
         selectedCustomizeServices.filter((service) => service !== ServiceName)
       );
@@ -2573,11 +2571,7 @@ export default function () {
   const handleShowModal = () => {
     modelRef?.current?.showModal();
   };
-  const handleCustomizeModal = () => {
-    setSelectedcustomizeServices([]);
-    setTotalCustomizeTime(0);
-    customizePackageRef?.current?.showModal();
-  };
+
   const handleHideModal = () => {
     setSelectedcustomizeServices([]);
     setSelectedServices([]);
@@ -2614,6 +2608,8 @@ export default function () {
     quantity: 1,
     id: selectedCustomizePackageData?._id,
     PCGroup: selectedCustomizePackageData?.ChildId[0]?.PCName[0]?.PCGroup,
+    pcatId: selectedCustomizePackageData?.PcatId,
+    servicesIdS: customizedServiceId,
   };
 
   const totalRegularPrice = selectedServices?.reduce((accumulator, service) => {
@@ -2771,23 +2767,6 @@ export default function () {
   };
   let groupNamee = [...new Set(groupName)];
 
-  const renderers = {
-    p: (htmlAttribs, children, convertedCSSStyles, passProps) => {
-      const defaultStyle = {
-        margin: 0,
-      };
-
-      // Merge default styles with styles from HTML attributes
-      const mergedStyles = { ...defaultStyle, ...convertedCSSStyles };
-
-      return (
-        <Text style={mergedStyles} key={passProps.key}>
-          {children}
-        </Text>
-      );
-    },
-  };
-
   console.log("cartt", cart);
 
   return (
@@ -2812,6 +2791,9 @@ export default function () {
             ref={scrollViewchildRef}
             horizontal
             showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              width: catogoryData.length <= 5 && "100%",
+            }}
           >
             {catogoryData &&
               catogoryData.map((item, index) => {
@@ -2994,7 +2976,7 @@ export default function () {
                       <CustomText
                         margin_h={10}
                         align={"left"}
-                        value={sumTotalPrice ? sumTotalPrice : "0"}
+                        value={sumTotalPrice ? "₹ " + sumTotalPrice : "0"}
                         size={15}
                         medium
                       />
@@ -3003,7 +2985,7 @@ export default function () {
                         style={{
                           textDecorationLine: "line-through",
                         }}
-                        value={"₹" + sumRegulerPrice ? sumRegulerPrice : "0"}
+                        value={sumRegulerPrice ? "₹ " + sumRegulerPrice : "0"}
                       />
                     </View>
                     <CustomText
@@ -3282,19 +3264,16 @@ export default function () {
         </View>
         <View>
           {selectedCustomizePackageData && (
-            <AnimatedModal ref={customizePackageRef}>
+            <AnimatedModal backdropFunction={true} ref={customizePackageRef}>
               <View
                 style={{
-                  // flex: 1,
                   backgroundColor: "white",
-                  // borderTopLeftRadius: 10,
-                  // borderTopRightRadius: 10,
-                  // paddingBottom: 150,
+
                   borderTopLeftRadius: 10,
                   borderTopRightRadius: 10,
 
                   position: "absolute",
-                  bottom: 0,
+                  bottom: -10,
                   width: "100%",
                   maxHeight: Dimensions.get("screen").height - 100,
                   overflow: "hidden",
@@ -3328,6 +3307,7 @@ export default function () {
                     <TouchableOpacity
                       onPress={() => {
                         handlecustomizeHideModal();
+                        setselectedCustomizePackageData(null);
                       }}
                     >
                       <CustomIcon
@@ -3382,71 +3362,143 @@ export default function () {
                       {customizedItems &&
                         customizedItems.map((itemm, index) => {
                           let item = itemm.service;
-
-                          console.log("totalSavedPrice", totalSavedPrice);
+                          const foundItem = user_info?.cart.find(
+                            (item) =>
+                              item.id === selectedCustomizePackageData._id
+                          );
+                          console.log("item in service name", item);
                           return (
                             <View style={{}}>
                               <View
                                 style={{
-                                  justifyContent: "space-between",
-                                  paddingHorizontal: 20,
+                                  // justifyContent: "space-between",
+                                  paddingHorizontal: 10,
                                 }}
                               >
-                                <CustomRow v_center>
-                                  <TouchableOpacity
-                                    style={{
-                                      padding: 5,
-                                    }}
-                                    onPress={() => {
-                                      handleCheckboxTogle(
-                                        item?.ServiceVarients[0]?.ServiceType
-                                          ?.Name == "NA"
-                                          ? item.ServiceName +
-                                              "-" +
-                                              item?.ChildCatIDs?.CCName
-                                          : item.ServiceName +
-                                              "-" +
-                                              item?.ServiceVarients[0]
-                                                ?.ServiceType?.Name,
-                                        parseInt(
-                                          item.ServiceVarients[0]
-                                            .VarientDiscription[0].ServiceTime
-                                        ),
-                                        item.ServiceVarients[0]
-                                          .VarientDiscription[0].salePrice,
-                                        item.ServiceVarients[0]
-                                          .VarientDiscription[0].regularPrice,
-                                        item?._id
-                                      );
-                                    }}
-                                  >
-                                    <CustomIcon
-                                      type={"MC"}
-                                      color={Theme.PrimaryColor}
-                                      size={19}
-                                      name={
-                                        selectedCustomizeServices.includes(
-                                          item?.ServiceVarients[0]?.ServiceType
-                                            ?.Name == "NA"
-                                            ? item.ServiceName +
-                                                "-" +
-                                                item?.ChildCatIDs?.CCName
-                                            : item.ServiceName +
-                                                "-" +
-                                                item?.ServiceVarients[0]
-                                                  ?.ServiceType?.Name
-                                        )
-                                          ? "checkbox-marked"
-                                          : "checkbox-blank-outline"
-                                      }
-                                    />
-                                  </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    const serviceName =
+                                      item?.ServiceVarients[0]?.ServiceType
+                                        ?.Name !== "NA"
+                                        ? item?.ChildCatIDs?.Iscombo === 1
+                                          ? `${item?.ServiceVarients[0]?.ServiceType?.Name} : ${item?.ServiceName}`
+                                          : `${item?.ChildCatIDs?.CCName} : ${item?.ServiceName} - ${item?.ServiceVarients[0]?.ServiceType?.Name}`
+                                        : `${item?.ChildCatIDs?.CCName} : ${item?.ServiceName}`;
 
-                                  {item?.ServiceVarients[0]?.ServiceType
-                                    ?.Name != "NA" && (
-                                    <>
-                                      <CustomRow>
-                                        <CustomText
+                                    let RandomId =
+                                      item.ServiceVarients[0]?._id +
+                                      selectedCustomizePackageData?._id;
+
+                                    handleCheckboxTogle(
+                                      serviceName,
+                                      parseInt(
+                                        item.ServiceVarients[0]
+                                          .VarientDiscription[0].ServiceTime
+                                      ),
+                                      item.ServiceVarients[0]
+                                        .VarientDiscription[0].salePrice,
+                                      item.ServiceVarients[0]
+                                        .VarientDiscription[0].regularPrice,
+                                      // item.ServiceVarients[0]?._id
+                                      RandomId
+                                    );
+                                  }}
+                                >
+                                  <CustomRow>
+                                    <TouchableOpacity
+                                      style={{
+                                        // padding: 5,
+                                        marginBottom: 5,
+                                        marginRight: 5,
+                                      }}
+                                      onPress={() => {
+                                        const serviceName =
+                                          item?.ServiceVarients[0]?.ServiceType
+                                            ?.Name !== "NA"
+                                            ? item?.ChildCatIDs?.Iscombo === 1
+                                              ? `${item?.ServiceVarients[0]?.ServiceType?.Name} : ${item?.ServiceName}`
+                                              : `${item?.ChildCatIDs?.CCName} : ${item?.ServiceName} - ${item?.ServiceVarients[0]?.ServiceType?.Name}`
+                                            : `${item?.ChildCatIDs?.CCName} : ${item?.ServiceName}`;
+
+                                        let RandomId =
+                                          item.ServiceVarients[0]?._id +
+                                          selectedCustomizePackageData?._id;
+
+                                        handleCheckboxTogle(
+                                          serviceName,
+                                          parseInt(
+                                            item.ServiceVarients[0]
+                                              .VarientDiscription[0].ServiceTime
+                                          ),
+                                          item.ServiceVarients[0]
+                                            .VarientDiscription[0].salePrice,
+                                          item.ServiceVarients[0]
+                                            .VarientDiscription[0].regularPrice,
+                                          // item.ServiceVarients[0]?._id
+                                          RandomId
+                                        );
+                                      }}
+                                    >
+                                      <CustomIcon
+                                        type={"MC"}
+                                        color={Theme.PrimaryColor}
+                                        size={19}
+                                        name={
+                                          customizedServiceId?.includes(
+                                            item.ServiceVarients[0]?._id +
+                                              selectedCustomizePackageData?._id
+                                          )
+                                            ? //  ||
+                                              // foundItem?.packageName?.includes(
+                                              //   item?.ServiceVarients[0]?.ServiceType
+                                              //     ?.Name !== "NA"
+                                              //     ? item?.ChildCatIDs?.Iscombo === 1
+                                              //       ? `${item?.ServiceVarients[0]?.ServiceType?.Name} : ${item?.ServiceName}`
+                                              //       : `${item?.ChildCatIDs?.CCName} : ${item?.ServiceName} - ${item?.ServiceVarients[0]?.ServiceType?.Name}`
+                                              //     : `${item?.ChildCatIDs?.CCName} : ${item?.ServiceName}`
+                                              // )
+                                              "checkbox-marked"
+                                            : "checkbox-blank-outline"
+                                        }
+                                      />
+                                    </TouchableOpacity>
+
+                                    {item?.ServiceVarients[0]?.ServiceType
+                                      ?.Name != "NA" && (
+                                      <>
+                                        <CustomRow
+                                          style={{
+                                            flexWrap: "wrap",
+                                          }}
+                                        >
+                                          <Text
+                                            style={{
+                                              fontSize: 12,
+                                              fontWeight: "600",
+                                              color: Theme.Black,
+                                            }}
+                                          >
+                                            {item?.ChildCatIDs?.Iscombo === 1
+                                              ? item?.ServiceVarients[0]
+                                                  ?.ServiceType?.Name
+                                              : item?.ChildCatIDs?.CCName +
+                                                " : "}
+
+                                            <Text
+                                              style={{
+                                                fontSize: 12,
+                                                fontWeight: "400",
+                                              }}
+                                            >
+                                              {item?.ChildCatIDs?.Iscombo === 1
+                                                ? " - " + item?.ServiceName
+                                                : item?.ServiceName +
+                                                  " - " +
+                                                  item?.ServiceVarients[0]
+                                                    ?.ServiceType?.Name}
+                                            </Text>
+                                          </Text>
+                                          {/* <CustomText
                                           style={{
                                             fontWeight: "600",
                                           }}
@@ -3458,10 +3510,10 @@ export default function () {
                                               : item?.ChildCatIDs?.CCName +
                                                 " : "
                                           }
-                                          size={14}
-                                        />
+                                          size={12}
+                                        /> */}
 
-                                        <CustomText
+                                          {/* <CustomText
                                           value={
                                             item?.ChildCatIDs?.Iscombo === 1
                                               ? " - " + item?.ServiceName
@@ -3470,53 +3522,41 @@ export default function () {
                                                 item?.ServiceVarients[0]
                                                   ?.ServiceType?.Name
                                           }
-                                          size={14}
-                                        />
-                                      </CustomRow>
-                                    </>
-                                  )}
-                                  {item?.ServiceVarients[0]?.ServiceType
-                                    ?.Name == "NA" && (
-                                    <CustomRow>
-                                      <CustomText
+                                          size={12}
+                                        /> */}
+                                        </CustomRow>
+                                      </>
+                                    )}
+                                    {item?.ServiceVarients[0]?.ServiceType
+                                      ?.Name == "NA" && (
+                                      <CustomRow
                                         style={{
-                                          fontWeight: "600",
-                                          marginBottom: 5,
+                                          flexWrap: "wrap",
                                         }}
-                                        color={Theme.Black}
-                                        value={
-                                          item?.ChildCatIDs?.CCName + " : "
-                                        }
-                                        size={14}
-                                      />
-                                      <CustomText
-                                        size={14}
-                                        value={item?.ServiceName}
-                                      />
-                                    </CustomRow>
-                                  )}
-
-                                  {/* <View
-                                    style={{
-                                      marginLeft: 10,
-                                    }}
-                                  >
-                                    <CustomText
-                                      regular
-                                      value={
-                                        item?.ServiceVarients[0]?.ServiceType
-                                          ?.Name == "NA"
-                                          ? item.ServiceName +
-                                            "-" +
-                                            item?.ChildCatIDs?.CCName
-                                          : item.ServiceName +
-                                            "-" +
-                                            item?.ServiceVarients[0]
-                                              ?.ServiceType?.Name
-                                      }
-                                    />
-                                  </View> */}
-                                </CustomRow>
+                                      >
+                                        <Text
+                                          style={{
+                                            fontWeight: "600",
+                                            marginBottom: 5,
+                                            color: Theme.Black,
+                                            fontSize: 12,
+                                          }}
+                                        >
+                                          {item?.ChildCatIDs?.CCName + " : "}
+                                          <Text
+                                            style={{
+                                              fontWeight: "400",
+                                              fontSize: 12,
+                                              color: Theme.Black,
+                                            }}
+                                          >
+                                            {item?.ServiceName}
+                                          </Text>
+                                        </Text>
+                                      </CustomRow>
+                                    )}
+                                  </CustomRow>
+                                </TouchableOpacity>
                               </View>
                             </View>
                           );
@@ -3590,8 +3630,10 @@ export default function () {
                                 updatedDetails: selectedCustomizePckageDetails,
                               };
                               dispatch(updateItemInCart(a));
+                              setselectedCustomizePackageData(null);
                             } else {
                               addToCartAction(selectedCustomizePckageDetails);
+                              setselectedCustomizePackageData(null);
 
                               console.log(
                                 "selectedCustomizePckageDetails",
@@ -3630,7 +3672,7 @@ export default function () {
               borderTopRightRadius: 10,
 
               position: "absolute",
-              bottom: 0,
+              bottom: -10,
               width: "100%",
             }}
           >
@@ -3750,10 +3792,16 @@ export default function () {
             {viewDetails && (
               <View
                 style={{
-                  flex: 1,
                   backgroundColor: "white",
+
                   borderTopLeftRadius: 10,
                   borderTopRightRadius: 10,
+
+                  position: "absolute",
+                  bottom: -20,
+                  width: "100%",
+                  maxHeight: Dimensions.get("screen").height - 100,
+                  overflow: "hidden",
                 }}
               >
                 <View>
@@ -3822,10 +3870,11 @@ export default function () {
                   </View>
 
                   <ScrollView
+                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
-                      paddingBottom: "80%",
+                      paddingBottom: "40%",
                       backgroundColor: "white",
-                      flexGrow: 1,
+                      // flexGrow: 1,
                     }}
                   >
                     <View
@@ -3851,31 +3900,6 @@ export default function () {
                         }}
                       />
                     </View>
-                    <CustomRow
-                      v_center
-                      style={{
-                        paddingHorizontal: 10,
-                        marginLeft: 10,
-                      }}
-                    >
-                      <CustomIcon
-                        color={Theme.PrimaryColor}
-                        size={12}
-                        name={"clockcircleo"}
-                        type={"AN"}
-                      />
-                      <CustomText
-                        margin_h={5}
-                        medium
-                        color={"black"}
-                        value={
-                          viewDetails
-                            ? viewDetails?.ServiceVarients[0]
-                                ?.VarientDiscription[0]?.ServiceTime + "Min"
-                            : "0" + "Min"
-                        }
-                      />
-                    </CustomRow>
 
                     {viewDetails.packageTitle &&
                       viewDetails?.serviceId.map((item, index) => {
@@ -3893,7 +3917,7 @@ export default function () {
 
                     <CustomRow
                       style={{
-                        marginBottom: 5,
+                        // marginBottom: 5,
                         marginLeft: 20,
                       }}
                       v_center
@@ -3942,6 +3966,30 @@ export default function () {
                         }
                       />
                     </CustomRow>
+                    <CustomRow
+                      style={{
+                        marginLeft: 20,
+                      }}
+                      v_center
+                    >
+                      <CustomIcon
+                        name={"clock"}
+                        type={"FA5"}
+                        color={Theme.PrimaryColor}
+                        size={12}
+                      />
+                      <CustomText
+                        size={12}
+                        margin_h={5}
+                        color={"grey"}
+                        value={
+                          viewDetails
+                            ? viewDetails?.ServiceVarients[0]
+                                ?.VarientDiscription[0]?.ServiceTime + "Min"
+                            : "0" + "Min"
+                        }
+                      />
+                    </CustomRow>
 
                     {viewDetails?.ServiceVarients[0]?.VarientDiscription[0]
                       ?.ServiceDiscription ? (
@@ -3983,8 +4031,10 @@ export default function () {
                       width: "100%",
                       alignSelf: "center",
                       position: "absolute",
-                      bottom: 30,
+                      bottom: 0,
                       backgroundColor: "white",
+                      paddingBottom: 20,
+                      height: 140,
                     }}
                   >
                     <CustomButton
@@ -4035,10 +4085,16 @@ export default function () {
             {viewDetailsPackageModal && (
               <View
                 style={{
-                  flex: 1,
                   backgroundColor: "white",
+
                   borderTopLeftRadius: 10,
                   borderTopRightRadius: 10,
+
+                  position: "absolute",
+                  bottom: -10,
+                  width: "100%",
+                  maxHeight: Dimensions.get("screen").height - 100,
+                  overflow: "hidden",
                 }}
               >
                 <View
@@ -4102,8 +4158,7 @@ export default function () {
                 <ScrollView
                   scrollEnabled={true}
                   contentContainerStyle={{
-                    paddingBottom: "40%",
-                    flexGrow: 1,
+                    paddingBottom: "100%",
                   }}
                   showsVerticalScrollIndicator={false}
                 >
@@ -4225,7 +4280,7 @@ export default function () {
                 </ScrollView>
                 <View
                   style={{
-                    paddingBottom: 40,
+                    paddingBottom: 120,
                   }}
                 >
                   <View
@@ -4239,7 +4294,66 @@ export default function () {
                   >
                     <CustomButton
                       onPress={() => {
-                        // handleViewDetailsModal();
+                        let Package = viewDetailsPackageModal;
+                        let services = viewDetailsPackageModal?.serviceId;
+
+                        const serviceNames = [];
+                        let totalSalePrice = viewDetailsPackageModal?.payble;
+                        let totalRegularPrice = 0;
+                        let totalServiceTime = 0;
+
+                        services?.forEach((servicee) => {
+                          let service = servicee?.service;
+                          service?.ServiceVarients?.forEach((variant) => {
+                            variant.VarientDiscription.forEach(
+                              (discription) => {
+                                totalRegularPrice += parseInt(
+                                  discription.regularPrice
+                                );
+                                totalServiceTime += parseInt(
+                                  service?.ServiceVarients[0]
+                                    ?.VarientDiscription[0]?.ServiceTime
+                                );
+
+                                let serviceName = "";
+                                if (
+                                  service?.ServiceVarients[0]?.ServiceType
+                                    ?.Name !== "NA"
+                                ) {
+                                  if (service?.ChildCatIDs?.Iscombo === 1) {
+                                    serviceName = `${service?.ServiceVarients[0]?.ServiceType?.Name} : ${service?.ServiceName}`;
+                                  } else {
+                                    serviceName = `${service?.ChildCatIDs?.CCName} : ${service?.ServiceName} - ${service?.ServiceVarients[0]?.ServiceType?.Name}`;
+                                  }
+                                } else {
+                                  serviceName = `${service?.ChildCatIDs?.CCName} : ${service?.ServiceName}`;
+                                }
+                                console.log("serviceName", serviceName);
+                                serviceNames.push(serviceName);
+                              }
+                            );
+                          });
+                        });
+
+                        const selectedNormalPckageDetailss = {
+                          packageName: serviceNames,
+                          packageTotalTime: totalServiceTime,
+                          packagetotalPrice: Package?.payble,
+                          packageRegulerPrice: Package?.RPrice,
+                          type: "Normal",
+                          packageTitle: viewDetailsPackageModal?.packageTitle,
+                          quantity: 1,
+                          id: viewDetailsPackageModal?._id,
+                          PCGroup: selectedpackagedata
+                            ? selectedpackagedata?.ChildId[0]?.PCName[0]
+                                ?.PCGroup
+                            : viewDetailsPackageModal?.ChildId[0]?.PCName[0]
+                                ?.PCGroup,
+                          pcatId: viewDetailsPackageModal?.PcatId,
+                        };
+
+                        addToCartAction(selectedNormalPckageDetailss);
+                        handleDetailsPackageHideModal();
                       }}
                       width={"90%"}
                       title={"Add to Cart"}

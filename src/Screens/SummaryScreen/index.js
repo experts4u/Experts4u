@@ -200,7 +200,12 @@ export default function () {
   useEffect(() => {
     if (responsee) {
       ToastMessage.Success("Address deleted succesfully");
-      // getDetails();
+      // editAddress
+      setEditAddress("");
+      setselectedAddress(null);
+      handleHideModal();
+
+      getDetails();
       console.log("user_info", user_);
     }
   }, [responsee]);
@@ -963,6 +968,23 @@ export default function () {
   let myApiKey = "AIzaSyCBRJgSZT50bFwgbOQHOWdi0giGUEdG3MY";
   // let myApiKey = "AIzaSyAlwvFRv3sBxaayi2qKQragSuTS4TwfmaQ";
 
+  const extractAndSplitLogs = (logs) => {
+    return logs?.map((log) => {
+      // Remove the "LOG  service names " part
+      let trimmedLog = log.replace("LOG  service names ", "");
+      // Split into parts before and after the colon
+      let parts = trimmedLog.split(" : ");
+      return {
+        beforeColon: parts[0],
+        afterColon: parts[1],
+      };
+    });
+  };
+
+  let iBtnDataa = extractAndSplitLogs(iBtnData?.packageName);
+
+  console.log("iBtnDataa", iBtnDataa);
+
   let editData = {
     addressId: deleteAdr,
     location: {
@@ -972,7 +994,7 @@ export default function () {
     houseOrFlatNo: house,
     buildingName: apartment,
     landmark: landmark ? landmark : "",
-    SaveAs: home == 0 ? "home" : "other",
+    SaveAs: home == 0 ? "Home" : "Other",
     FullAddress: currentAddress,
   };
   let addData = {
@@ -983,7 +1005,7 @@ export default function () {
     houseOrFlatNo: house,
     buildingName: apartment,
     landmark: landmark ? landmark : "",
-    SaveAs: home == 0 ? "home" : "other",
+    SaveAs: home == 0 ? "Home" : "Other",
     FullAddress: SuggestedAddress || currentAddress,
   };
   const { response, fetchData, isLoading } = useFetch({
@@ -1179,6 +1201,8 @@ export default function () {
     }
   };
 
+  console.log("coupenDetails", coupenDetails);
+
   return (
     <SafeAreaView
       style={{
@@ -1320,13 +1344,21 @@ export default function () {
                           borderTopWidth: 1,
                           marginTop: 5,
                           paddingVertical: 4,
-                          // borderStyle: "",
+
                           borderTopColor: "#F5F6FB",
                         }}
                         key={index}
                         ratios={[4, 0, 2]}
                       >
-                        <View
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (item?.type == "Service") {
+                              return;
+                            } else {
+                              setIBtnData(item);
+                              handleIBtnShowModal();
+                            }
+                          }}
                           style={{
                             flexDirection: "row",
                             alignItems: "center",
@@ -1356,12 +1388,11 @@ export default function () {
                               size={12}
                             />
                           ) : null}
-                        </View>
+                        </TouchableOpacity>
                         <View
                           style={{
                             alignItems: "center",
                             justifyContent: "center",
-                            // backgroundColor: 'red',
                           }}
                         >
                           <QuantityControl
@@ -1431,12 +1462,48 @@ export default function () {
                           <CustomText value={"%"} color={"white"} size={13} />
                         </View>
                         <View>
-                          <CustomText
-                            color={"#757575"}
-                            bold
-                            value={selectedCoupen?.code}
-                          />
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <CustomText
+                              // color={"#757575"}
+                              black
+                              bold
+                              size={15}
+                              value={`'` + selectedCoupen?.code + `' applied`}
+                            />
+                            {/* <CustomText
+                              color={"#757575"}
+                              bold
+                              size={12}
+                              value={" applied"}
+                            /> */}
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <CustomText
+                              // color={"#757575"}
+                              color={"red"}
+                              bold
+                              size={15}
+                              value={"₹ " + selectedCoupen?.discountValue}
+                            />
+                            <CustomText
+                              color={"#757575"}
+                              bold
+                              size={12}
+                              value={" coupon savings"}
+                            />
+                          </View>
                         </View>
+
                         <TouchableOpacity
                           onPress={() => {
                             setselectedCoupen(null);
@@ -1448,8 +1515,9 @@ export default function () {
                           }}
                         >
                           <CustomText
-                            value={"remove"}
-                            color={Theme.PrimaryColor}
+                            value={"Remove"}
+                            // color={Theme.PrimaryColor}
+                            color={"red"}
                             size={15}
                             margin_h={5}
                             bold
@@ -1492,7 +1560,7 @@ export default function () {
                       <View
                         style={{
                           alignItems: "center",
-                          // justifyContent: 'center',
+
                           flexDirection: "row",
                         }}
                       >
@@ -1514,7 +1582,6 @@ export default function () {
                           justifyContent: "flex-end",
                           flexDirection: "row",
                           alignItems: "center",
-                          // alignItems: 'flex-end',
                         }}
                       >
                         <CustomText
@@ -1568,12 +1635,13 @@ export default function () {
                 {selectedTip > 0 ? (
                   <CustomRow
                     ratios={[0, 1, 0]}
+                    v_center
                     style={{
                       marginTop: 10,
                       marginHorizontal: 10,
                     }}
                   >
-                    <CustomImage src={Assets.mybenifitsicon} size={15} />
+                    <CustomText medium size={13} value={"\u2022"} />
                     <CustomText
                       medium
                       margin_h={10}
@@ -1592,18 +1660,21 @@ export default function () {
                 {selectedCoupen && (
                   <CustomRow
                     ratios={[0, 1, 0]}
+                    v_center
                     style={{
                       marginTop: 10,
                       marginHorizontal: 10,
                     }}
                   >
-                    <CustomImage src={Assets.freekit} size={15} />
+                    <CustomText medium size={13} value={"\u2022"} />
                     <CustomText
                       medium
                       margin_h={10}
                       size={13}
-                      color={"#757575"}
-                      value={"Coupon Discount" + selectedCoupen.code}
+                      color={Theme.PrimaryColor}
+                      value={
+                        "Coupon Discount" + "( " + selectedCoupen.code + " )"
+                      }
                     />
 
                     <CustomText
@@ -1619,15 +1690,13 @@ export default function () {
                       return (
                         <CustomRow
                           ratios={[0, 1, 0]}
+                          v_center
                           style={{
                             marginTop: 10,
                             marginHorizontal: 10,
                           }}
                         >
-                          <CustomImage
-                            src={{ uri: Endpoints.baseUrl + item.ChargesIcon }}
-                            size={15}
-                          />
+                          <CustomText medium size={13} value={"\u2022"} />
                           <CustomText
                             size={13}
                             medium
@@ -1653,7 +1722,7 @@ export default function () {
                       marginHorizontal: 10,
                     }}
                   >
-                    <CustomImage src={Assets.mybenifitsicon} size={15} />
+                    <CustomText medium size={13} value={"\u2022"} />
                     <CustomText
                       medium
                       margin_h={10}
@@ -1676,7 +1745,6 @@ export default function () {
                 <View
                   style={{
                     borderTopWidth: 1,
-                    // borderStyle: 'dashed',
                     borderColor: "#F5F6FB",
                     marginTop: 10,
                     marginHorizontal: 10,
@@ -1701,7 +1769,7 @@ export default function () {
                     value={
                       totalOtherCharges > 0
                         ? "₹" + parseInt(PaymentAfterCoupen)
-                        : parseInt(sumTotalPrice)
+                        : "₹ " + parseInt(sumTotalPrice)
                     }
                   />
                 </CustomRow>
@@ -1763,7 +1831,6 @@ export default function () {
                         color={selectedTip == 20 ? "white" : Theme.PrimaryColor}
                         size={13}
                         value={"₹20"}
-                        regular
                       />
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -1902,16 +1969,7 @@ export default function () {
               </KeyboardAvoidingView>
             </ScrollView>
           </KeyboardAvoidingView>
-          {/* <KeyboardAvoidingView
-            style={{
-              // flex: 1,
-              position: "absolute",
-              bottom: 0,
-              width: "100%",
-              backgroundColor: "white",
-            }}
-            behavior={"padding"}
-          > */}
+
           <View>
             <CustomCard
               style={{
@@ -1919,7 +1977,6 @@ export default function () {
                 alignSelf: "center",
                 paddingBottom: 0,
                 paddingTop: 0,
-
                 borderBottomWidth: 0,
               }}
             >
@@ -1967,7 +2024,6 @@ export default function () {
               />
             </CustomCard>
           </View>
-          {/* </KeyboardAvoidingView> */}
 
           <AnimatedModal ref={AdressRef}>
             <View
@@ -1980,7 +2036,7 @@ export default function () {
                 paddingTop: 10,
                 // marginTop: "40%",
                 position: "absolute",
-                bottom: 0,
+                bottom: -10,
                 width: "100%",
               }}
             >
@@ -2112,6 +2168,9 @@ export default function () {
                                     item?.houseOrFlatNo +
                                     "," +
                                     item?.buildingName +
+                                    "," +
+                                    item?.landmark +
+                                    ", " +
                                     item?.FullAddress
                                   }
                                 />
@@ -2177,7 +2236,7 @@ export default function () {
                 borderTopRightRadius: 10,
 
                 position: "absolute",
-                bottom: 0,
+                bottom: -10,
                 width: "100%",
                 maxHeight: Dimensions.get("screen").height - 100,
                 overflow: "hidden",
@@ -2428,7 +2487,7 @@ export default function () {
                 borderTopRightRadius: 10,
 
                 position: "absolute",
-                bottom: 0,
+                bottom: -10,
                 width: "100%",
                 maxHeight: Dimensions.get("screen").height - 100,
                 overflow: "hidden",
@@ -2613,22 +2672,37 @@ export default function () {
                       <View
                         style={{
                           marginHorizontal: 10,
+                          flex: 1,
                         }}
                       >
-                        <CustomText
-                          margin_v={5}
-                          value={
-                            "\u2B24 " +
-                            "Slot time (30 min) is arrival time of experts."
-                          }
-                        />
-                        <CustomText
-                          margin_v={5}
-                          value={
-                            "\u2B24 " +
-                            "As part of our safety protocol, our experts will be working until 7 pm. Any services remaining will be scheduled for the next day."
-                          }
-                        />
+                        <CustomRow ratios={[0, 1]} v_center>
+                          <CustomText
+                            style={{
+                              marginRight: 10,
+                            }}
+                            value={"\u2B24"}
+                          />
+                          <CustomText
+                            // margin_v={5}
+                            value={
+                              "Slot time (30 min) is arrival time of experts."
+                            }
+                          />
+                        </CustomRow>
+                        <CustomRow ratios={[0, 1]}>
+                          <CustomText
+                            style={{
+                              marginRight: 10,
+                            }}
+                            value={"\u2B24"}
+                          />
+
+                          <CustomText
+                            value={
+                              "As part of our safety protocol ,our experts will be working  until 7pm. any services remaining will be scheduled for the next day"
+                            }
+                          />
+                        </CustomRow>
                       </View>
                     </CustomCard>
                   </View>
@@ -2676,14 +2750,6 @@ export default function () {
           <AnimatedModal ref={ConfirmSlot}>
             <View
               style={{
-                //   borderTopLeftRadius: 10,
-                //   borderTopRightRadius: 10,
-
-                //   position: "absolute",
-                //   bottom: 0,
-                //   width: "100%",
-                //   maxHeight: Dimensions.get("screen").height - 100,
-                //   overflow: "hidden",
                 flex: 1,
               }}
             >
@@ -2694,7 +2760,7 @@ export default function () {
                   backgroundColor: "white",
                   position: "absolute",
                   width: "100%",
-                  bottom: 0,
+                  bottom: -10,
                 }}
               >
                 <View
@@ -2725,11 +2791,15 @@ export default function () {
                         }}
                         src={Assets.homegrey}
                         resizeMode={"center"}
-                        size={20}
+                        size={15}
                       />
                       <CustomText
+                        size={12}
                         numberOfLines={1}
                         margin_h={10}
+                        style={{
+                          width: "90%",
+                        }}
                         value={
                           (selectedAddress
                             ? selectedAddress.houseOrFlatNo +
@@ -2746,7 +2816,7 @@ export default function () {
                       />
                       <CustomImage
                         src={Assets.pencilgrey}
-                        size={20}
+                        size={15}
                         resizeMode={"center"}
                       />
                     </CustomRow>
@@ -2780,9 +2850,10 @@ export default function () {
                         }}
                         src={Assets.clockgrey}
                         resizeMode={"center"}
-                        size={20}
+                        size={15}
                       />
                       <CustomText
+                        size={12}
                         margin_h={10}
                         value={
                           moment(selectedDate).format("dddd").slice(0, 3) +
@@ -2792,7 +2863,7 @@ export default function () {
                       />
                       <CustomImage
                         src={Assets.pencilgrey}
-                        size={20}
+                        size={15}
                         resizeMode={"center"}
                       />
                     </CustomRow>
@@ -2867,7 +2938,6 @@ export default function () {
                   setLatitude(details.geometry.location.lat);
                   setLongitude(details.geometry.location.lng);
                   dispatch(addSearchadressHistory(item));
-
                   handleAdressSuggestionHideModal();
                   handleMapShowModal();
                 }}
@@ -2889,7 +2959,6 @@ export default function () {
                     <TouchableOpacity
                       key={index}
                       onPress={() => {
-                        // setSuggestedAddress(item?.FullAddress);
                         setCurrentAddress(item?.FullAddress);
                         setLatitude(item?.latitude);
                         setLongitude(item?.longitude);
@@ -2915,8 +2984,6 @@ export default function () {
               <TouchableOpacity
                 onPress={() => {
                   handleAdressSuggestionHideModal();
-                  // setselectedAddress(null);
-                  // setCurrentAddress(null);
 
                   getAddressFromCoordinates();
                   handleMapShowModal();
@@ -2950,33 +3017,60 @@ export default function () {
               style={{
                 backgroundColor: "white",
                 position: "absolute",
-                bottom: 0,
+                bottom: -10,
                 flex: 1,
-                minHeight: 400,
+                maxHeight: 350,
                 width: "100%",
                 borderTopRightRadius: 15,
                 borderTopLeftRadius: 15,
+                paddingHorizontal: 20,
+                paddingVertical: 15,
               }}
             >
-              <CustomText
-                margin_v={20}
-                margin_h={10}
-                regular
-                value={iBtnData?.packageTitle}
-              />
+              <CustomHeading heading={iBtnData?.packageTitle} />
 
-              <View>
-                <CustomHeading heading={"Services Name"} />
-                {iBtnData?.packageName?.map((item, index) => {
+              <ScrollView>
+                {iBtnDataa?.map((item, index) => {
                   return (
-                    <CustomText
-                      margin_h={20}
-                      regular
-                      value={"\u2022" + " " + item}
-                    />
+                    <View
+                      style={{
+                        width: "85%",
+                      }}
+                    >
+                      <CustomRow>
+                        <CustomText
+                          size={14}
+                          style={{
+                            fontWeight: "600",
+                            marginBottom: 5,
+                          }}
+                          color={Theme.Black}
+                          value={"\u2022 "}
+                        />
+                        <Text
+                          style={{
+                            fontWeight: "600",
+                            marginBottom: 5,
+                            color: Theme.Black,
+                          }}
+                        >
+                          {item?.beforeColon + " : "}
+
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Theme.Black,
+                              fontWeight: "400",
+                            }}
+                          >
+                            {item?.afterColon}
+                          </Text>
+                        </Text>
+                      </CustomRow>
+                    </View>
                   );
                 })}
-              </View>
+              </ScrollView>
             </View>
           </AnimatedModal>
 
@@ -2989,7 +3083,7 @@ export default function () {
                 flex: 1,
                 position: "absolute",
                 width: "100%",
-                bottom: 0,
+                bottom: -10,
               }}
             >
               <View
@@ -3028,7 +3122,7 @@ export default function () {
                       onPress={() => {
                         DeleteAdress();
                         handleEdittHideModal();
-                        // handleSavedAddressHideModal();
+
                         getDetails();
                       }}
                       width={"100%"}
@@ -3042,15 +3136,12 @@ export default function () {
           <AnimatedModal ref={CoupenRef}>
             <View
               style={{
-                // borderTopRightRadius: 20,
-                // borderTopLeftRadius: 20,
-                // backgroundColor: "white",
                 borderTopLeftRadius: 10,
                 borderTopRightRadius: 10,
-
                 position: "absolute",
-                bottom: 0,
+                bottom: -10,
                 width: "100%",
+                maxHeight: Dimensions.get("window").height - 100,
               }}
             >
               <CustomRow
@@ -3098,12 +3189,12 @@ export default function () {
                 scrollEnabled={true}
                 stickyHeaderIndices={[0]}
                 contentContainerStyle={{
-                  paddingBottom: coupenListData?.length < 3 ? "100%" : 50,
+                  paddingBottom: 50,
                   backgroundColor: "white",
                 }}
               >
                 <View>
-                  <View
+                  {/* <View
                     style={{
                       backgroundColor: "white",
                       borderBottomRightRadius: 10,
@@ -3141,7 +3232,7 @@ export default function () {
                         />
                       </TouchableOpacity>
                     </CustomRow>
-                  </View>
+                  </View> */}
                 </View>
                 <View
                   style={{
@@ -3208,7 +3299,7 @@ export default function () {
                         <Coupon
                           key={item?._id}
                           code={item?.couponCode}
-                          desc={item?.couponDescription}
+                          desc={item?.couponSubTitle}
                           title={item?.couponTitle}
                           afterDiscount={afterDiscount}
                           additionalAmountNeeded={additionalAmountNeeded}
@@ -3349,12 +3440,14 @@ export default function () {
               <View
                 style={{
                   marginHorizontal: 10,
-                  // backgroundColor: 'red',
-                  // flex: 1,
-                  // paddingBottom: 40,
                 }}
               >
-                <CustomText value={coupenDetails?.couponDescription} regular />
+                {coupenDetails?.couponDescription.map((item, index) => {
+                  let i = index + 1;
+                  return (
+                    <CustomText size={12} value={i + ". " + item} regular />
+                  );
+                })}
               </View>
             </View>
           </AnimatedModal>

@@ -1,13 +1,22 @@
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useIsFocused,
+  useNavigation,
+} from "@react-navigation/native";
 import Assets from "Assets";
 import CustomImage from "Components/CustomImage";
 import CustomRow from "Components/CustomRow";
 import CustomText from "Components/CustomText";
 import Routes from "RootNavigation/Routes";
 import {
+  Alert,
+  AppState,
+  BackHandler,
   Dimensions,
   FlatList,
   Image,
+  Linking,
+  PermissionsAndroid,
   RefreshControl,
   ScrollView,
   StatusBar,
@@ -27,16 +36,30 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import CustomTypewriter from "Components/CustomTypewriter";
 import CustomCarasoul from "Components/CustomCarasoul";
 import FastImage from "react-native-fast-image";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useFetch from "Hooks/useFetch";
 import Endpoints from "Configs/API/Endpoints";
 import RenderHTML from "react-native-render-html";
 import LinearGradient from "react-native-linear-gradient";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import Loader from "Components/CustomLoader";
+import AnimatedModal from "Components/AnimatedModal";
+import GetLocation from "react-native-get-location";
+import {
+  addSearchadressHistory,
+  saveCurrentLocation,
+} from "ReduxState/Slices/UserSlice";
+import CustomButton from "Components/CustomButton";
 
 export default function () {
   const Navigation = useNavigation();
+  const AdressSuggestions = useRef();
+  const suggestionsRef = useRef(null);
+  const disabledOptionsRef = useRef();
   const user_info = useSelector((v) => v.user.userInfo);
+  const user_infoo = useSelector((v) => v.user);
   const cart = useSelector((v) => v.user?.cart);
+  const dispatch = useDispatch();
   const dimensions = useWindowDimensions();
   const [textToType, setTextToType] = useState("Search for “avd def eft");
   const [catogoryData, setCatogoryData] = useState([]);
@@ -54,6 +77,20 @@ export default function () {
   const [shortcuts, setShortcuts] = useState("");
   const [imageHeights, setImageHeights] = useState([]);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [textModal, setTextModal] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+
+  const [currentAddress, setCurrentAddress] = useState("");
+  const [SuggestedAddress, setSuggestedAddress] = useState("");
+  const [longitude, setLongitude] = useState();
+  const [appState, setAppState] = useState(AppState.currentState);
+  //
+  const [latitude, setLatitude] = useState();
+  const [permissionGranted, setPermissionGranted] = useState(false);
+  const userState = useSelector((state) => state.user);
+
+  let addressofHistory = user_infoo?.historyofadress;
+
   const focused = useIsFocused();
 
   let counter = cart.length;
@@ -71,8 +108,8 @@ export default function () {
 
   myApiKey = "AIzaSyCBRJgSZT50bFwgbOQHOWdi0giGUEdG3MY";
 
-  let longitude = state?.currentLocation[0];
-  let latitude = state?.currentLocation[1];
+  // let longitude = state?.currentLocation[0];
+  // let latitude = state?.currentLocation[1];
   console.log(
     "user_info?.user",
     user_info?.user ? user_info?.user?._id : user_info?._id
@@ -100,10 +137,7 @@ export default function () {
             resolve(responseJson?.results?.[0]?.formatted_address);
             setcurrentAdress(responseJson?.results?.[0]?.formatted_address);
 
-            // console.log(
-            //   responseJson?.results?.[0]?.formatted_address,
-            //   'llllllllll',
-            // );
+            console.log(responseJson?.results[0], "adres formatsssss");
           } else {
             reject("not found");
           }
@@ -394,6 +428,12 @@ export default function () {
   }, [focused]);
 
   useEffect(() => {
+    if (permissionGranted) {
+      requestLocationPermission();
+    }
+  }, [permissionGranted]);
+
+  useEffect(() => {
     if (user_info?._id || (user_info.user?._id && focused)) {
       getDetails();
     }
@@ -558,7 +598,12 @@ export default function () {
   const renderShortcut = (title, listData) => {
     console.log("listData", listData);
     return (
-      <View>
+      <CustomCard
+        style={{
+          paddingBottom: 12,
+          marginBottom: 0,
+        }}
+      >
         {renderTitle(title)}
         <FlatList
           contentContainerStyle={{
@@ -571,7 +616,7 @@ export default function () {
           keyExtractor={(item) => item._id}
           horizontal={true}
         />
-      </View>
+      </CustomCard>
     );
   };
 
@@ -736,6 +781,305 @@ export default function () {
       0
     );
   }
+
+  const handleAdressSuggestionShowModal = () => {
+    AdressSuggestions?.current?.showModal();
+  };
+
+  const handledisabledOptionsModal = () => {
+    // Show the modal using disabledOptionsRef
+    disabledOptionsRef?.current?.showModal();
+
+    // Subscribe to the hardware back button event conditionally
+  };
+
+  const handledisabledOptionshideModal = () => {
+    modalIsShown = true;
+    disabledOptionsRef?.current?.hideModal();
+  };
+  const handleAdressSuggestionHideModal = () => {
+    AdressSuggestions?.current?.hideModal();
+  };
+
+  const requestLocationPermission = async () => {
+    try {
+      const permissionResult = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      );
+
+      switch (permissionResult) {
+        case PermissionsAndroid.RESULTS.GRANTED:
+          // If permission is granted, get the location
+          try {
+            const location = await GetLocation.getCurrentPosition({
+              timeout: 60000,
+              showLocationDialog: true,
+            });
+            console.log("Location:", location);
+            setLongitude(location.longitude);
+            setLatitude(location.latitude);
+
+            dispatch(
+              saveCurrentLocation([location.longitude, location.latitude])
+            );
+          } catch (locationError) {
+            console.warn("Error:", locationError);
+            if (locationError.message === "Location not available") {
+              // handledisabledOptionsModal
+
+              setTextModal("Your device location is off");
+
+              handledisabledOptionsModal();
+            }
+          }
+          break;
+
+        case PermissionsAndroid.RESULTS.DENIED:
+          // If permission is denied, inform the user and redirect accordingly
+          showAlert(
+            "Permission Denied",
+            "Location permission is required for this feature."
+          );
+          redirectToAppropriateScreen();
+          break;
+
+        case PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN:
+          // If permission is set to never ask again, inform the user and redirect accordingly
+          showAlert(
+            "Permission Required",
+            "Please enable location permission from settings."
+          );
+          redirectToAppropriateScreen();
+          break;
+
+        default:
+          console.warn("Unhandled permission result:", permissionResult);
+          redirectToAppropriateScreen();
+          break;
+      }
+    } catch (error) {
+      console.warn("Error:", error);
+      showAlert("Error", "An unexpected error occurred. Please try again.");
+      redirectToAppropriateScreen();
+    }
+  };
+  const checkLocationPermission = async () => {
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+    if (hasPermission == true) {
+      console.log("permission hai", hasPermission);
+      // requestLocationPermission();
+      handledisabledOptionshideModal();
+    } else {
+      handledisabledOptionsModal();
+      setTextModal("Location Permission is off");
+    }
+    setPermissionGranted(hasPermission);
+  };
+
+  const checkLocationPermissionwithbutton = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: "Location Permission",
+          message: "This app needs access to your location.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK",
+        }
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("Location permission granted");
+        // getAddressFromCoordinates();
+        requestLocationPermission();
+        handledisabledOptionshideModal();
+
+        // Perform actions when permission is granted
+      } else {
+        console.log("Location permission denied");
+        Linking.openSettings();
+        // Linking.sendIntent("android.settings.LOCATION_SOURCE_SETTINGS");
+
+        // You can also use Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS');
+        // to directly open the device location settings
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  useEffect(() => {
+    checkLocationPermission();
+  }, []);
+
+  useEffect(() => {
+    if (longitude != undefined && latitude != undefined) {
+      getAddressFromCoordinates();
+    }
+  }, [longitude, latitude]);
+
+  // useEffect(() => {
+  //   const handleAppStateChange = (nextAppState) => {
+  //     if (appState.match(/inactive|background/) && nextAppState === "active") {
+  //        try {
+  //     const permissionResult = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+  //       // {
+  //       //   title: "Location Permission",
+  //       //   message:
+  //       //     "This app needs access to your location to provide better services.",
+  //       //   buttonPositive: "OK",
+  //       // }
+  //     );
+
+  //     switch (permissionResult) {
+  //       case PermissionsAndroid.RESULTS.GRANTED:
+  //         // If permission is granted, get the location
+  //         try {
+  //           const location = await GetLocation.getCurrentPosition({
+  //             timeout: 60000,
+  //             showLocationDialog: true,
+  //           });
+  //           console.log("Location:", location);
+  //           setLongitude(location.longitude);
+  //           setLatitude(location.latitude);
+
+  //           dispatch(
+  //             saveCurrentLocation([location.longitude, location.latitude])
+  //           );
+  //         } catch (locationError) {
+  //           console.warn("Error:", locationError);
+  //           if (locationError.message === "Location not available") {
+  //             // handledisabledOptionsModal
+
+  //             setTextModal("Your device location is off");
+
+  //             handledisabledOptionsModal();
+  //           }
+  //         }
+  //         break;
+
+  //       case PermissionsAndroid.RESULTS.DENIED:
+  //         // If permission is denied, inform the user and redirect accordingly
+  //         showAlert(
+  //           "Permission Denied",
+  //           "Location permission is required for this feature."
+  //         );
+  //         redirectToAppropriateScreen();
+  //         break;
+
+  //       case PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN:
+  //         // If permission is set to never ask again, inform the user and redirect accordingly
+  //         showAlert(
+  //           "Permission Required",
+  //           "Please enable location permission from settings."
+  //         );
+  //         redirectToAppropriateScreen();
+  //         break;
+
+  //       default:
+  //         console.warn("Unhandled permission result:", permissionResult);
+  //         redirectToAppropriateScreen();
+  //         break;
+  //     }
+  //   } catch (error) {
+  //     console.warn("Error:", error);
+  //     showAlert("Error", "An unexpected error occurred. Please try again.");
+  //     redirectToAppropriateScreen();
+  //   }
+  //       // handledisabledOptionshideModal();
+  //       // requestLocationPermission();
+  //       // checkLocationPermissionwithbutton();
+  //     }
+  //     setAppState(nextAppState);
+  //   };
+
+  //   const appStateSubscription = AppState.addEventListener(
+  //     "change",
+  //     handleAppStateChange
+  //   );
+
+  //   return () => {
+  //     appStateSubscription.remove();
+  //   };
+  // }, [appState]);
+
+  const handleAppStateChange = async (nextAppState) => {
+    if (appState.match(/inactive|background/) && nextAppState === "active") {
+      try {
+        const permissionResult = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+
+        switch (permissionResult) {
+          case PermissionsAndroid.RESULTS.GRANTED:
+            try {
+              const location = await GetLocation.getCurrentPosition({
+                timeout: 60000,
+                showLocationDialog: true,
+              });
+              console.log("Location:", location);
+              setLongitude(location.longitude);
+              setLatitude(location.latitude);
+
+              dispatch(
+                saveCurrentLocation([location.longitude, location.latitude])
+              );
+              handledisabledOptionshideModal();
+            } catch (locationError) {
+              console.warn("Error:", locationError);
+              if (locationError.message === "Location not available") {
+                setTextModal("Your device location is off");
+                handledisabledOptionsModal();
+              }
+            }
+            break;
+
+          case PermissionsAndroid.RESULTS.DENIED:
+            break;
+
+          case PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN:
+            break;
+
+          default:
+            console.warn("Unhandled permission result:", permissionResult);
+            redirectToAppropriateScreen();
+            break;
+        }
+      } catch (error) {
+        console.warn("Error:", error);
+        showAlert("Error", "An unexpected error occurred. Please try again.");
+        // redirectToAppropriateScreen();
+      }
+    }
+    setAppState(nextAppState);
+  };
+
+  useEffect(() => {
+    const appStateSubscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
+
+    return () => {
+      appStateSubscription.remove();
+    };
+  }, [appState]);
+
+  const showAlert = (title, message) => {
+    Alert.alert(title, message, [{ text: "OK" }]);
+  };
+
+  const redirectToAppropriateScreen = () => {
+    if (userState?.userInfo == null) {
+      Navigation.replace(Routes.AuthStack);
+    } else {
+      Navigation.replace(Routes.MainTabStack);
+    }
+  };
 
   return (
     <>
@@ -1048,11 +1392,13 @@ export default function () {
                 />
 
                 <View style={styles.container}>
-                  <CustomTypewriter
-                    infinite
-                    text={cCategory.length > 0 ? cCategory : abc}
-                    delay={300}
-                  />
+                  {focused && (
+                    <CustomTypewriter
+                      infinite
+                      text={cCategory.length > 0 ? cCategory : abc}
+                      delay={300}
+                    />
+                  )}
                 </View>
               </CustomRow>
             </TouchableOpacity>
@@ -1067,7 +1413,12 @@ export default function () {
           <CustomCarasoul playable={false} swiperImages={HeroData} />
         </View>
 
-        <CustomCard>
+        <CustomCard
+          style={{
+            paddingBottom: 12,
+            marginBottom: 0,
+          }}
+        >
           <CustomHeading heading={"Service Category"} />
 
           <FlatList
@@ -1078,7 +1429,12 @@ export default function () {
           />
         </CustomCard>
         {offers4u.length > 0 && (
-          <CustomCard>
+          <CustomCard
+            style={{
+              paddingBottom: 12,
+              marginBottom: 0,
+            }}
+          >
             <CustomHeading heading={"Offers4U"} />
 
             <ScrollView
@@ -1152,7 +1508,33 @@ export default function () {
                               },
                             }}
                           />
-                          <TouchableOpacity
+                          <View
+                            // onPress={() => {
+                            //   if (item?.PCatId) {
+                            //     if (item?.serviceID) {
+                            //       Navigation.navigate(
+                            //         Routes.ServiceDetailsScreen,
+                            //         {
+                            //           itemId: item?.CCatId?._id,
+                            //           PCGroup: item?.PCatId?.PCGroup,
+                            //           pcId: item?.PCatId?._id,
+                            //           PCName: item?.PCatId?.PCName,
+                            //           serviceId: item?.serviceID,
+                            //         }
+                            //       );
+                            //     } else {
+                            //       Navigation.navigate(
+                            //         Routes.ServiceDetailsScreen,
+                            //         {
+                            //           itemId: item?.CCatId?._id,
+                            //           PCGroup: item?.PCatId?.PCGroup,
+                            //           pcId: item?.PCatId?._id,
+                            //           PCName: item?.PCatId?.PCName,
+                            //         }
+                            //       );
+                            //     }
+                            //   }
+                            // }}
                             style={{
                               backgroundColor: item.ButtonBgColor
                                 ? item.ButtonBgColor
@@ -1177,7 +1559,7 @@ export default function () {
                               }
                               size={10}
                             />
-                          </TouchableOpacity>
+                          </View>
                         </View>
 
                         <CustomImage
@@ -1196,13 +1578,16 @@ export default function () {
           </CustomCard>
         )}
 
-        <CustomCard>
-          {Object.entries(servicecbytitle).map(([title, listData]) => (
-            <View key={title}>{renderShortcut(title, listData)}</View>
-          ))}
-        </CustomCard>
+        {Object.entries(servicecbytitle).map(([title, listData]) => (
+          <View key={title}>{renderShortcut(title, listData)}</View>
+        ))}
 
-        <CustomCard>
+        <CustomCard
+          style={{
+            paddingBottom: 12,
+            marginBottom: 0,
+          }}
+        >
           {Object.entries(listsByTitle)?.map(([title, listData]) => (
             <View key={title}>{renderListt(title, listData)}</View>
           ))}
@@ -1214,6 +1599,170 @@ export default function () {
           keyExtractor={(item) => item.id}
         />
       </ScrollView>
+
+      <AnimatedModal ref={AdressSuggestions}>
+        <View
+          style={{
+            flex: 1,
+
+            backgroundColor: "white",
+            borderTopRightRadius: 10,
+            borderTopLeftRadius: 10,
+          }}
+        >
+          <GooglePlacesAutocomplete
+            styles={{
+              textInput: {
+                borderWidth: 1,
+                marginHorizontal: 10,
+                marginTop: 10,
+                borderColor: "grey",
+                color: "grey",
+              },
+              listView: {
+                position: "absolute",
+                top: 90,
+              },
+            }}
+            textInputProps={{
+              // onFocus
+              onFocus: () => {
+                setIsFocused(true);
+              },
+              onBlur: () => {
+                setIsFocused(false);
+              },
+            }}
+            listLoaderComponent={<Loader size={15} />}
+            enablePoweredByContainer={false}
+            autoFillOnNotFound={true}
+            enableHighAccuracyLocation={true}
+            fetchDetails={true}
+            ref={suggestionsRef}
+            nearbyPlacesAPI="GooglePlacesSearch"
+            placeholder="Search Apartment,Building Name,Area"
+            onPress={(data, details = null) => {
+              let item = {
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+                FullAddress: data?.description,
+              };
+              setCurrentAddress(data.description);
+              setSuggestedAddress(data.description);
+              setLatitude(details.geometry.location.lat);
+              setLongitude(details.geometry.location.lng);
+
+              handledisabledOptionshideModal();
+              handleAdressSuggestionHideModal();
+            }}
+            onFail={(error) => console.error(error)}
+            onKeyPress={(event) => {
+              if (event.nativeEvent.key === "Enter") {
+                return;
+              }
+            }}
+            query={{
+              key: myApiKey,
+              language: "en",
+              region: "in",
+            }}
+          />
+        </View>
+      </AnimatedModal>
+      <AnimatedModal
+        backbtn={true}
+        backdropFunction={true}
+        ref={disabledOptionsRef}
+      >
+        <View
+          style={{
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+
+            position: "absolute",
+            bottom: -10,
+            width: "100%",
+            maxHeight: Dimensions.get("screen").height - 100,
+            overflow: "hidden",
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "white",
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CustomImage
+                src={Assets.mapicon}
+                resizeMode={"cover"}
+                size={200}
+              />
+              <CustomText
+                bold
+                color={Theme.Black}
+                value={textModal || "Fetching"}
+              />
+              <CustomText
+                margin_v={20}
+                regular
+                color={Theme.Black}
+                value={
+                  "Please enable location permission for better experience"
+                }
+              />
+            </View>
+            <View
+              style={{
+                marginHorizontal: 20,
+              }}
+            >
+              <CustomButton
+                onPress={() => {
+                  if (textModal == "Your device location is off") {
+                    Alert.alert(
+                      "Location settings",
+                      "Location is not enabled. Do you want to go to settings menu?",
+                      [
+                        {
+                          text: "Cancel",
+                          style: "cancel",
+                        },
+                        {
+                          text: "Settings",
+                          onPress: () => {
+                            Linking.sendIntent(
+                              "android.settings.LOCATION_SOURCE_SETTINGS"
+                            );
+                            // handledisabledOptionsModal();
+                          },
+                        },
+                      ]
+                    );
+                    // Linking.sendIntent(
+                    //   "android.settings.LOCATION_SOURCE_SETTINGS"
+                    // ),
+                  } else {
+                    checkLocationPermissionwithbutton();
+                  }
+                }}
+                title={"Continue"}
+              />
+              <CustomButton
+                onPress={() => {
+                  handleAdressSuggestionShowModal();
+                }}
+                title={"Enter Location Manually"}
+              />
+            </View>
+          </View>
+        </View>
+      </AnimatedModal>
     </>
   );
 }

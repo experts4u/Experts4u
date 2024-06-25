@@ -1,4 +1,4 @@
-package com.experts4uu
+package com.expertss4u
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

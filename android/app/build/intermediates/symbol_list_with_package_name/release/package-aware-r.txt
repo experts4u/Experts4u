@@ -1,4 +1,4 @@
-com.experts4uu
+com.expertss4u
 anim abc_fade_in
 anim abc_fade_out
 anim abc_grow_fade_in_from_bottom
@@ -3217,6 +3217,7 @@ drawable src_assets_locationgif1
 drawable src_assets_locationgif2
 drawable src_assets_logogif
 drawable src_assets_lotus
+drawable src_assets_mapicon
 drawable src_assets_mapimage
 drawable src_assets_massagemen
 drawable src_assets_meninblack
@@ -3258,6 +3259,7 @@ drawable src_assets_singlekit
 drawable src_assets_spawomen
 drawable src_assets_star
 drawable src_assets_starsyellow
+drawable src_assets_support1
 drawable src_assets_threedotgrey
 drawable src_assets_timeicon
 drawable src_assets_transparentf

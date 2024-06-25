@@ -5,21 +5,22 @@ import {
   TouchableOpacity,
   View,
   useWindowDimensions,
-} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import Styles from './Styles';
-import CustomImage from '../../Components/CustomImage';
-import Assets from '../../Assets';
-import {assets} from '../../../react-native.config';
-import fonts from '../../../assets/fonts';
-import CustomRow from 'Components/CustomRow';
-import Theme from 'Configs/Theme';
-import {useNavigation} from '@react-navigation/native';
-import Routes from 'RootNavigation/Routes';
-import Swiper from 'react-native-swiper';
-import {useEffect, useState} from 'react';
-import CustomIcon from 'Components/CustomIcon';
-import CustomText from 'Components/CustomText';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Styles from "./Styles";
+import CustomImage from "../../Components/CustomImage";
+import Assets from "../../Assets";
+import { assets } from "../../../react-native.config";
+import fonts from "../../../assets/fonts";
+import CustomRow from "Components/CustomRow";
+import Theme from "Configs/Theme";
+import { useNavigation } from "@react-navigation/native";
+import Routes from "RootNavigation/Routes";
+import Swiper from "react-native-swiper";
+import { useEffect, useState } from "react";
+import CustomIcon from "Components/CustomIcon";
+import CustomText from "Components/CustomText";
+import { PERMISSIONS, RESULTS } from "react-native-permissions";
 
 export default function () {
   const Navigation = useNavigation();
@@ -30,15 +31,15 @@ export default function () {
   ]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const CustomImageSwiper = ({images, currentIndex}) => {
-    const handleIndexChanged = index => {
+  const CustomImageSwiper = ({ images, currentIndex }) => {
+    const handleIndexChanged = (index) => {
       setCurrentIndex(index);
     };
 
     useEffect(() => {
       StatusBar.setTranslucent(false);
       StatusBar.setBackgroundColor(Theme.PrimaryColor);
-      StatusBar.setBarStyle('default');
+      StatusBar.setBarStyle("default");
     }, []);
 
     return (
@@ -49,7 +50,8 @@ export default function () {
         style={Styles.wrapper}
         showsButtons={false}
         paginationStyle={Styles.pagination}
-        activeDotStyle={Styles.activeDot}>
+        activeDotStyle={Styles.activeDot}
+      >
         {images.map((image, index) => (
           <View key={index} style={Styles.slide}>
             <CustomImage src={image} style={Styles.image} />
@@ -63,7 +65,51 @@ export default function () {
     if (value === 0) {
       setValue(1); // Switch to another content
     } else {
-      Navigation.navigate(Routes.FindLocation); // Navigate to another screen
+      const checkLocationPermission = async () => {
+        try {
+          const permission = PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION;
+          console.log("android hai");
+
+          const result = await check(permission);
+          console.log("result", result);
+          console.log("RESULTS", RESULTS);
+
+          if (
+            result === RESULTS.DENIED ||
+            result === RESULTS.UNAVAILABLE ||
+            result === RESULTS.BLOCKED
+          ) {
+            const requestResult = await request(permission);
+            return requestResult === RESULTS.GRANTED;
+          }
+
+          return result === RESULTS.GRANTED;
+        } catch (error) {
+          console.error("Error checking location permission:", error);
+          return false;
+        }
+      };
+
+      // const handleNavigation = async () => {
+      //   try {
+      //     if (state?.userInfo !== null) {
+      //       const hasLocationPermission = await checkLocationPermission();
+
+      //       if (hasLocationPermission) {
+      //         Navigation.replace(Routes.FindLocation);
+      //       } else {
+      //         Navigation.replace(Routes.MainTabStack);
+      //       }
+      //     } else {
+      //       Navigation.replace(Routes.WelcomeScreen);
+      //     }
+      //   } catch (error) {
+      //     console.error("Error handling navigation:", error);
+      //     Navigation.replace(Routes.WelcomeScreen);
+      //   }
+      // };
+
+      Navigation.navigate(Routes.AuthStack); // Navigate to another screen
     }
   };
   return (
@@ -72,7 +118,7 @@ export default function () {
         <CustomImage
           src={Assets.welcomewhite}
           size={120}
-          resizeMode={'center'}
+          resizeMode={"center"}
         />
       </View>
 
@@ -88,8 +134,9 @@ export default function () {
         {value == 0 ? (
           <View
             style={{
-              flexDirection: 'row',
-            }}>
+              flexDirection: "row",
+            }}
+          >
             <View
               style={{
                 height: 3,
@@ -105,7 +152,7 @@ export default function () {
               style={{
                 height: 3,
                 width: 54,
-                backgroundColor: '#1D1D1D33',
+                backgroundColor: "#1D1D1D33",
                 marginBottom: 40,
                 marginTop: 20,
                 borderTopRightRadius: 23,
@@ -116,8 +163,9 @@ export default function () {
         ) : (
           <View
             style={{
-              flexDirection: 'row',
-            }}>
+              flexDirection: "row",
+            }}
+          >
             <View
               style={{
                 height: 3,
@@ -147,16 +195,18 @@ export default function () {
           <CustomRow
             v_center
             style={{
-              justifyContent: 'space-between',
-              width: '100%',
+              justifyContent: "space-between",
+              width: "100%",
               padding: 5,
-            }}>
+            }}
+          >
             <View
               style={{
                 // alignItems: 'center',
                 // justifyContent: 'center'
                 padding: 10,
-              }}>
+              }}
+            >
               <Text style={Styles.wlcmtxt}>Welcome to</Text>
               <View>
                 <Text style={Styles.logotxt}>Experts4U</Text>
@@ -175,12 +225,13 @@ export default function () {
                 marginRight: -60,
                 paddingHorizontal: 20,
                 paddingVertical: 20,
-              }}>
+              }}
+            >
               <CustomIcon
-                name={'right'}
-                type={'AN'}
+                name={"right"}
+                type={"AN"}
                 size={20}
-                color={'white'}
+                color={"white"}
               />
             </TouchableOpacity>
           </CustomRow>
@@ -188,16 +239,18 @@ export default function () {
           <CustomRow
             v_center
             style={{
-              justifyContent: 'space-between',
-              width: '100%',
+              justifyContent: "space-between",
+              width: "100%",
               padding: 5,
-            }}>
+            }}
+          >
             <View
               style={{
                 // alignItems: 'center',
                 // justifyContent: 'center'
                 padding: 10,
-              }}>
+              }}
+            >
               <Text style={Styles.wlcmtxt}>Welcome to</Text>
               <View>
                 <Text style={Styles.logotxt}>Experts4U</Text>
@@ -216,10 +269,11 @@ export default function () {
                 marginRight: -40,
                 paddingHorizontal: 20,
                 paddingVertical: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <CustomText value={'Get Started'} color={'white'} size={14} />
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CustomText value={"Get Started"} color={"white"} size={14} />
             </TouchableOpacity>
           </CustomRow>
         )}

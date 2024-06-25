@@ -1,4 +1,8 @@
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import Assets from "Assets";
 import CustomCard from "Components/CustomCard";
 import CustomHeader from "Components/CustomHeader";
@@ -28,17 +32,21 @@ import { useSelector } from "react-redux";
 
 export default function () {
   const focused = useIsFocused();
+  const { params } = useRoute();
   const user = useSelector((v) => v?.user?.userInfo?.user);
   const user_info = useSelector((v) => v.user);
+  const user_ = useSelector((v) => v.user.userInfo);
   const Navigation = useNavigation();
   const [index, setIndex] = useState(0);
   const [bookingData, setBookingData] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  console.log("params", params);
+
   const GetBookings = useFetch({
-    endpoint: user_info?.user
-      ? Endpoints.MyBokings + "/" + user_info?.user?._id
-      : Endpoints.MyBokings + "/" + user_info?._id,
+    endpoint: user_?.user
+      ? Endpoints.MyBokings + "/" + user_?.user?._id
+      : Endpoints.MyBokings + "/" + user_?._id,
     Token: false,
   });
 
@@ -55,10 +63,16 @@ export default function () {
   };
 
   useEffect(() => {
-    if (user_info?._id || (user_info.user?._id && focused)) {
+    if (focused) {
       mbokings();
     }
   }, [focused]);
+
+  useEffect(() => {
+    if (params) {
+      setIndex(params?.isFuture);
+    }
+  }, [params]);
 
   function filterTodayBookings(bookingData) {
     const today = new Date();
@@ -90,6 +104,7 @@ export default function () {
             }}
             style={{
               marginTop: 5,
+              borderBottomWidth: 0.5,
             }}
           >
             <CustomHeading heading={"Order Id -" + item?.jobId} />
@@ -119,7 +134,7 @@ export default function () {
                     <CustomText
                       color={"white"}
                       regular
-                      value={"Shedule"}
+                      value={"Job Booked"}
                       size={10}
                     />
                   </View>
@@ -137,7 +152,7 @@ export default function () {
                     <CustomText
                       color={"white"}
                       regular
-                      value={"Open"}
+                      value={"SP Assigned"}
                       size={10}
                     />
                   </View>
@@ -323,15 +338,8 @@ export default function () {
                     />
                   </View>
                 )}
-                {/* {item?.jobStatus == 0 ||
-                item?.jobStatus == 7 ||
-                item?.jobStatus == 9 ||
-                item?.jobStatus == 10 ||
-                item?.jobStatus == 11 ||
-                item?.jobStatus == 12 ? null : (
-                  <CustomText regular value={'SP Assigned' + item?.jobStatus} />
-                )} */}
-                {item?.jobStatus != 0 &&
+
+                {/* {item?.jobStatus != 0 &&
                 item?.jobStatus != 7 &&
                 item?.jobStatus != 9 &&
                 item?.jobStatus != 10 &&
@@ -343,7 +351,7 @@ export default function () {
                     margin_v={10}
                     value={"SP Assigned"}
                   />
-                ) : null}
+                ) : null} */}
               </View>
             </CustomRow>
 
@@ -403,91 +411,6 @@ export default function () {
     </ScrollView>
   );
 
-  const CancelledAppointments = bookingData.filter(
-    (appointment) => appointment.slotDate === "Cancel"
-  );
-
-  const ThirdRoute = () => (
-    <ScrollView>
-      {CancelledAppointments &&
-        CancelledAppointments?.map((item, index) => (
-          <CustomCard
-            key={index}
-            Clickable
-            onPress={() => {
-              Navigation.navigate(Routes.BookingOrderDetailScreen, { item });
-            }}
-            style={{
-              marginTop: 5,
-            }}
-          >
-            <CustomHeading heading={"Order Id" + item?.jobId} />
-            <CustomRow
-              ratios={[1, 0]}
-              style={{
-                marginHorizontal: 10,
-              }}
-            >
-              <View>
-                <CustomText regular value={item?.cart[0]?.PCGId?.PCGName} />
-                <CustomText regular value={"08-May, 2023 Mon,"} />
-                <CustomText regular value={item?.TServiceTiming} />
-              </View>
-
-              <View>
-                <CustomText
-                  color={Theme.PrimaryColor}
-                  bold
-                  value={item?.jobStatus}
-                />
-                <CustomText regular value={"SP Assigned"} />
-              </View>
-            </CustomRow>
-
-            {/* <CustomRow
-              style={{
-                marginTop: 10,
-              }}
-              v_center>
-              <CustomIcon
-                type={'ENT'}
-                size={20}
-                color={Theme.PrimaryColor}
-                name={'location-pin'}
-              />
-              <CustomText
-                margin_h={3}
-                style={{
-                  textDecorationLine: 'underline',
-                }}
-                value={'Track Partner location'}
-              />
-            </CustomRow> */}
-
-            <View
-              style={{
-                borderTopWidth: 1,
-                borderColor: "#E3E3E3FF",
-
-                alignItems: "center",
-                justifyContent: "center",
-                marginTop: 10,
-                marginHorizontal: 10,
-                borderStyle: "dashed",
-              }}
-            >
-              <CustomText
-                margin_v={10}
-                bold
-                color={Theme.Black}
-                value={"View details"}
-              />
-            </View>
-          </CustomCard>
-        ))}
-    </ScrollView>
-  );
-
   console.log("todayBookings", todayBookings);
 
   const SecondRoute = () => (
@@ -506,6 +429,9 @@ export default function () {
             }}
             style={{
               marginTop: 5,
+              borderBottomWidth: 0.5,
+              borderBottomColor: "grey",
+              overflow: "hidden",
             }}
           >
             <CustomHeading heading={"Order Id -" + item?.jobId} />
@@ -535,7 +461,7 @@ export default function () {
                     <CustomText
                       color={"white"}
                       regular
-                      value={"Shedule"}
+                      value={"Job Booked"}
                       size={10}
                     />
                   </View>
@@ -553,7 +479,7 @@ export default function () {
                     <CustomText
                       color={"white"}
                       regular
-                      value={"Open"}
+                      value={"SP Assigned"}
                       size={10}
                     />
                   </View>
@@ -747,7 +673,7 @@ export default function () {
                 item?.jobStatus == 12 ? null : (
                   <CustomText regular value={'SP Assigned' + item?.jobStatus} />
                 )} */}
-                {item?.jobStatus != 0 &&
+                {/* {item?.jobStatus != 0 &&
                 item?.jobStatus != 7 &&
                 item?.jobStatus != 9 &&
                 item?.jobStatus != 10 &&
@@ -759,7 +685,7 @@ export default function () {
                     margin_v={10}
                     value={"SP Assigned"}
                   />
-                ) : null}
+                ) : null} */}
               </View>
             </CustomRow>
 

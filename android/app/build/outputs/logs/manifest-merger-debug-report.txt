@@ -260,7 +260,7 @@ MERGED from [com.facebook.soloader:soloader:0.10.5] /Users/deepaksharma/.gradle/
 	android:name
 		ADDED from /Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:16:7-38
 		ADDED from /Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:16:7-38
-activity#com.experts4uu.MainActivity
+activity#com.expertss4u.MainActivity
 ADDED from /Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:28:7-56:18
 	android:screenOrientation
 		ADDED from /Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:32:8-44
@@ -966,7 +966,7 @@ ADDED from [androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transfo
 		ADDED from [androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
 	android:name
 		ADDED from [androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
-permission#com.experts4uu.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+permission#com.expertss4u.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
 	android:protectionLevel
 		ADDED from [androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
@@ -976,7 +976,7 @@ uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
 	android:name
 		ADDED from [androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
-uses-permission#com.experts4uu.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission#com.expertss4u.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
 	android:name
 		ADDED from [androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:26:22-94

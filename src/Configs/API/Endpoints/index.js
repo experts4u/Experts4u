@@ -33,7 +33,7 @@ export default {
   deleteAddress: "/api/v1/Address/DeleteAddress/",
   SearchServices: "/api/v1/Service/servicepackagebyKeywords?keyword=",
   getTrendingServices: "/api/v1/Tranding/GetTranding",
-  getCoverImage: "/api/v1/CoverImage/GetCoverImage",
+  getCoverImage: "/api/v1/CoverImage/CoverImage",
   serviceShortcut: "/api/v1/ServiceShortcut/GetShortcute",
   AddJobs: "/api/v1/jobs/AddjobsApp",
   MyBokings: "/api/v1/jobs/getjobs",

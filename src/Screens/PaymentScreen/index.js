@@ -28,12 +28,15 @@ export default function () {
   const dispatch = useDispatch();
   const { params } = useRoute();
   const Navigation = useNavigation();
-  const user_info = useSelector((v) => v.user);
+  const user_info = useSelector((v) => v.user?.userInfo);
   const userID = useSelector((v) => v?.user?.userInfo?.user?._id);
   let token = useSelector(AccessToken_);
 
   const [method, setMethod] = useState(0);
   const [orderR, setOrderR] = useState();
+
+  console.log("user_info", user_info);
+  console.log("userID", userID);
 
   const requestBody = params?.requestBody;
 
@@ -56,7 +59,8 @@ export default function () {
     payment_Mode: method == 0 ? "online" : "",
     surgeCharges: requestBody?.surgeCharges,
     tip: requestBody?.tip,
-    userId: userID,
+    userId: user_info?._id ? user_info?._id : userID,
+    otherCharges: requestBody?.OtherCharges,
 
     slotDate: requestBody?.slotDate,
     slotTime: requestBody?.slotTime,
@@ -72,18 +76,53 @@ export default function () {
     body: Submission,
   });
 
-  useEffect(() => {
-    if (orderResponse) {
-      setOrderR(orderResponse?.data);
-    }
-  }, [orderResponse]);
+  // const payWithRazorpay = () => {
+  //   if (!orderR) {
+  //     console.error("Order data is missing.");
+  //     return;
+  //   }
+  //   let options = {
+  //     description: "Credits towards consultation",
+  //     image: "https://i.imgur.com/3g7nmJC.png",
+  //     currency: "INR",
+  //     key: "rzp_test_RL1inAeIn1XHdn", // Your api key
+  //     amount: orderR?.payableCharges * 100,
+  //     name: "experts4u",
+  //     amount_paid: "0",
+  //     amount_due: orderR?.order?.amount_due,
+  //     receipt: orderR?.order?.receipt,
+  //     order_id: orderR?.order?.id,
+  //     prefill: {
+  //       email: "Rahul@razorpay.com",
+  //       contact: "9191919191",
+  //       name: "Rahul",
+  //     },
+  //     theme: { color: Theme.PrimaryColor },
+  //   };
 
-  useEffect(() => {
-    if (orderResponse) {
-      handleOrderResponse();
-    }
-  }, [orderResponse]);
+  //   // const options = {
+  //   //   description: "Credits towards consultation",
+  //   //   image: "https://i.imgur.com/3g7nmJC.png",
+  //   //   currency: "INR",
+  //   //   key: "rzp_test_RL1inAeIn1XHdn",
+  //   //   amount: orderR.payableCharges * 100,
+  //   //   name: "experts4u",
+  //   //   amount_paid: "0",
+  //   //   amount_due: orderR?.order.amount_due,
+  //   //   receipt: orderR?.order.receipt,
+  //   //   order_id: orderR?.order.id,
+  //   //   prefill: {
+  //   //     email: "Rahul@razorpay.com",
+  //   //     contact: "9191919191",
+  //   //     name: "Rahul",
+  //   //   },
+  //   //   theme: { color: Theme.PrimaryColor },
+  //   // };
 
+  //   RazorpayCheckout.open(options)
+  //     .then((data) => handlePaymentSuccess(data))
+  //     .catch((error) => handlePaymentFailure(error));
+  // };
   const payWithRazorpay = () => {
     let options = {
       description: "Credits towards consultation",
@@ -103,15 +142,20 @@ export default function () {
       },
       theme: { color: Theme.PrimaryColor },
     };
-
-    Navigation.replace(Routes.PaymentSuccess, {
-      orderId: orderR.order?.id,
+    Navigation.navigate(Routes.PaymentSuccess, {
+      orderId: orderR?.jobId,
+      date: orderR,
+      direct: 1,
     });
+    // Navigation.replace(Routes.PaymentSuccess, {
+    //   orderId: orderR.order?.id,
+    // });
 
     RazorpayCheckout.open(options)
       .then((data) => {
         console.log(`signature: ${data.razorpay_signature}`);
         console.log(`payment: ${data.razorpay_payment_id}`);
+        console.log("orderR", orderR);
         const SERVER_URL = Endpoints.baseUrl + Endpoints.verifyOrder;
         const headers = {
           "x-razorpay-signature": data.razorpay_signature,
@@ -127,8 +171,15 @@ export default function () {
           .post(SERVER_URL, requestBody, { headers })
           .then((orderData) => {
             if (orderData) {
+              // Navigation.navigate(Routes.PaymentSuccess, {
+              //   orderId: orderR?.jobId,
+              //   date: orderR,
+              //   direct: 1,
+              // });
+              console.log("orderData", orderData);
+
               ToastMessage.Success("Order Created SuccessFully");
-              dispatch(clearCart());
+              // dispatch(clearCart());
             } else {
               console.log("Failed to create order.");
             }
@@ -144,18 +195,92 @@ export default function () {
       });
   };
 
-  const handleOrderResponse = () => {
-    console.log(orderResponse);
-    if (method == 1) {
-      Navigation.navigate(Routes.PaymentSuccess, {
-        orderId: orderResponse?.data?.jobId,
+  const handlePaymentSuccess = (data) => {
+    const SERVER_URL = Endpoints.baseUrl + Endpoints.verifyOrder;
+    const headers = {
+      "x-razorpay-signature": data.razorpay_signature,
+      Authorization: `Bearer ${token}`,
+    };
+
+    const requestBody = {
+      order_id: data.order_id,
+      payment_id: data.razorpay_payment_id,
+    };
+
+    axios
+      .post(SERVER_URL, requestBody, { headers })
+      .then((orderData) => {
+        ToastMessage.Success("Order Created Successfully");
+        // Additional actions after successful payment
+      })
+      .catch((error) => {
+        console.error("Error creating order:", error);
+        // Handle errors if any
       });
+  };
+
+  const handlePaymentFailure = (error) => {
+    console.error("Payment failed:", error);
+    alert(`Error: ${error.code} | ${error.description}`);
+    // Handle payment failure
+  };
+
+  const handleOrderResponse = () => {
+    if (method === 1) {
+      navigateToSuccessPage(orderResponse.data.jobId, orderResponse.data);
     } else {
-      if (orderR) {
+      setTimeout(() => {
         payWithRazorpay();
-      }
+      }, 0);
     }
   };
+
+  const navigateToSuccessPage = (orderId, date) => {
+    Navigation.navigate(Routes.PaymentSuccess, { orderId, date });
+  };
+
+  useEffect(() => {
+    if (orderResponse != null) {
+      setOrderR(orderResponse.data);
+    }
+  }, [orderResponse]);
+  console.log("orderResponse", orderResponse);
+  // useEffect(() => {
+  //   if (orderResponse?.data) {
+  //     handleOrderResponse();
+  //   }
+  // }, [orderResponse]);
+
+  useEffect(() => {
+    if (orderR != null && orderResponse?.data) {
+      handleOrderResponse();
+    }
+  }, [orderR]);
+
+  // useEffect(() => {
+  //   if (orderResponse) {
+  //     setOrderR(orderResponse?.data);
+  //   }
+  // }, [orderResponse]);
+
+  // useEffect(() => {
+  //   if (orderResponse ) {
+  //     handleOrderResponse();
+  //   }
+  // }, [orderResponse]);
+
+  // const handleOrderResponse = () => {
+  //   if (method == 1) {
+  //     Navigation.navigate(Routes.PaymentSuccess, {
+  //       orderId: orderResponse?.data?.jobId,
+  //       date: orderResponse?.data,
+  //     });
+  //   } else {
+  //     if (orderR) {
+  //       payWithRazorpay();
+  //     }
+  //   }
+  // };
 
   return (
     <View>
@@ -197,11 +322,6 @@ export default function () {
               ratios={[0, 1, 0]}
               v_center
             >
-              {/* <CustomImage
-                src={Assets.upiselect}
-                resizeMode={'center'}
-                size={24}
-              /> */}
               {method == 1 ? (
                 <CustomIcon
                   color={Theme.PrimaryColor}
@@ -284,6 +404,7 @@ export default function () {
           value={"100% Safe and Secure Transactions"}
         />
         <CustomButton
+          disabled={orderLoad ? true : false}
           onPress={() => {
             fetchOrder();
           }}

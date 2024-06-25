@@ -1,6 +1,8 @@
 import CustomText from "Components/CustomText";
 import {
+  Dimensions,
   FlatList,
+  SafeAreaView,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -211,6 +213,8 @@ export default () => {
         style={{
           flexDirection: "row",
           flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         {slots.map((item, index) => {
@@ -326,12 +330,26 @@ export default () => {
 
   useEffect(() => {
     if (item) {
-      getCharges();
+      // getCharges();
+      setChargesData(item?.otherCharges);
     }
   }, [item]);
 
+  const extractAndSplitLogs = (logs) => {
+    return logs?.map((log) => {
+      // Remove the "LOG  service names " part
+      let trimmedLog = log.replace("LOG  service names ", "");
+      // Split into parts before and after the colon
+      let parts = trimmedLog.split(" : ");
+      return {
+        beforeColon: parts[0],
+        afterColon: parts[1],
+      };
+    });
+  };
+
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
       }}
@@ -447,7 +465,7 @@ export default () => {
 
         {[0, 7, 9, 10, 11, 12].includes(bookingData?.jobStatus) && (
           <CustomCard>
-            <CustomHeading heading={"Order Id: " + bookingData?.jobId} />
+            <CustomHeading heading={"Order ID: " + bookingData?.jobId} />
             {bookingData?.jobStatus >= 9 && bookingData?.jobStatus <= 12 ? (
               <CustomText
                 bold
@@ -479,9 +497,18 @@ export default () => {
             <View style={{ marginHorizontal: 5 }}>
               <CustomRow ratios={[0, 1, 0]}>
                 {bookingData?.jobStatus == 0 ? (
-                  <View>
-                    <CustomText medium value={"Expert is not assigned yet"} />
+                  <View
+                    style={{
+                      width: "85%",
+                    }}
+                  >
                     <CustomText
+                      size={14}
+                      medium
+                      value={"Expert is not assigned yet"}
+                    />
+                    <CustomText
+                      size={12}
                       regular
                       value={
                         "An expert will be assigned before 60 min of schedule time"
@@ -496,7 +523,7 @@ export default () => {
                     <CustomText
                       regular
                       value={
-                        "For more details please  \ncontact on - +91 9711751777"
+                        "For more details please  \ncontact on : +91 9711751777"
                       }
                     />
                   </View>
@@ -531,6 +558,9 @@ export default () => {
             }}
           >
             {services.map((item, inde) => {
+              let PackageServicesListData = extractAndSplitLogs(
+                (item?.packageName?.length > 0 && item?.packageName) || []
+              );
               return (
                 <CustomRow
                   ratios={[1, 0]}
@@ -545,17 +575,44 @@ export default () => {
                       bold
                       value={item?.packageTitle + " X " + item?.Quantity}
                     />
-                    {item?.packageName?.length > 0 &&
-                      item?.packageName?.map((item, index) => {
+                    {PackageServicesListData?.length > 0 &&
+                      PackageServicesListData?.map((item, index) => {
                         return (
-                          <CustomText
+                          <CustomRow
                             style={{
-                              marginTop: 10,
+                              marginLeft: 15,
                             }}
-                            size={12}
-                            value={"*" + item}
-                            regular
-                          />
+                          >
+                            <CustomText
+                              size={12}
+                              style={{
+                                fontWeight: "600",
+                                marginBottom: 5,
+                              }}
+                              color={Theme.Black}
+                              value={"\u2022 "}
+                            />
+                            <Text
+                              style={{
+                                fontWeight: "600",
+                                marginBottom: 5,
+                                color: Theme.Black,
+                                fontSize: 12,
+                              }}
+                            >
+                              {item?.beforeColon + " : "}
+
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  color: Theme.Black,
+                                  fontWeight: "400",
+                                }}
+                              >
+                                {item?.afterColon}
+                              </Text>
+                            </Text>
+                          </CustomRow>
                         );
                       })}
                   </View>
@@ -592,16 +649,18 @@ export default () => {
           {parseInt(bookingData?.tip) > 0 && (
             <CustomRow
               ratios={[0, 1, 0]}
+              v_center
               style={{
-                marginTop: 10,
+                // marginTop: 10,
                 marginHorizontal: 10,
+                marginBottom: -10,
               }}
             >
-              <CustomImage src={Assets.mybenifitsicon} size={20} />
+              <CustomText medium size={23} value={"\u2022"} />
               <CustomText
                 medium
                 margin_h={10}
-                size={13}
+                size={12}
                 color={"#757575"}
                 value={"Tip For Service Provider"}
               />
@@ -609,6 +668,7 @@ export default () => {
               <CustomText
                 color={"#757575"}
                 regular
+                size={12}
                 value={"₹" + bookingData?.tip}
               />
             </CustomRow>
@@ -618,21 +678,24 @@ export default () => {
             <CustomRow
               ratios={[0, 1, 0]}
               style={{
-                marginTop: 10,
+                // marginTop: 10,
                 marginHorizontal: 10,
+                marginBottom: -10,
               }}
+              v_center
             >
-              <CustomImage src={Assets.mybenifitsicon} size={20} />
+              <CustomText medium size={23} value={"\u2022"} />
               <CustomText
                 medium
                 margin_h={10}
-                size={13}
+                size={12}
                 color={"#757575"}
                 value={"Concession "}
               />
 
               <CustomText
                 color={"red"}
+                size={12}
                 regular
                 value={"- ₹" + bookingData?.concession}
               />
@@ -644,26 +707,27 @@ export default () => {
                 return (
                   <CustomRow
                     ratios={[0, 1, 0]}
+                    v_center
                     style={{
-                      marginTop: 10,
+                      // marginTop: 10,
                       marginHorizontal: 10,
+                      marginBottom: -10,
                     }}
                   >
-                    <CustomImage
-                      src={{ uri: Endpoints.baseUrl + item.ChargesIcon }}
-                      size={15}
-                    />
+                    <CustomText medium size={23} value={"\u2022"} />
                     <CustomText
-                      size={13}
+                      size={12}
                       medium
                       margin_h={10}
-                      value={item?.ChargesName}
+                      value={item?.charge}
                       color={"#757575"}
                     />
 
                     <CustomText
+                      color={"#757575"}
                       regular
-                      value={"₹" + parseInt(item?.ChargesValue)}
+                      size={12}
+                      value={"₹" + parseInt(item?.price)}
                     />
                   </CustomRow>
                 );
@@ -673,14 +737,15 @@ export default () => {
             <CustomRow
               ratios={[0, 1, 0]}
               style={{
-                marginTop: 10,
                 marginHorizontal: 10,
+                marginBottom: -10,
               }}
+              v_center
             >
-              <CustomImage src={Assets.mybenifitsicon} size={17} />
+              <CustomText medium size={23} value={"\u2022"} />
               <CustomText
                 color={"#757575"}
-                size={13}
+                size={12}
                 medium
                 margin_h={10}
                 value={"SURG Charges"}
@@ -689,6 +754,7 @@ export default () => {
               <CustomText
                 color={"#757575"}
                 regular
+                size={12}
                 value={"₹" + bookingData?.surgeCharges}
               />
             </CustomRow>
@@ -697,11 +763,12 @@ export default () => {
             <CustomRow
               ratios={[0, 1, 0]}
               style={{
-                marginTop: 10,
                 marginHorizontal: 10,
+                marginBottom: -10,
               }}
+              v_center
             >
-              <CustomImage src={Assets.mybenifitsicon} size={17} />
+              <CustomText medium size={23} value={"\u2022"} />
               <View
                 style={{
                   flexDirection: "row",
@@ -716,7 +783,7 @@ export default () => {
                 />
                 <CustomText
                   color={"red"}
-                  size={13}
+                  size={12}
                   medium
                   value={"(" + bookingData?.couponCode + ")"}
                 />
@@ -761,6 +828,7 @@ export default () => {
           <CustomRow
             style={{
               marginLeft: 10,
+              gap: 5,
             }}
             v_center
           >
@@ -770,17 +838,29 @@ export default () => {
               size={14}
               type={"ENT"}
             />
-            <CustomText
-              margin_h={10}
-              regular
-              value={
-                bookingData?.clientAddress?.houseOrFlatNo +
-                "," +
-                bookingData?.clientAddress?.buildingName +
-                bookingData?.clientAddress?.FullAddress
-              }
-              // value={item?.clientAddress?.FullAddress}
-            />
+            <View
+              style={{
+                width: "98%",
+              }}
+            >
+              <CustomText
+                value={bookingData?.clientAddress?.SaveAs}
+                color={Theme.Black}
+                bold
+              />
+              <CustomText
+                regular
+                value={
+                  bookingData?.clientAddress?.houseOrFlatNo +
+                  "," +
+                  bookingData?.clientAddress?.buildingName +
+                  "," +
+                  bookingData?.clientAddress?.landmark +
+                  ", " +
+                  bookingData?.clientAddress?.FullAddress
+                }
+              />
+            </View>
           </CustomRow>
         </CustomCard>
         <CustomCard>
@@ -817,33 +897,50 @@ export default () => {
           <View
             style={{
               marginHorizontal: 10,
+              flex: 1,
             }}
           >
-            <CustomText
-              margin_v={5}
-              value={
-                "\u2B24 " + "Slot time (30 min) is arrival time of experts."
-              }
-            />
-            <CustomText
-              margin_v={5}
-              value={
-                "\u2B24 " +
-                "As part of our safety protocol ,our experts will be working until 7pm. any services remaining will be scheduled for the next day"
-              }
-            />
+            <CustomRow ratios={[0, 1]} v_center>
+              <CustomText
+                style={{
+                  marginRight: 10,
+                }}
+                value={"\u2B24"}
+              />
+              <CustomText
+                // margin_v={5}
+                value={"Slot time (30 min) is arrival time of experts."}
+              />
+            </CustomRow>
+            <CustomRow ratios={[0, 1]}>
+              <CustomText
+                style={{
+                  marginRight: 10,
+                }}
+                value={"\u2B24"}
+              />
+
+              <CustomText
+                // margin_v={5}
+                value={
+                  "As part of our safety protocol ,our experts will be working until 7pm. any services remaining will be scheduled for the next day"
+                }
+              />
+            </CustomRow>
           </View>
         </CustomCard>
-        <CustomCard>
-          <CustomHeading heading={"Suggestion"} />
-          <View
-            style={{
-              marginHorizontal: 10,
-            }}
-          >
-            <CustomText margin_v={5} value={bookingData?.Note} />
-          </View>
-        </CustomCard>
+        {bookingData?.Note && (
+          <CustomCard>
+            <CustomHeading heading={"Suggestion"} />
+            <View
+              style={{
+                marginHorizontal: 10,
+              }}
+            >
+              <CustomText margin_v={5} value={bookingData?.Note} />
+            </View>
+          </CustomCard>
+        )}
       </ScrollView>
       {bookingData?.jobStatus != 9 &&
       bookingData?.jobStatus != 10 &&
@@ -919,7 +1016,7 @@ export default () => {
               backgroundColor: "white",
               borderTopRightRadius: 20,
               borderTopLeftRadius: 20,
-              paddingBottom: "40%",
+              paddingBottom: 40,
             }}
           >
             <View>
@@ -938,11 +1035,7 @@ export default () => {
                   }}
                   ratios={[1, 0.3]}
                 >
-                  <TouchableOpacity
-                    onPress={() => {
-                      // handleSlotsHideModal();
-                    }}
-                  >
+                  <TouchableOpacity>
                     <CustomRow v_center>
                       <CustomIcon
                         name={"home"}
@@ -1077,22 +1170,35 @@ export default () => {
                   <View
                     style={{
                       marginHorizontal: 10,
+                      flex: 1,
                     }}
                   >
-                    <CustomText
-                      margin_v={5}
-                      value={
-                        "\u2B24 " +
-                        "Slot time (30 min) is arrival time of experts."
-                      }
-                    />
-                    <CustomText
-                      margin_v={5}
-                      value={
-                        "\u2B24 " +
-                        "As part of our safety protocol, our experts will be working until 7 pm. Any services remaining will be scheduled for the next day."
-                      }
-                    />
+                    <CustomRow ratios={[0, 1]} v_center>
+                      <CustomText
+                        style={{
+                          marginRight: 10,
+                        }}
+                        value={"\u2B24"}
+                      />
+                      <CustomText
+                        // margin_v={5}
+                        value={"Slot time (30 min) is arrival time of experts."}
+                      />
+                    </CustomRow>
+                    <CustomRow ratios={[0, 1]}>
+                      <CustomText
+                        style={{
+                          marginRight: 10,
+                        }}
+                        value={"\u2B24"}
+                      />
+
+                      <CustomText
+                        value={
+                          "As part of our safety protocol ,our experts will be working until 7pm. any services remaining will be scheduled for the next day"
+                        }
+                      />
+                    </CustomRow>
                   </View>
                 </CustomCard>
               </View>
@@ -1170,11 +1276,15 @@ export default () => {
       <AnimatedModal ref={CancelConfirmRef}>
         <View
           style={{
-            flex: 1,
-            backgroundColor: "white",
-            marginTop: "40%",
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
+
+            position: "absolute",
+            bottom: -10,
+            width: "100%",
+            maxHeight: Dimensions.get("screen").height - 100,
+            overflow: "hidden",
+            backgroundColor: "white",
           }}
         >
           <CustomHeading
@@ -1200,7 +1310,7 @@ export default () => {
                   <CustomRow
                     v_center
                     style={{
-                      marginBottom: 20,
+                      marginBottom: 10,
                     }}
                   >
                     <CustomIcon
@@ -1236,6 +1346,6 @@ export default () => {
           />
         </View>
       </AnimatedModal>
-    </View>
+    </SafeAreaView>
   );
 };

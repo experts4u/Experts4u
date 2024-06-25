@@ -1,8 +1,8 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-3    package="com.experts4uu"
-4    android:versionCode="3"
-5    android:versionName="1.0" >
+3    package="com.expertss4u"
+4    android:versionCode="19"
+5    android:versionName="1.1" >
 6
 7    <uses-sdk
 8        android:minSdkVersion="21"
@@ -129,18 +129,18 @@
 71
 72    <permission
 72-->[androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
-73        android:name="com.experts4uu.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+73        android:name="com.expertss4u.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
 73-->[androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
 74        android:protectionLevel="signature" />
 74-->[androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
 75
-76    <uses-permission android:name="com.experts4uu.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+76    <uses-permission android:name="com.expertss4u.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 76-->[androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
 76-->[androidx.core:core:1.9.0] /Users/deepaksharma/.gradle/caches/transforms-3/0d8bb8c35191524c2590da2dcc9f78e0/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
 77
 78    <application
 78-->/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:15:5-57:19
-79        android:name="com.experts4uu.MainApplication"
+79        android:name="com.expertss4u.MainApplication"
 79-->/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:16:7-38
 80        android:allowBackup="false"
 80-->/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:21:7-34
@@ -167,7 +167,7 @@
 92
 93        <activity
 93-->/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:28:7-56:18
-94            android:name="com.experts4uu.MainActivity"
+94            android:name="com.expertss4u.MainActivity"
 94-->/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:29:9-37
 95            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
 95-->/Users/deepaksharma/Documents/GitHub/Experts4u/android/app/src/main/AndroidManifest.xml:31:9-118
@@ -236,7 +236,7 @@
 126-->[:react-native-image-crop-picker] /Users/deepaksharma/Documents/GitHub/Experts4u/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-24:20
 127            android:name="com.reactnative.ivpusic.imagepicker.IvpusicImagePickerFileProvider"
 127-->[:react-native-image-crop-picker] /Users/deepaksharma/Documents/GitHub/Experts4u/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-94
-128            android:authorities="com.experts4uu.provider"
+128            android:authorities="com.expertss4u.provider"
 128-->[:react-native-image-crop-picker] /Users/deepaksharma/Documents/GitHub/Experts4u/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-60
 129            android:exported="false"
 129-->[:react-native-image-crop-picker] /Users/deepaksharma/Documents/GitHub/Experts4u/node_modules/react-native-image-crop-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-37
@@ -261,7 +261,7 @@
 140-->[:react-native-image-picker] /Users/deepaksharma/Documents/GitHub/Experts4u/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:8:9-16:20
 141            android:name="com.imagepicker.ImagePickerProvider"
 141-->[:react-native-image-picker] /Users/deepaksharma/Documents/GitHub/Experts4u/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:9:13-63
-142            android:authorities="com.experts4uu.imagepickerprovider"
+142            android:authorities="com.expertss4u.imagepickerprovider"
 142-->[:react-native-image-picker] /Users/deepaksharma/Documents/GitHub/Experts4u/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:10:13-71
 143            android:exported="false"
 143-->[:react-native-image-picker] /Users/deepaksharma/Documents/GitHub/Experts4u/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-37
@@ -377,7 +377,7 @@
 205-->[androidx.work:work-runtime:2.7.1] /Users/deepaksharma/.gradle/caches/transforms-3/34cc921911d1f2f69e9d0ae489281e1f/transformed/work-runtime-2.7.1/AndroidManifest.xml:31:9-39:20
 206            android:name="androidx.startup.InitializationProvider"
 206-->[androidx.work:work-runtime:2.7.1] /Users/deepaksharma/.gradle/caches/transforms-3/34cc921911d1f2f69e9d0ae489281e1f/transformed/work-runtime-2.7.1/AndroidManifest.xml:32:13-67
-207            android:authorities="com.experts4uu.androidx-startup"
+207            android:authorities="com.expertss4u.androidx-startup"
 207-->[androidx.work:work-runtime:2.7.1] /Users/deepaksharma/.gradle/caches/transforms-3/34cc921911d1f2f69e9d0ae489281e1f/transformed/work-runtime-2.7.1/AndroidManifest.xml:33:13-68
 208            android:exported="false" >
 208-->[androidx.work:work-runtime:2.7.1] /Users/deepaksharma/.gradle/caches/transforms-3/34cc921911d1f2f69e9d0ae489281e1f/transformed/work-runtime-2.7.1/AndroidManifest.xml:34:13-37

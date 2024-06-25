@@ -197,6 +197,7 @@ export default function () {
 
                         fontSize: 14,
                         paddingHorizontal: 0,
+                        color: "black",
                       }}
                     />
                   </View>
@@ -255,6 +256,7 @@ export default function () {
                         fontSize: 14,
 
                         paddingHorizontal: 0,
+                        color: "black",
                       }}
                     />
                   </View>
@@ -371,20 +373,8 @@ export default function () {
                   marginTop: 20,
                 }}
               >
-                {/* <CustomInput
-              containerStyle={{
-                // backgroundColor: '#FFD15C66',
-                backgroundColor: '#4D97F3',
-                fontFamily: Fonts.PoppinsBold,
-
-              }}
-
-              placeholder={'Enter Referral Code'}
-              placeholderColor={'white'}
-              Left
-              leftIcon={Assets.coupen}
-            /> */}
                 <CustomRow
+                  ratios={[0, 0, 1]}
                   v_center
                   style={{
                     borderBottomWidth: 2,
@@ -410,6 +400,7 @@ export default function () {
                   <TextInput
                     style={{
                       padding: 4,
+                      color: "black",
                     }}
                     placeholderTextColor={"grey"}
                     placeholder="Enter Referral Code"

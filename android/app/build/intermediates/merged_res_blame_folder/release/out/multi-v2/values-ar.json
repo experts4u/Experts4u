@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.experts4uu.app-mergeReleaseResources-43:/values-ar/values-ar.xml",
+            "outputFile": "com.expertss4u.app-mergeReleaseResources-43:/values-ar/values-ar.xml",
             "map": [
                 {
                     "source": "/Users/deepaksharma/.gradle/caches/transforms-3/bd7b97258cf89263d6ae489d4d067f27/transformed/jetified-play-services-basement-18.3.0/res/values-ar/values.xml",

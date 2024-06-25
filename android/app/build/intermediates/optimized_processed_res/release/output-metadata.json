@@ -4,15 +4,15 @@
     "type": "OPTIMIZED_PROCESSED_RES",
     "kind": "Directory"
   },
-  "applicationId": "com.experts4uu",
+  "applicationId": "com.expertss4u",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 3,
-      "versionName": "1.0",
+      "versionCode": 19,
+      "versionName": "1.1",
       "outputFile": "resources-release-optimize.ap_"
     }
   ],

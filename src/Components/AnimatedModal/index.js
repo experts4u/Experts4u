@@ -15,7 +15,7 @@ import MCIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Modal from "react-native-modal";
 
 function AnimatedModal(
-  { children, parentStyle, backdropFunction, customHeight },
+  { children, parentStyle, backdropFunction, customHeight, backbtn },
   ref
 ) {
   const [visible, setVisible] = useState(false);
@@ -81,25 +81,31 @@ function AnimatedModal(
     //   {/* </TouchableWithoutFeedback> */}
     // </Modal>
     <Modal
-      // deviceHeight={Dimensions.get('screen').height}
-      // coverScreen={true}
-
-      onBackButtonPress={() => setVisible(false)}
+      onBackButtonPress={() => {
+        setVisible(false);
+      }}
       animationType="slide"
       backdropOpacity={0.9}
-      onBackdropPress={() => setVisible(false)}
-      hasBackdrop={true}
+      onBackdropPress={() => {
+        setVisible(false);
+      }}
+      hasBackdrop={backdropFunction ? false : true}
       backdropColor="rgba(0, 0, 0, 0.8)"
       style={{
         flex: 1,
         width: "100%",
         alignSelf: "center",
         backgroundColor: "rgba(0, 0, 0, 0.5)",
-        // height:  Dimensions.get("screen").height,
       }}
       transparent
       visible={visible}
-      onRequestClose={() => setVisible(false)}
+      onRequestClose={() => {
+        if (backbtn == true) {
+          return;
+        } else {
+          setVisible(false);
+        }
+      }}
       statusBarTranslucent={true}
     >
       <View style={[styles.modal, { marginTop: top }]}>

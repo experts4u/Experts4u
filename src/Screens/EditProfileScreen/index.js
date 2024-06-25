@@ -114,6 +114,7 @@ export default function () {
     if (userData) {
       setName(userData?.name);
       setGender(userData?.gender == "male" ? 0 : 1);
+      setProfileImage(userData?.photo);
     }
   }, [userData]);
 
@@ -183,7 +184,7 @@ export default function () {
                     ? {
                         uri: profileImage?.uri
                           ? profileImage?.uri
-                          : profileImage,
+                          : Endpoints.baseUrl + profileImage,
                       }
                     : Assets.placeholderimage
                 }

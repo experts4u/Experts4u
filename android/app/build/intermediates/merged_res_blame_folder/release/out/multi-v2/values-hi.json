@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.experts4uu.app-mergeReleaseResources-43:/values-hi/values-hi.xml",
+            "outputFile": "com.expertss4u.app-mergeReleaseResources-43:/values-hi/values-hi.xml",
             "map": [
                 {
                     "source": "/Users/deepaksharma/.gradle/caches/transforms-3/8fb20b4979a745784051605d43e2604c/transformed/jetified-play-services-wallet-18.1.3/res/values-hi/values.xml",
